@@ -12,34 +12,27 @@ test_internal_functions <- function(Test_Log_Space_Multinomial_Sampler = FALSE,
                                     envir = environment(),
                                     ...){
 
-    # set all optional variables potentially used in the function to NULL
-    return_object <- NULL
+    # set all optional variables potentially used in the function to NULL inside
+    # a conditional that is never satisfied so that we avoid R CMD check error.
+    dont_preassign <- TRUE
+    if(!dont_preassign){
+        return_object <- NULL
+        seed <- NULL
+        distribution <- NULL
+    }
 
     object <- as.list(substitute(list(...)))[-1L]
-    print(object)
     if (length(object) > 0) {
-        # have to do this manually
-        if (!is.null(object$distribution)) {
+        for (i in 1:length(object)){
             # try both direct assignment and get()
-            if(typeof(object$distribution) == "double"){
-                distribution <- as.numeric(object$distribution)
-            }else{
+            if(typeof(object[[i]]) == "symbol"){
                 # have to do this double get trick to make it work in all contexts.
-                distribution <- dynGet(as.character(object$distribution),
-                    ifnotfound = get(as.character(object$distribution),
-                                     envir = envir))
-            }
-            print(distribution)
-        }
-        if (!is.null(object$seed)) {
-            # try both direct assignment and get()
-            if(typeof(object$seed) == "double"){
-                seed <- as.numeric(object$seed)
+                temp <- dynGet(as.character(object[[i]]),
+                                       ifnotfound = get(as.character(object[[i]]),
+                                                        envir = envir))
+                assign(names(object)[i],temp)
             }else{
-                # have to do this double get trick to make it work in all contexts.
-                seed <- dynGet(as.character(object$seed),
-                    ifnotfound = get(as.character(object$seed),
-                                     envir = envir))
+                assign(names(object)[i],object[[i]])
             }
         }
     }
