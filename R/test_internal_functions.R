@@ -13,8 +13,6 @@ test_internal_functions <- function(Test_Log_Space_Multinomial_Sampler = FALSE,
                                     ...){
 
     # set all optional variables potentially used in the function to NULL
-    distribution <- NULL
-    seed <- NULL
     return_object <- NULL
 
     object <- as.list(substitute(list(...)))[-1L]
@@ -22,12 +20,27 @@ test_internal_functions <- function(Test_Log_Space_Multinomial_Sampler = FALSE,
     if (length(object) > 0) {
         # have to do this manually
         if (!is.null(object$distribution)) {
-            distribution <- dynGet(as.character(object$distribution),
-                                   ifnotfound = get(as.character(object$distribution),
-                                                    envir = envir))
+            # try both direct assignment and get()
+            if(typeof(object$distribution) == "double"){
+                distribution <- as.numeric(object$distribution)
+            }else{
+                # have to do this double get trick to make it work in all contexts.
+                distribution <- dynGet(as.character(object$distribution),
+                    ifnotfound = get(as.character(object$distribution),
+                                     envir = envir))
+            }
+            print(distribution)
         }
         if (!is.null(object$seed)) {
-            seed <- as.numeric(object$seed)
+            # try both direct assignment and get()
+            if(typeof(object$seed) == "double"){
+                seed <- as.numeric(object$seed)
+            }else{
+                # have to do this double get trick to make it work in all contexts.
+                seed <- dynGet(as.character(object$seed),
+                    ifnotfound = get(as.character(object$seed),
+                                     envir = envir))
+            }
         }
     }
 
