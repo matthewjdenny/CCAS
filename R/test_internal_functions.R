@@ -3,12 +3,17 @@
 #'
 #' @param Test_Log_Space_Multinomial_Sampler Defualts to FALSE. If TRUE, then
 #' optional arguments 'distribution' and 'seed' must be provided.
+#' @param Test_Edge_Probability Defaults to FALSE, If TRUE, then optional arguments
+#' 'intercepts', 'coefficients', 'latent_pos', 'sender', 'recipient',
+#' 'current_covariates', 'interaction_pattern', and 'using_coefficients' must be
+#' provided.
 #' @param envir Should not be changed by the user, captures the current environment
 #' to facilitate testing.
 #' @param ... optional arguments necessary to run each of the internal functions.
 #' @return Whatever is returned by the internal function being tested
 #' @export
 test_internal_functions <- function(Test_Log_Space_Multinomial_Sampler = FALSE,
+                                    Test_Edge_Probability = FALSE,
                                     envir = environment(),
                                     ...){
 
@@ -19,6 +24,14 @@ test_internal_functions <- function(Test_Log_Space_Multinomial_Sampler = FALSE,
         return_object <- NULL
         seed <- NULL
         distribution <- NULL
+        intercepts <- NULL
+        coefficients <- NULL
+        latent_pos <- NULL
+        sender <- NULL
+        recipient <- NULL
+        current_covariates <- NULL
+        interaction_pattern <- NULL
+        using_coefficients <- NULL
     }
 
     object <- as.list(substitute(list(...)))[-1L]
@@ -48,6 +61,19 @@ test_internal_functions <- function(Test_Log_Space_Multinomial_Sampler = FALSE,
         return_object <- lsms(distribution,
                               seed)
     }
+
+    # test ep function
+    if (Test_Edge_Probability) {
+        return_object <-   ep(intercepts,
+                         coefficients,
+                         latent_pos,
+                         sender,
+                         recipient,
+                         current_covariates,
+                         interaction_pattern,
+                         using_coefficients)
+    }
+
 
     # return whatever needs to be returned
     return(return_object)
