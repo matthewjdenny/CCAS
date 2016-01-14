@@ -9,7 +9,8 @@ Description: A statistical model of (electronic) communication network content a
 URL: https://github.com/matthewjdenny/CCAS
 License: GPL-3
 Imports:
-    Rcpp
+    Rcpp,
+    methods
 Depends:
     R (>= 3.2.1)
 LinkingTo: BH,
