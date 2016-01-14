@@ -9,6 +9,9 @@
 NULL
 #> NULL
 
+#' @import methods
+NULL
+
 #' @useDynLib CCAS
 #' @importFrom Rcpp sourceCpp
 NULL

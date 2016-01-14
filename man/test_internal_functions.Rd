@@ -4,11 +4,15 @@
 \alias{test_internal_functions}
 \title{Test C++ functions}
 \usage{
-test_internal_functions(Test_Log_Space_Multinomial_Sampler = FALSE, ...)
+test_internal_functions(Test_Log_Space_Multinomial_Sampler = FALSE,
+  envir = environment(), ...)
 }
 \arguments{
 \item{Test_Log_Space_Multinomial_Sampler}{Defualts to FALSE. If TRUE, then
 optional arguments 'distribution' and 'seed' must be provided.}
+
+\item{envir}{Should not be changed by the user, captures the current environment
+to facilitate testing.}
 
 \item{...}{optional arguments necessary to run each of the internal functions.}
 }
@@ -17,10 +21,5 @@ Whatever is returned by the internal function being tested
 }
 \description{
 Allows the user to interface with the individual C++ functions.
-}
-\examples{
-\dontrun{
-
-}
 }
 
