@@ -18,7 +18,6 @@ namespace mjd {
             arma::cube latent_positions,
             int sender,
             int recipient,
-            int actual_edge_value,
             arma::vec current_covariates,
             int interaction_pattern,
             bool using_coefficients) {
@@ -57,7 +56,6 @@ int ep(arma::vec intercepts,
        NumericVector latent_pos,
        int sender,
        int recipient,
-       int actual_edge_value,
        arma::vec current_covariates,
        int interaction_pattern,
        bool using_coefficients){
@@ -73,7 +71,6 @@ int ep(arma::vec intercepts,
             latent_positions,
             sender,
             recipient,
-            actual_edge_value,
             current_covariates,
             interaction_pattern,
             using_coefficients);
