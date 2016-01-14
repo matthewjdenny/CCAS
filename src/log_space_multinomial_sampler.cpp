@@ -72,7 +72,7 @@ namespace mjd {
                 break;
             }
         }
-        return(sampled_value);
+        return sampled_value;
     }
 }
 
@@ -93,5 +93,5 @@ int lsms(arma::vec unnormalized_discrete_distribution,
             unnormalized_discrete_distribution,
             rand_num);
     //increment by one to go back to 1 indexing in R.
-    return(temp + 1);
+    return (temp + 1);
 }
