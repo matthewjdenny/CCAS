@@ -9,3 +9,7 @@ lsms <- function(unnormalized_discrete_distribution, seed) {
     .Call('CCAS_lsms', PACKAGE = 'CCAS', unnormalized_discrete_distribution, seed)
 }
 
+sotep <- function(edge_probs, tokens_in_document, current_token_topic_assignment, current_document_topic_counts, leave_out_current_token, topic_interaction_patterns, document_sender, document_recipient, leave_out_topic) {
+    .Call('CCAS_sotep', PACKAGE = 'CCAS', edge_probs, tokens_in_document, current_token_topic_assignment, current_document_topic_counts, leave_out_current_token, topic_interaction_patterns, document_sender, document_recipient, leave_out_topic)
+}
+

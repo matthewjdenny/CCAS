@@ -64,7 +64,7 @@ test_internal_functions <- function(Test_Log_Space_Multinomial_Sampler = FALSE,
 
     # test ep function
     if (Test_Edge_Probability) {
-        return_object <-   ep(intercepts,
+        return_object <- ep(intercepts,
                          coefficients,
                          latent_pos,
                          sender,
