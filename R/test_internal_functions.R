@@ -38,6 +38,15 @@ test_internal_functions <- function(Test_Log_Space_Multinomial_Sampler = FALSE,
         current_covariates <- NULL
         interaction_pattern <- NULL
         using_coefficients <- NULL
+        edge_probs <- NULL
+        tokens_in_document <- NULL
+        current_token_topic_assignment <- NULL
+        current_document_topic_counts <- NULL
+        leave_out_current_token <- NULL
+        topic_interaction_patterns <- NULL
+        document_sender <- NULL
+        document_recipient <- NULL
+        leave_out_topic <- NULL
     }
 
     object <- as.list(substitute(list(...)))[-1L]
