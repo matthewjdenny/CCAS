@@ -9,6 +9,10 @@ lsms <- function(unnormalized_discrete_distribution, seed) {
     .Call('CCAS_lsms', PACKAGE = 'CCAS', unnormalized_discrete_distribution, seed)
 }
 
+ppipp <- function(intercepts, coefficients, latent_pos, intercept_prior_mean, intercept_prior_variance, coefficient_prior_mean, coefficient_prior_variance, latent_position_prior_mean, latent_position_prior_variance, using_coefficients) {
+    .Call('CCAS_ppipp', PACKAGE = 'CCAS', intercepts, coefficients, latent_pos, intercept_prior_mean, intercept_prior_variance, coefficient_prior_mean, coefficient_prior_variance, latent_position_prior_mean, latent_position_prior_variance, using_coefficients)
+}
+
 sotep <- function(edge_probs, tokens_in_document, current_token_topic_assignment, current_document_topic_counts, leave_out_current_token, topic_interaction_patterns, document_sender, document_recipient, leave_out_topic) {
     .Call('CCAS_sotep', PACKAGE = 'CCAS', edge_probs, tokens_in_document, current_token_topic_assignment, current_document_topic_counts, leave_out_current_token, topic_interaction_patterns, document_sender, document_recipient, leave_out_topic)
 }

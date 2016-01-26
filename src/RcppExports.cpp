@@ -36,6 +36,26 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
+// ppipp
+int ppipp(arma::vec intercepts, arma::mat coefficients, NumericVector latent_pos, double intercept_prior_mean, double intercept_prior_variance, double coefficient_prior_mean, double coefficient_prior_variance, double latent_position_prior_mean, double latent_position_prior_variance, bool using_coefficients);
+RcppExport SEXP CCAS_ppipp(SEXP interceptsSEXP, SEXP coefficientsSEXP, SEXP latent_posSEXP, SEXP intercept_prior_meanSEXP, SEXP intercept_prior_varianceSEXP, SEXP coefficient_prior_meanSEXP, SEXP coefficient_prior_varianceSEXP, SEXP latent_position_prior_meanSEXP, SEXP latent_position_prior_varianceSEXP, SEXP using_coefficientsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< arma::vec >::type intercepts(interceptsSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type coefficients(coefficientsSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type latent_pos(latent_posSEXP);
+    Rcpp::traits::input_parameter< double >::type intercept_prior_mean(intercept_prior_meanSEXP);
+    Rcpp::traits::input_parameter< double >::type intercept_prior_variance(intercept_prior_varianceSEXP);
+    Rcpp::traits::input_parameter< double >::type coefficient_prior_mean(coefficient_prior_meanSEXP);
+    Rcpp::traits::input_parameter< double >::type coefficient_prior_variance(coefficient_prior_varianceSEXP);
+    Rcpp::traits::input_parameter< double >::type latent_position_prior_mean(latent_position_prior_meanSEXP);
+    Rcpp::traits::input_parameter< double >::type latent_position_prior_variance(latent_position_prior_varianceSEXP);
+    Rcpp::traits::input_parameter< bool >::type using_coefficients(using_coefficientsSEXP);
+    __result = Rcpp::wrap(ppipp(intercepts, coefficients, latent_pos, intercept_prior_mean, intercept_prior_variance, coefficient_prior_mean, coefficient_prior_variance, latent_position_prior_mean, latent_position_prior_variance, using_coefficients));
+    return __result;
+END_RCPP
+}
 // sotep
 int sotep(NumericVector edge_probs, int tokens_in_document, int current_token_topic_assignment, arma::vec current_document_topic_counts, bool leave_out_current_token, arma::vec topic_interaction_patterns, int document_sender, int document_recipient, int leave_out_topic);
 RcppExport SEXP CCAS_sotep(SEXP edge_probsSEXP, SEXP tokens_in_documentSEXP, SEXP current_token_topic_assignmentSEXP, SEXP current_document_topic_countsSEXP, SEXP leave_out_current_tokenSEXP, SEXP topic_interaction_patternsSEXP, SEXP document_senderSEXP, SEXP document_recipientSEXP, SEXP leave_out_topicSEXP) {
