@@ -6,7 +6,7 @@
 \usage{
 test_internal_functions(Test_Log_Space_Multinomial_Sampler = FALSE,
   Test_Edge_Probability = FALSE, Test_Sum_Over_T_Edge_Probs = FALSE,
-  envir = environment(), ...)
+  Test_Prior_Pobability_Of_I_P_Params = FALSE, envir = environment(), ...)
 }
 \arguments{
 \item{Test_Log_Space_Multinomial_Sampler}{Defualts to FALSE. If TRUE, then
@@ -23,16 +23,16 @@ arguments 'edge_probs', 'tokens_in_document', 'current_token_topic_assignment',
 'topic_interaction_patterns', 'document_sender','document_recipient', and
 'leave_out_topic'. must be provided.}
 
-\item{envir}{Should not be changed by the user, captures the current environment
-to facilitate testing.}
-
-\item{...}{optional arguments necessary to run each of the internal functions.}
-
 \item{Test_Prior_Pobability_Of_I_P_Params}{Defaults to FALSE. If TRUE, then optional
 arguments intercepts, coefficients, latent_pos, intercept_prior_mean,
 intercept_prior_variance, coefficient_prior_mean, coefficient_prior_variance,
 latent_position_prior_mean, latent_position_prior_variance,
 using_coefficients must be provided.}
+
+\item{envir}{Should not be changed by the user, captures the current environment
+to facilitate testing.}
+
+\item{...}{optional arguments necessary to run each of the internal functions.}
 }
 \value{
 Whatever is returned by the internal function being tested

@@ -25,6 +25,7 @@
 test_internal_functions <- function(Test_Log_Space_Multinomial_Sampler = FALSE,
                                     Test_Edge_Probability = FALSE,
                                     Test_Sum_Over_T_Edge_Probs = FALSE,
+                                    Test_Prior_Pobability_Of_I_P_Params = FALSE,
                                     envir = environment(),
                                     ...){
 
