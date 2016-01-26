@@ -5,16 +5,23 @@
 \title{Test C++ functions}
 \usage{
 test_internal_functions(Test_Log_Space_Multinomial_Sampler = FALSE,
-  Test_Edge_Probability = FALSE, envir = environment(), ...)
+  Test_Edge_Probability = FALSE, Test_Sum_Over_T_Edge_Probs = FALSE,
+  envir = environment(), ...)
 }
 \arguments{
 \item{Test_Log_Space_Multinomial_Sampler}{Defualts to FALSE. If TRUE, then
 optional arguments 'distribution' and 'seed' must be provided.}
 
-\item{Test_Edge_Probability}{Defaults to FALSE, If TRUE, then optional arguments
+\item{Test_Edge_Probability}{Defaults to FALSE. If TRUE, then optional arguments
 'intercepts', 'coefficients', 'latent_pos', 'sender', 'recipient',
 'current_covariates', 'interaction_pattern', and 'using_coefficients' must be
 provided.}
+
+\item{Test_Sum_Over_T_Edge_Probs}{Defaults to FALSE. If TRUE, then optional
+arguments 'edge_probs', 'tokens_in_document', 'current_token_topic_assignment',
+'current_document_topic_counts', 'leave_out_current_token',
+'topic_interaction_patterns', 'document_sender','document_recipient', and
+'leave_out_topic'.}
 
 \item{envir}{Should not be changed by the user, captures the current environment
 to facilitate testing.}
