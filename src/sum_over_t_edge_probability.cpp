@@ -37,7 +37,7 @@ namespace mjd {
         //  leave out topic can default to -1 in which case we do not leave out
         //  any topics. This outer conditional makes things run faster for most
         //  cases.
-        if (leave_out_topic) {
+        if (leave_out_topic > -1) {
             for (int i = 0; i < num_topics; ++i) {
                 if (leave_out_topic != i) {
                     sum += (double(current_document_topic_counts[i])/
@@ -69,7 +69,7 @@ int sotep(NumericVector edge_probs,
           arma::vec topic_interaction_patterns,
           int document_sender,
           int document_recipient,
-          bool leave_out_topic){
+          int leave_out_topic){
 
     // we have to do this stupid trick to pass in 3d arrays from R. We pass in as
     // a vector, then instatiate a cube object from there.
