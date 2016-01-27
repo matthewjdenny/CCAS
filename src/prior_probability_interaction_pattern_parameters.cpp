@@ -96,7 +96,7 @@ namespace mjd {
 using namespace Rcpp;
 // for testing we will wrap and export this function so it is available in R.
 // [[Rcpp::export]]
-int ppipp(arma::vec intercepts,
+double ppipp(arma::vec intercepts,
           arma::mat coefficients,
           NumericVector latent_pos,
           double intercept_prior_mean,

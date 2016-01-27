@@ -7,7 +7,7 @@
 using namespace Rcpp;
 
 // ep
-int ep(arma::vec intercepts, arma::mat coefficients, NumericVector latent_pos, int sender, int recipient, arma::vec current_covariates, int interaction_pattern, bool using_coefficients);
+double ep(arma::vec intercepts, arma::mat coefficients, NumericVector latent_pos, int sender, int recipient, arma::vec current_covariates, int interaction_pattern, bool using_coefficients);
 RcppExport SEXP CCAS_ep(SEXP interceptsSEXP, SEXP coefficientsSEXP, SEXP latent_posSEXP, SEXP senderSEXP, SEXP recipientSEXP, SEXP current_covariatesSEXP, SEXP interaction_patternSEXP, SEXP using_coefficientsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
@@ -37,7 +37,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // ppipp
-int ppipp(arma::vec intercepts, arma::mat coefficients, NumericVector latent_pos, double intercept_prior_mean, double intercept_prior_variance, double coefficient_prior_mean, double coefficient_prior_variance, double latent_position_prior_mean, double latent_position_prior_variance, bool using_coefficients);
+double ppipp(arma::vec intercepts, arma::mat coefficients, NumericVector latent_pos, double intercept_prior_mean, double intercept_prior_variance, double coefficient_prior_mean, double coefficient_prior_variance, double latent_position_prior_mean, double latent_position_prior_variance, bool using_coefficients);
 RcppExport SEXP CCAS_ppipp(SEXP interceptsSEXP, SEXP coefficientsSEXP, SEXP latent_posSEXP, SEXP intercept_prior_meanSEXP, SEXP intercept_prior_varianceSEXP, SEXP coefficient_prior_meanSEXP, SEXP coefficient_prior_varianceSEXP, SEXP latent_position_prior_meanSEXP, SEXP latent_position_prior_varianceSEXP, SEXP using_coefficientsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
@@ -53,6 +53,23 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type latent_position_prior_variance(latent_position_prior_varianceSEXP);
     Rcpp::traits::input_parameter< bool >::type using_coefficients(using_coefficientsSEXP);
     __result = Rcpp::wrap(ppipp(intercepts, coefficients, latent_pos, intercept_prior_mean, intercept_prior_variance, coefficient_prior_mean, coefficient_prior_variance, latent_position_prior_mean, latent_position_prior_variance, using_coefficients));
+    return __result;
+END_RCPP
+}
+// snipp
+List snipp(arma::vec intercepts, arma::mat coefficients, NumericVector latent_pos, double intercept_prior_variance, double coefficient_prior_variance, double latent_position_prior_variance, bool using_coefficients);
+RcppExport SEXP CCAS_snipp(SEXP interceptsSEXP, SEXP coefficientsSEXP, SEXP latent_posSEXP, SEXP intercept_prior_varianceSEXP, SEXP coefficient_prior_varianceSEXP, SEXP latent_position_prior_varianceSEXP, SEXP using_coefficientsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< arma::vec >::type intercepts(interceptsSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type coefficients(coefficientsSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type latent_pos(latent_posSEXP);
+    Rcpp::traits::input_parameter< double >::type intercept_prior_variance(intercept_prior_varianceSEXP);
+    Rcpp::traits::input_parameter< double >::type coefficient_prior_variance(coefficient_prior_varianceSEXP);
+    Rcpp::traits::input_parameter< double >::type latent_position_prior_variance(latent_position_prior_varianceSEXP);
+    Rcpp::traits::input_parameter< bool >::type using_coefficients(using_coefficientsSEXP);
+    __result = Rcpp::wrap(snipp(intercepts, coefficients, latent_pos, intercept_prior_variance, coefficient_prior_variance, latent_position_prior_variance, using_coefficients));
     return __result;
 END_RCPP
 }
