@@ -12,42 +12,11 @@ using std::max;
 using std::abs;
 // use the mjd namespace so we can call in other functions
 namespace mjd {
-    double edge_probability (
-            arma::vec intercepts,
-            arma::mat coefficients,
-            arma::cube latent_positions,
-            int sender,
-            int recipient,
-            arma::vec current_covariates,
-            int interaction_pattern,
-            bool using_coefficients) {
 
-        // initialize linear predictor using intercept
-        double linear_predictor = intercepts[interaction_pattern];
+    // ***********************************************************************//
+    //                 Log Space Multinomial Sampler                          //
+    // ***********************************************************************//
 
-        // if we are using coefficients, then go and add their effects
-        if (using_coefficients) {
-            //now loop over coefficients for current interaction pattern
-            int num_coefs = coefficients.n_cols;
-            for (int i = 0; i < num_coefs; ++i) {
-                linear_predictor += coefficients(interaction_pattern,i) *
-                    current_covariates[i];
-            }
-        }
-
-        // subtract out distance between two actors in latent space
-        int num_latent_spaces = latent_positions.n_slices;
-        for (int i = 0; i < num_latent_spaces; ++i) {
-            linear_predictor += abs((latent_positions(interaction_pattern, sender, i) -
-                latent_positions(interaction_pattern, recipient, i)));
-        }
-
-        // now run through logit
-        double edge_prob = (1/double(1+ exp(-linear_predictor)));
-        return edge_prob;
-    }
-	
-	
     int log_space_multinomial_sampler (
             arma::vec unnormalized_discrete_distribution,
             double uniform_draw) {
@@ -110,8 +79,50 @@ namespace mjd {
         }
         return sampled_value;
     }
-	
-	
+
+    // ***********************************************************************//
+    //                       Edge Probability                                 //
+    // ***********************************************************************//
+
+    double edge_probability (
+            arma::vec intercepts,
+            arma::mat coefficients,
+            arma::cube latent_positions,
+            int sender,
+            int recipient,
+            arma::vec current_covariates,
+            int interaction_pattern,
+            bool using_coefficients) {
+
+        // initialize linear predictor using intercept
+        double linear_predictor = intercepts[interaction_pattern];
+
+        // if we are using coefficients, then go and add their effects
+        if (using_coefficients) {
+            //now loop over coefficients for current interaction pattern
+            int num_coefs = coefficients.n_cols;
+            for (int i = 0; i < num_coefs; ++i) {
+                linear_predictor += coefficients(interaction_pattern,i) *
+                    current_covariates[i];
+            }
+        }
+
+        // subtract out distance between two actors in latent space
+        int num_latent_spaces = latent_positions.n_slices;
+        for (int i = 0; i < num_latent_spaces; ++i) {
+            linear_predictor += abs((latent_positions(interaction_pattern, sender, i) -
+                latent_positions(interaction_pattern, recipient, i)));
+        }
+
+        // now run through logit
+        double edge_prob = (1/double(1+ exp(-linear_predictor)));
+        return edge_prob;
+    }
+
+	// ***********************************************************************//
+	//                 Sum Over T Edge Probabilities                          //
+	// ***********************************************************************//
+
     double sum_over_t_edge_probability (
             arma::cube edge_probabilities,
             int tokens_in_document,
@@ -160,57 +171,10 @@ namespace mjd {
         return sum;
     }
 
-    double lsm_contribution(
-            arma::cube edge_probabilities,
-            int tokens_in_document,
-            int topic,
-            int current_token_topic_assignment,
-            arma::vec current_document_topic_counts,
-            arma::vec document_edge_values,
-            arma::vec topic_interaction_patterns,
-            int document_sender,
-            int current_topic) {
+	// ***********************************************************************//
+	//         Get Prior Probability of Interaction Pattern Parameters        //
+	// ***********************************************************************//
 
-        // get number of interaction patterns
-        int num_actors = document_edge_values.n_elem;
-
-        // initialize the lsm contribution
-        double contribution = 0;
-
-        //first get all of the intercept prior probabilities
-        for (int i = 0; i < num_actors; ++i) {
-            if (i != document_sender) {
-                double sum_term = sum_over_t_edge_probability (
-                    edge_probabilities,
-                    tokens_in_document,
-                    current_token_topic_assignment,
-                    current_document_topic_counts,
-                    -1,
-                    topic_interaction_patterns,
-                    document_sender,
-                    i,
-                    false);
-                //make sure we do not do integer division so we cast as a double
-                sum_term += 1/(double(tokens_in_document)) *
-                    edge_probabilities(document_sender,
-                                       i,
-                                       topic_interaction_patterns[topic]);
-
-                //now we take the log of the sum term or 1- sum term depending
-                //on whether the edge value is equal to 1 (present), or 0
-                //(absent).
-                if (document_edge_values[i] == 1) {
-                    contribution += log(sum_term);
-                } else {
-                    // we can use this equality to simplify things:
-                    // (1-a)+(1-b) = 2-a-b = 2-(a+b)
-                    contribution += log(2 - sum_term);
-                }
-            }
-        }
-        return contribution;
-    }
-	
     double prior_probability_interaction_pattern_parameters(
             arma::vec intercepts,
             arma::mat coefficients,
@@ -290,7 +254,11 @@ namespace mjd {
 
         return log_prior_probability;
     }
-	
+
+    // ***********************************************************************//
+    //                Sample New Interaction Pattern Parameters               //
+    // ***********************************************************************//
+
     Rcpp::List sample_new_interaction_pattern_parameters(
         arma::vec intercepts,
         arma::mat coefficients,
@@ -368,7 +336,87 @@ namespace mjd {
         to_return[2] = proposed_latent_positions;
         return to_return;
     }
+
+    // ***********************************************************************//
+    //                           LSM Contribution                             //
+    // ***********************************************************************//
+
+    double lsm_contribution(
+            arma::cube edge_probabilities,
+            int tokens_in_document,
+            int topic,
+            int current_token_topic_assignment,
+            arma::vec current_document_topic_counts,
+            arma::vec document_edge_values,
+            arma::vec topic_interaction_patterns,
+            int document_sender,
+            int current_topic) {
+
+        // get number of interaction patterns
+        int num_actors = document_edge_values.n_elem;
+
+        // initialize the lsm contribution
+        double contribution = 0;
+
+        //first get all of the intercept prior probabilities
+        for (int i = 0; i < num_actors; ++i) {
+            if (i != document_sender) {
+                double sum_term = sum_over_t_edge_probability (
+                    edge_probabilities,
+                    tokens_in_document,
+                    current_token_topic_assignment,
+                    current_document_topic_counts,
+                    -1,
+                    topic_interaction_patterns,
+                    document_sender,
+                    i,
+                    false);
+                //make sure we do not do integer division so we cast as a double
+                sum_term += 1/(double(tokens_in_document)) *
+                    edge_probabilities(document_sender,
+                                       i,
+                                       topic_interaction_patterns[topic]);
+
+                //now we take the log of the sum term or 1- sum term depending
+                //on whether the edge value is equal to 1 (present), or 0
+                //(absent).
+                if (document_edge_values[i] == 1) {
+                    contribution += log(sum_term);
+                } else {
+                    // we can use this equality to simplify things:
+                    // (1-a)+(1-b) = 2-a-b = 2-(a+b)
+                    contribution += log(2 - sum_term);
+                }
+            }
+        }
+        return contribution;
+    }
+
+
+
+
+
 }
+
+
+
+
+
+    // ***********************************************************************//
+    // ***********************************************************************//
+    // ***********************************************************************//
+    //                                TEST FUNCTIONS:                         //
+    //  These functions expose the c++ functions to R so that we can test them//
+    //  easily.                                                               //
+    // ***********************************************************************//
+    // ***********************************************************************//
+    // ***********************************************************************//
+
+
+
+
+
+
 
 using namespace Rcpp;
 // for testing we will wrap and export this function so it is available in R.
