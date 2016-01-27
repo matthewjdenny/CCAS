@@ -36,6 +36,25 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
+// sotep
+int sotep(NumericVector edge_probs, int tokens_in_document, int current_token_topic_assignment, arma::vec current_document_topic_counts, bool leave_out_current_token, arma::vec topic_interaction_patterns, int document_sender, int document_recipient, int leave_out_topic);
+RcppExport SEXP CCAS_sotep(SEXP edge_probsSEXP, SEXP tokens_in_documentSEXP, SEXP current_token_topic_assignmentSEXP, SEXP current_document_topic_countsSEXP, SEXP leave_out_current_tokenSEXP, SEXP topic_interaction_patternsSEXP, SEXP document_senderSEXP, SEXP document_recipientSEXP, SEXP leave_out_topicSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< NumericVector >::type edge_probs(edge_probsSEXP);
+    Rcpp::traits::input_parameter< int >::type tokens_in_document(tokens_in_documentSEXP);
+    Rcpp::traits::input_parameter< int >::type current_token_topic_assignment(current_token_topic_assignmentSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type current_document_topic_counts(current_document_topic_countsSEXP);
+    Rcpp::traits::input_parameter< bool >::type leave_out_current_token(leave_out_current_tokenSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type topic_interaction_patterns(topic_interaction_patternsSEXP);
+    Rcpp::traits::input_parameter< int >::type document_sender(document_senderSEXP);
+    Rcpp::traits::input_parameter< int >::type document_recipient(document_recipientSEXP);
+    Rcpp::traits::input_parameter< int >::type leave_out_topic(leave_out_topicSEXP);
+    __result = Rcpp::wrap(sotep(edge_probs, tokens_in_document, current_token_topic_assignment, current_document_topic_counts, leave_out_current_token, topic_interaction_patterns, document_sender, document_recipient, leave_out_topic));
+    return __result;
+END_RCPP
+}
 // lsmc
 double lsmc(NumericVector edge_probs, int tokens_in_document, int topic, int current_token_topic_assignment, arma::vec current_document_topic_counts, arma::vec document_edge_values, arma::vec topic_interaction_patterns, int document_sender, int current_topic);
 RcppExport SEXP CCAS_lsmc(SEXP edge_probsSEXP, SEXP tokens_in_documentSEXP, SEXP topicSEXP, SEXP current_token_topic_assignmentSEXP, SEXP current_document_topic_countsSEXP, SEXP document_edge_valuesSEXP, SEXP topic_interaction_patternsSEXP, SEXP document_senderSEXP, SEXP current_topicSEXP) {
@@ -89,25 +108,6 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type latent_position_prior_variance(latent_position_prior_varianceSEXP);
     Rcpp::traits::input_parameter< bool >::type using_coefficients(using_coefficientsSEXP);
     __result = Rcpp::wrap(snipp(intercepts, coefficients, latent_pos, intercept_prior_variance, coefficient_prior_variance, latent_position_prior_variance, using_coefficients));
-    return __result;
-END_RCPP
-}
-// sotep
-int sotep(NumericVector edge_probs, int tokens_in_document, int current_token_topic_assignment, arma::vec current_document_topic_counts, bool leave_out_current_token, arma::vec topic_interaction_patterns, int document_sender, int document_recipient, int leave_out_topic);
-RcppExport SEXP CCAS_sotep(SEXP edge_probsSEXP, SEXP tokens_in_documentSEXP, SEXP current_token_topic_assignmentSEXP, SEXP current_document_topic_countsSEXP, SEXP leave_out_current_tokenSEXP, SEXP topic_interaction_patternsSEXP, SEXP document_senderSEXP, SEXP document_recipientSEXP, SEXP leave_out_topicSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject __result;
-    Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< NumericVector >::type edge_probs(edge_probsSEXP);
-    Rcpp::traits::input_parameter< int >::type tokens_in_document(tokens_in_documentSEXP);
-    Rcpp::traits::input_parameter< int >::type current_token_topic_assignment(current_token_topic_assignmentSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type current_document_topic_counts(current_document_topic_countsSEXP);
-    Rcpp::traits::input_parameter< bool >::type leave_out_current_token(leave_out_current_tokenSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type topic_interaction_patterns(topic_interaction_patternsSEXP);
-    Rcpp::traits::input_parameter< int >::type document_sender(document_senderSEXP);
-    Rcpp::traits::input_parameter< int >::type document_recipient(document_recipientSEXP);
-    Rcpp::traits::input_parameter< int >::type leave_out_topic(leave_out_topicSEXP);
-    __result = Rcpp::wrap(sotep(edge_probs, tokens_in_document, current_token_topic_assignment, current_document_topic_counts, leave_out_current_token, topic_interaction_patterns, document_sender, document_recipient, leave_out_topic));
     return __result;
 END_RCPP
 }
