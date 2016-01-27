@@ -2,15 +2,12 @@
 // [[Rcpp::depends(BH)]]
 
 #include <RcppArmadillo.h>
-#include <boost/random.hpp>
-#include <boost/random/uniform_01.hpp>
-#include <boost/random/detail/disable_warnings.hpp>
 
 using std::log;
 using std::exp;
 using std::max;
 using std::abs;
-// use the mjd namespace so we can call in other functions
+
 namespace mjd {
     double sum_over_t_edge_probability (
             arma::cube edge_probabilities,
@@ -41,16 +38,19 @@ namespace mjd {
             for (int i = 0; i < num_topics; ++i) {
                 if (leave_out_topic != i) {
                     sum += (double(current_document_topic_counts[i])/
-                    double(tokens_in_document)) *
-                    edge_probabilities(document_sender, document_recipient, i);
+                                double(tokens_in_document)) *
+                                    edge_probabilities(document_sender,
+                                                       document_recipient,
+                                                       i);
                 }
             }
         } else {
             for (int i = 0; i < num_topics; ++i) {
                 sum += (double(current_document_topic_counts[i])/
-                double(tokens_in_document)) *
-                edge_probabilities(document_sender, document_recipient, i);
-
+                            double(tokens_in_document)) *
+                                edge_probabilities(document_sender,
+                                                   document_recipient,
+                                                   i);
             }
         }
 

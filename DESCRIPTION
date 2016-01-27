@@ -13,7 +13,8 @@ Imports:
     methods
 Depends:
     R (>= 3.2.1)
-LinkingTo: BH,
+LinkingTo: 
+    BH,
     Rcpp,
     RcppArmadillo
 LazyData: TRUE
