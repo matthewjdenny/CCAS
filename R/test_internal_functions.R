@@ -17,6 +17,10 @@
 #' intercept_prior_variance, coefficient_prior_mean, coefficient_prior_variance,
 #' latent_position_prior_mean, latent_position_prior_variance,
 #' using_coefficients must be provided.
+#' @param Test_Sample_New_I_P_Parameters Defaults to FALSE. If TRUE, then optional
+#' arguments intercepts, coefficients, latent_pos, intercept_prior_variance,
+#' coefficient_prior_variance, latent_position_prior_variance,
+#' using_coefficients must be provided.
 #' @param envir Should not be changed by the user, captures the current environment
 #' to facilitate testing.
 #' @param ... optional arguments necessary to run each of the internal functions.
@@ -26,6 +30,7 @@ test_internal_functions <- function(Test_Log_Space_Multinomial_Sampler = FALSE,
                                     Test_Edge_Probability = FALSE,
                                     Test_Sum_Over_T_Edge_Probs = FALSE,
                                     Test_Prior_Pobability_Of_I_P_Params = FALSE,
+                                    Test_Sample_New_I_P_Parameters = FALSE,
                                     envir = environment(),
                                     ...){
 
@@ -125,6 +130,16 @@ test_internal_functions <- function(Test_Log_Space_Multinomial_Sampler = FALSE,
               coefficient_prior_mean,
               coefficient_prior_variance,
               latent_position_prior_mean,
+              latent_position_prior_variance,
+              using_coefficients)
+    }
+
+    if (Test_Sample_New_I_P_Parameters) {
+        return_object <- snipp(intercepts,
+              coefficients,
+              latent_pos,
+              intercept_prior_variance,
+              coefficient_prior_variance,
               latent_position_prior_variance,
               using_coefficients)
     }
