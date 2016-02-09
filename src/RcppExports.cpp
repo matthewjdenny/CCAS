@@ -55,25 +55,6 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
-// lsmc
-double lsmc(NumericVector edge_probs, int tokens_in_document, int topic, int current_token_topic_assignment, arma::vec current_document_topic_counts, arma::vec document_edge_values, arma::vec topic_interaction_patterns, int document_sender, int current_topic);
-RcppExport SEXP CCAS_lsmc(SEXP edge_probsSEXP, SEXP tokens_in_documentSEXP, SEXP topicSEXP, SEXP current_token_topic_assignmentSEXP, SEXP current_document_topic_countsSEXP, SEXP document_edge_valuesSEXP, SEXP topic_interaction_patternsSEXP, SEXP document_senderSEXP, SEXP current_topicSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject __result;
-    Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< NumericVector >::type edge_probs(edge_probsSEXP);
-    Rcpp::traits::input_parameter< int >::type tokens_in_document(tokens_in_documentSEXP);
-    Rcpp::traits::input_parameter< int >::type topic(topicSEXP);
-    Rcpp::traits::input_parameter< int >::type current_token_topic_assignment(current_token_topic_assignmentSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type current_document_topic_counts(current_document_topic_countsSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type document_edge_values(document_edge_valuesSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type topic_interaction_patterns(topic_interaction_patternsSEXP);
-    Rcpp::traits::input_parameter< int >::type document_sender(document_senderSEXP);
-    Rcpp::traits::input_parameter< int >::type current_topic(current_topicSEXP);
-    __result = Rcpp::wrap(lsmc(edge_probs, tokens_in_document, topic, current_token_topic_assignment, current_document_topic_counts, document_edge_values, topic_interaction_patterns, document_sender, current_topic));
-    return __result;
-END_RCPP
-}
 // ppipp
 double ppipp(arma::vec intercepts, arma::mat coefficients, NumericVector latent_pos, double intercept_prior_mean, double intercept_prior_variance, double coefficient_prior_mean, double coefficient_prior_variance, double latent_position_prior_mean, double latent_position_prior_variance, bool using_coefficients);
 RcppExport SEXP CCAS_ppipp(SEXP interceptsSEXP, SEXP coefficientsSEXP, SEXP latent_posSEXP, SEXP intercept_prior_meanSEXP, SEXP intercept_prior_varianceSEXP, SEXP coefficient_prior_meanSEXP, SEXP coefficient_prior_varianceSEXP, SEXP latent_position_prior_meanSEXP, SEXP latent_position_prior_varianceSEXP, SEXP using_coefficientsSEXP) {
@@ -108,6 +89,46 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type latent_position_prior_variance(latent_position_prior_varianceSEXP);
     Rcpp::traits::input_parameter< bool >::type using_coefficients(using_coefficientsSEXP);
     __result = Rcpp::wrap(snipp(intercepts, coefficients, latent_pos, intercept_prior_variance, coefficient_prior_variance, latent_position_prior_variance, using_coefficients));
+    return __result;
+END_RCPP
+}
+// lsmc
+double lsmc(NumericVector edge_probs, int tokens_in_document, int topic, int current_token_topic_assignment, arma::vec current_document_topic_counts, arma::vec document_edge_values, arma::vec topic_interaction_patterns, int document_sender, int current_topic);
+RcppExport SEXP CCAS_lsmc(SEXP edge_probsSEXP, SEXP tokens_in_documentSEXP, SEXP topicSEXP, SEXP current_token_topic_assignmentSEXP, SEXP current_document_topic_countsSEXP, SEXP document_edge_valuesSEXP, SEXP topic_interaction_patternsSEXP, SEXP document_senderSEXP, SEXP current_topicSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< NumericVector >::type edge_probs(edge_probsSEXP);
+    Rcpp::traits::input_parameter< int >::type tokens_in_document(tokens_in_documentSEXP);
+    Rcpp::traits::input_parameter< int >::type topic(topicSEXP);
+    Rcpp::traits::input_parameter< int >::type current_token_topic_assignment(current_token_topic_assignmentSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type current_document_topic_counts(current_document_topic_countsSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type document_edge_values(document_edge_valuesSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type topic_interaction_patterns(topic_interaction_patternsSEXP);
+    Rcpp::traits::input_parameter< int >::type document_sender(document_senderSEXP);
+    Rcpp::traits::input_parameter< int >::type current_topic(current_topicSEXP);
+    __result = Rcpp::wrap(lsmc(edge_probs, tokens_in_document, topic, current_token_topic_assignment, current_document_topic_counts, document_edge_values, topic_interaction_patterns, document_sender, current_topic));
+    return __result;
+END_RCPP
+}
+// ldac
+double ldac(int tokens_in_document, int current_token_topic_assignment, arma::vec current_document_topic_counts, arma::mat word_type_topic_counts, arma::vec topic_token_counts, int topic, int current_word_type, arma::vec alpha_m, arma::vec beta_n, double beta, int current_dtc);
+RcppExport SEXP CCAS_ldac(SEXP tokens_in_documentSEXP, SEXP current_token_topic_assignmentSEXP, SEXP current_document_topic_countsSEXP, SEXP word_type_topic_countsSEXP, SEXP topic_token_countsSEXP, SEXP topicSEXP, SEXP current_word_typeSEXP, SEXP alpha_mSEXP, SEXP beta_nSEXP, SEXP betaSEXP, SEXP current_dtcSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< int >::type tokens_in_document(tokens_in_documentSEXP);
+    Rcpp::traits::input_parameter< int >::type current_token_topic_assignment(current_token_topic_assignmentSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type current_document_topic_counts(current_document_topic_countsSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type word_type_topic_counts(word_type_topic_countsSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type topic_token_counts(topic_token_countsSEXP);
+    Rcpp::traits::input_parameter< int >::type topic(topicSEXP);
+    Rcpp::traits::input_parameter< int >::type current_word_type(current_word_typeSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type alpha_m(alpha_mSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type beta_n(beta_nSEXP);
+    Rcpp::traits::input_parameter< double >::type beta(betaSEXP);
+    Rcpp::traits::input_parameter< int >::type current_dtc(current_dtcSEXP);
+    __result = Rcpp::wrap(ldac(tokens_in_document, current_token_topic_assignment, current_document_topic_counts, word_type_topic_counts, topic_token_counts, topic, current_word_type, alpha_m, beta_n, beta, current_dtc));
     return __result;
 END_RCPP
 }

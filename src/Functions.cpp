@@ -540,37 +540,6 @@ int sotep(NumericVector edge_probs,
 }
 
 // [[Rcpp::export]]
-double lsmc(NumericVector edge_probs,
-             int tokens_in_document,
-             int topic,
-             int current_token_topic_assignment,
-             arma::vec current_document_topic_counts,
-             arma::vec document_edge_values,
-             arma::vec topic_interaction_patterns,
-             int document_sender,
-             int current_topic){
-
-    // we have to do this stupid trick to pass in 3d arrays from R. We pass in as
-    // a vector, then instatiate a cube object from there.
-    IntegerVector arrayDims = edge_probs.attr("dim");
-    arma::cube edge_probabilities(edge_probs.begin(), arrayDims[0], arrayDims[1],
-                                arrayDims[2], false);
-
-    double contrib = mjd::lsm_contribution (
-        edge_probabilities,
-        tokens_in_document,
-        topic,
-        current_token_topic_assignment,
-        current_document_topic_counts,
-        document_edge_values,
-        topic_interaction_patterns,
-        document_sender,
-        current_topic);
-
-    return contrib;
-}
-
-// [[Rcpp::export]]
 double ppipp(arma::vec intercepts,
           arma::mat coefficients,
           NumericVector latent_pos,
@@ -629,4 +598,67 @@ List snipp(arma::vec intercepts,
 
     return new_params;
 }
+
+// [[Rcpp::export]]
+double lsmc(NumericVector edge_probs,
+            int tokens_in_document,
+            int topic,
+            int current_token_topic_assignment,
+            arma::vec current_document_topic_counts,
+            arma::vec document_edge_values,
+            arma::vec topic_interaction_patterns,
+            int document_sender,
+            int current_topic){
+
+    // we have to do this stupid trick to pass in 3d arrays from R. We pass in as
+    // a vector, then instatiate a cube object from there.
+    IntegerVector arrayDims = edge_probs.attr("dim");
+    arma::cube edge_probabilities(edge_probs.begin(), arrayDims[0], arrayDims[1],
+                                  arrayDims[2], false);
+
+    double contrib = mjd::lsm_contribution (
+        edge_probabilities,
+        tokens_in_document,
+        topic,
+        current_token_topic_assignment,
+        current_document_topic_counts,
+        document_edge_values,
+        topic_interaction_patterns,
+        document_sender,
+        current_topic);
+
+    return contrib;
+}
+
+
+
+// [[Rcpp::export]]
+double ldac(int tokens_in_document,
+          int current_token_topic_assignment,
+          arma::vec current_document_topic_counts,
+          arma::mat word_type_topic_counts,
+          arma::vec topic_token_counts,
+          int topic,
+          int current_word_type,
+          arma::vec alpha_m,
+          arma::vec beta_n,
+          double beta,
+          int current_dtc){
+
+    double contribution = mjd::lda_contribution(
+        tokens_in_document,
+        current_token_topic_assignment,
+        current_document_topic_counts,
+        word_type_topic_counts,
+        topic_token_counts,
+        topic,
+        current_word_type,
+        alpha_m,
+        beta_n,
+        beta,
+        current_dtc);
+
+    return contribution;
+}
+
 
