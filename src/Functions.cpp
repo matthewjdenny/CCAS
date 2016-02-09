@@ -393,10 +393,51 @@ namespace mjd {
     }
 
 
+    // ***********************************************************************//
+    //                           LDA Contribution                             //
+    // ***********************************************************************//
+
+    double lda_contribution(
+            int tokens_in_document,
+            int current_token_topic_assignment,
+            arma::vec current_document_topic_counts,
+            arma::mat word_type_topic_counts,
+            arma::vec topic_token_counts,
+            int topic,
+            int current_word_type,
+            arma::vec alpha_m,
+            arma::vec beta_n,
+            double beta,
+            int current_dtc) {
+
+        // get the word-type topic count for the current word and topic
+        int wttc = word_type_topic_counts(current_word_type,topic);
+
+        // get the total count of tokens currently assocaited with topic
+        int tc = topic_token_counts[topic];
+
+        // the topic is the same as the current assignement, then we decrement
+        // the relevant counts since we are doing Gibbs sampling so we need to
+        // hold out hte current position
+        if (topic == current_token_topic_assignment) {
+            current_dtc -= 1;
+            wttc -= 1;
+            tc -= 1;
+        }
+
+        // now we calculate the contribution (which will be in log space)
+        double contribution = log(double(current_dtc)  + alpha_m[topic]) +
+            log(wttc + beta_n[current_word_type]) - log(tc + beta);
+
+        // return the value
+        return contribution;
+    }
 
 
 
-}
+
+
+} // end of MJD namespace
 
 
 
