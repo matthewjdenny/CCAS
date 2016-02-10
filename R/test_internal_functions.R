@@ -30,19 +30,27 @@
 #' arguments tokens_in_document, current_token_topic_assignment,
 #' current_document_topic_counts, word_type_topic_counts, topic_token_counts,
 #' topic, current_word_type, alpha_m, beta_n, beta  must be provided.
+#' @param Test_Update_Single_Token_Topic_Assignment Defaults to FALSE. If TRUE,
+#' then optional arguments edge_probs, tokens_in_document,
+#' current_token_topic_assignment, current_document_topic_counts,
+#' word_type_topic_counts, topic_token_counts, current_word_type, alpha_m,
+#' beta_n, document_edge_values, topic_interaction_patterns, document_sender,
+#' current_topic, rand_num must be provided.
 #' @param envir Should not be changed by the user, captures the current
 #' environment to facilitate testing.
 #' @param ... optional arguments necessary to run each of the internal functions.
 #' @return Whatever is returned by the internal function being tested
 #' @export
-test_internal_functions <- function(Test_Log_Space_Multinomial_Sampler = FALSE,
-                                    Test_Edge_Probability = FALSE,
-                                    Test_Sum_Over_T_Edge_Probs = FALSE,
-                                    Test_Prior_Pobability_Of_I_P_Params = FALSE,
-                                    Test_Sample_New_I_P_Parameters = FALSE,
-                                    Test_LSM_Contribution = FALSE,
-                                    Test_LDA_Contribution = FALSE,
-                                    envir = environment(),
+test_internal_functions <- function(
+    Test_Log_Space_Multinomial_Sampler = FALSE,
+    Test_Edge_Probability = FALSE,
+    Test_Sum_Over_T_Edge_Probs = FALSE,
+    Test_Prior_Pobability_Of_I_P_Params = FALSE,
+    Test_Sample_New_I_P_Parameters = FALSE,
+    Test_LSM_Contribution = FALSE,
+    Test_LDA_Contribution = FALSE,
+    Test_Update_Single_Token_Topic_Assignment = FALSE,
+    envir = environment(),
                                     ...){
 
     # set all optional variables potentially used in the function to NULL inside
@@ -86,6 +94,7 @@ test_internal_functions <- function(Test_Log_Space_Multinomial_Sampler = FALSE,
         current_word_type <- NULL
         alpha_m <- NULL
         beta_n <- NULL
+        rand_num <- NULL
     }
 
     object <- as.list(substitute(list(...)))[-1L]
@@ -188,6 +197,23 @@ test_internal_functions <- function(Test_Log_Space_Multinomial_Sampler = FALSE,
             alpha_m,
             beta_n,
             beta)
+    }
+
+    if (Test_Update_Single_Token_Topic_Assignment) {
+        return_object <- ustta(edge_probs,
+              tokens_in_document,
+              current_token_topic_assignment,
+              current_document_topic_counts,
+              word_type_topic_counts,
+              topic_token_counts,
+              current_word_type,
+              alpha_m,
+              beta_n,
+              document_edge_values,
+              topic_interaction_patterns,
+              document_sender,
+              current_topic,
+              rand_num)
     }
 
 

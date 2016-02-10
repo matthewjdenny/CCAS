@@ -131,3 +131,27 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
+// ustta
+int ustta(NumericVector edge_probs, int tokens_in_document, int current_token_topic_assignment, arma::vec current_document_topic_counts, arma::mat word_type_topic_counts, arma::vec topic_token_counts, int current_word_type, arma::vec alpha_m, arma::vec beta_n, arma::vec document_edge_values, arma::vec topic_interaction_patterns, int document_sender, int current_topic, double rand_num);
+RcppExport SEXP CCAS_ustta(SEXP edge_probsSEXP, SEXP tokens_in_documentSEXP, SEXP current_token_topic_assignmentSEXP, SEXP current_document_topic_countsSEXP, SEXP word_type_topic_countsSEXP, SEXP topic_token_countsSEXP, SEXP current_word_typeSEXP, SEXP alpha_mSEXP, SEXP beta_nSEXP, SEXP document_edge_valuesSEXP, SEXP topic_interaction_patternsSEXP, SEXP document_senderSEXP, SEXP current_topicSEXP, SEXP rand_numSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< NumericVector >::type edge_probs(edge_probsSEXP);
+    Rcpp::traits::input_parameter< int >::type tokens_in_document(tokens_in_documentSEXP);
+    Rcpp::traits::input_parameter< int >::type current_token_topic_assignment(current_token_topic_assignmentSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type current_document_topic_counts(current_document_topic_countsSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type word_type_topic_counts(word_type_topic_countsSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type topic_token_counts(topic_token_countsSEXP);
+    Rcpp::traits::input_parameter< int >::type current_word_type(current_word_typeSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type alpha_m(alpha_mSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type beta_n(beta_nSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type document_edge_values(document_edge_valuesSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type topic_interaction_patterns(topic_interaction_patternsSEXP);
+    Rcpp::traits::input_parameter< int >::type document_sender(document_senderSEXP);
+    Rcpp::traits::input_parameter< int >::type current_topic(current_topicSEXP);
+    Rcpp::traits::input_parameter< double >::type rand_num(rand_numSEXP);
+    __result = Rcpp::wrap(ustta(edge_probs, tokens_in_document, current_token_topic_assignment, current_document_topic_counts, word_type_topic_counts, topic_token_counts, current_word_type, alpha_m, beta_n, document_edge_values, topic_interaction_patterns, document_sender, current_topic, rand_num));
+    return __result;
+END_RCPP
+}

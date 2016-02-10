@@ -727,3 +727,48 @@ double ldac(int tokens_in_document,
 }
 
 
+// [[Rcpp::export]]
+int ustta(NumericVector edge_probs,
+        int tokens_in_document,
+        int current_token_topic_assignment,
+        arma::vec current_document_topic_counts,
+        arma::mat word_type_topic_counts,
+        arma::vec topic_token_counts,
+        int current_word_type,
+        arma::vec alpha_m,
+        arma::vec beta_n,
+        arma::vec document_edge_values,
+        arma::vec topic_interaction_patterns,
+        int document_sender,
+        int current_topic,
+        double rand_num){
+
+    // we have to do this stupid trick to pass in 3d arrays from R. We pass in as
+    // a vector, then instatiate a cube object from there.
+    IntegerVector arrayDims = edge_probs.attr("dim");
+    arma::cube edge_probabilities(edge_probs.begin(), arrayDims[0], arrayDims[1],
+                                  arrayDims[2], false);
+
+    int assignment = mjd::update_single_token_topic_assignment(
+            edge_probabilities,
+            tokens_in_document,
+            current_token_topic_assignment,
+            current_document_topic_counts,
+            word_type_topic_counts,
+            topic_token_counts,
+            current_word_type,
+            alpha_m,
+            beta_n,
+            document_edge_values,
+            topic_interaction_patterns,
+            document_sender,
+            current_topic,
+            rand_num);
+
+    return assignment;
+}
+
+
+
+
+
