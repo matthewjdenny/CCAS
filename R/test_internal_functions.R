@@ -17,10 +17,10 @@
 #' intercept_prior_variance, coefficient_prior_mean, coefficient_prior_variance,
 #' latent_position_prior_mean, latent_position_prior_variance,
 #' using_coefficients must be provided.
-#' @param Test_Sample_New_I_P_Parameters Defaults to FALSE. If TRUE, then optional
-#' arguments intercepts, coefficients, latent_pos, intercept_prior_variance,
-#' coefficient_prior_variance, latent_position_prior_variance,
-#' using_coefficients must be provided.
+#' @param Test_Sample_New_I_P_Parameters Defaults to FALSE. If TRUE, then
+#' optional  arguments intercepts, coefficients, latent_pos,
+#' intercept_proposal_variance, coefficient_proposal_variance,
+#' latent_position_proposal_variance, using_coefficients must be provided.
 #' @param Test_LSM_Contribution Defaults to FALSE. If TRUE, then optional
 #' arguments edge_probs, tokens_in_document, topic,
 #' current_token_topic_assignment, current_document_topic_counts,
@@ -90,10 +90,13 @@ test_internal_functions <- function(
         latent_pos <- NULL
         intercept_prior_mean <- NULL
         intercept_prior_variance <- NULL
+        intercept_proposal_variance <- NULL
         coefficient_prior_mean <- NULL
         coefficient_prior_variance <- NULL
+        coefficient_proposal_variance <- NULL
         latent_position_prior_mean <- NULL
         latent_position_prior_variance <- NULL
+        latent_position_proposal_variance <- NULL
         topic <- NULL
         document_edge_values <- NULL
         word_type_topic_counts <- NULL
@@ -180,9 +183,9 @@ test_internal_functions <- function(
         return_object <- snipp(intercepts,
               coefficients,
               latent_pos,
-              intercept_prior_variance,
-              coefficient_prior_variance,
-              latent_position_prior_variance,
+              intercept_proposal_variance,
+              coefficient_proposal_variance,
+              latent_position_proposal_variance,
               using_coefficients)
     }
 
