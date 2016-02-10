@@ -112,8 +112,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // ldac
-double ldac(int tokens_in_document, int current_token_topic_assignment, arma::vec current_document_topic_counts, arma::mat word_type_topic_counts, arma::vec topic_token_counts, int topic, int current_word_type, arma::vec alpha_m, arma::vec beta_n, double beta, int current_dtc);
-RcppExport SEXP CCAS_ldac(SEXP tokens_in_documentSEXP, SEXP current_token_topic_assignmentSEXP, SEXP current_document_topic_countsSEXP, SEXP word_type_topic_countsSEXP, SEXP topic_token_countsSEXP, SEXP topicSEXP, SEXP current_word_typeSEXP, SEXP alpha_mSEXP, SEXP beta_nSEXP, SEXP betaSEXP, SEXP current_dtcSEXP) {
+double ldac(int tokens_in_document, int current_token_topic_assignment, arma::vec current_document_topic_counts, arma::mat word_type_topic_counts, arma::vec topic_token_counts, int topic, int current_word_type, arma::vec alpha_m, arma::vec beta_n, double beta);
+RcppExport SEXP CCAS_ldac(SEXP tokens_in_documentSEXP, SEXP current_token_topic_assignmentSEXP, SEXP current_document_topic_countsSEXP, SEXP word_type_topic_countsSEXP, SEXP topic_token_countsSEXP, SEXP topicSEXP, SEXP current_word_typeSEXP, SEXP alpha_mSEXP, SEXP beta_nSEXP, SEXP betaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
@@ -127,8 +127,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::vec >::type alpha_m(alpha_mSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type beta_n(beta_nSEXP);
     Rcpp::traits::input_parameter< double >::type beta(betaSEXP);
-    Rcpp::traits::input_parameter< int >::type current_dtc(current_dtcSEXP);
-    __result = Rcpp::wrap(ldac(tokens_in_document, current_token_topic_assignment, current_document_topic_counts, word_type_topic_counts, topic_token_counts, topic, current_word_type, alpha_m, beta_n, beta, current_dtc));
+    __result = Rcpp::wrap(ldac(tokens_in_document, current_token_topic_assignment, current_document_topic_counts, word_type_topic_counts, topic_token_counts, topic, current_word_type, alpha_m, beta_n, beta));
     return __result;
 END_RCPP
 }

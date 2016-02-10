@@ -25,7 +25,7 @@ lsmc <- function(edge_probs, tokens_in_document, topic, current_token_topic_assi
     .Call('CCAS_lsmc', PACKAGE = 'CCAS', edge_probs, tokens_in_document, topic, current_token_topic_assignment, current_document_topic_counts, document_edge_values, topic_interaction_patterns, document_sender, current_topic)
 }
 
-ldac <- function(tokens_in_document, current_token_topic_assignment, current_document_topic_counts, word_type_topic_counts, topic_token_counts, topic, current_word_type, alpha_m, beta_n, beta, current_dtc) {
-    .Call('CCAS_ldac', PACKAGE = 'CCAS', tokens_in_document, current_token_topic_assignment, current_document_topic_counts, word_type_topic_counts, topic_token_counts, topic, current_word_type, alpha_m, beta_n, beta, current_dtc)
+ldac <- function(tokens_in_document, current_token_topic_assignment, current_document_topic_counts, word_type_topic_counts, topic_token_counts, topic, current_word_type, alpha_m, beta_n, beta) {
+    .Call('CCAS_ldac', PACKAGE = 'CCAS', tokens_in_document, current_token_topic_assignment, current_document_topic_counts, word_type_topic_counts, topic_token_counts, topic, current_word_type, alpha_m, beta_n, beta)
 }
 

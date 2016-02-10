@@ -407,8 +407,9 @@ namespace mjd {
             int current_word_type,
             arma::vec alpha_m,
             arma::vec beta_n,
-            double beta,
-            int current_dtc) {
+            double beta) {
+
+        int current_dtc = current_document_topic_counts[topic];
 
         // get the word-type topic count for the current word and topic
         int wttc = word_type_topic_counts(current_word_type,topic);
@@ -448,7 +449,6 @@ namespace mjd {
             int current_word_type,
             arma::vec alpha_m,
             arma::vec beta_n,
-            int current_dtc,
             arma::vec document_edge_values,
             arma::vec topic_interaction_patterns,
             int document_sender,
@@ -487,8 +487,7 @@ namespace mjd {
                 current_word_type,
                 alpha_m,
                 beta_n,
-                beta,
-                current_dtc);
+                beta);
 
             // add the values (since we are working in log space) and put them
             // in the appropriate bin the in the distribution.
@@ -710,8 +709,7 @@ double ldac(int tokens_in_document,
           int current_word_type,
           arma::vec alpha_m,
           arma::vec beta_n,
-          double beta,
-          int current_dtc){
+          double beta){
 
     double contribution = mjd::lda_contribution(
         tokens_in_document,
@@ -723,8 +721,7 @@ double ldac(int tokens_in_document,
         current_word_type,
         alpha_m,
         beta_n,
-        beta,
-        current_dtc);
+        beta);
 
     return contribution;
 }
