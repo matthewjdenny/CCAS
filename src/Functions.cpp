@@ -263,9 +263,9 @@ namespace mjd {
         arma::vec intercepts,
         arma::mat coefficients,
         arma::cube latent_positions,
-        double intercept_prior_variance,
-        double coefficient_prior_variance,
-        double latent_position_prior_variance,
+        double intercept_proposal_variance,
+        double coefficient_proposal_variance,
+        double latent_position_proposal_variance,
         bool using_coefficients) {
 
         // get number of interaction patterns
@@ -299,7 +299,7 @@ namespace mjd {
             // code. First argument is the mean of the normal distribution we
             // are sampling from and second is its variance.
             proposed_intercepts[i]= R::rnorm(intercepts[i],
-                                              intercept_prior_variance);
+                                              intercept_proposal_variance);
         }
 
         // if we are using coefficients, sample new coefficients centered at
@@ -311,7 +311,7 @@ namespace mjd {
                     // code. First argument is the mean of the normal distribution we
                     // are sampling from and second is its variance.
                     proposed_coefficients(i,j) += R::rnorm(coefficients(i,j),
-                                                    coefficient_prior_variance);
+                                                    coefficient_proposal_variance);
                 }
             }
         }
@@ -325,7 +325,7 @@ namespace mjd {
                     // are sampling from and second is its variance.
                     proposed_latent_positions(i,j,k) = R::rnorm(
                         latent_positions(i,j,k),
-                        latent_position_prior_variance);
+                        latent_position_proposal_variance);
                 }
             }
         }
@@ -619,6 +619,197 @@ namespace mjd {
     }
 
 
+    // ***********************************************************************//
+    //                 Update Interaction Pattern Parameters                  //
+    // ***********************************************************************//
+
+    Rcpp::List update_interaction_pattern_parameters(
+            arma::vec author_indexes,
+            arma::mat document_edge_matrix,
+            arma::mat document_topic_counts,
+            arma::vec topic_interaction_patterns,
+            arma::vec intercepts,
+            arma::mat coefficients,
+            arma::cube latent_positions,
+            arma::cube covariates,
+            bool using_coefficients,
+            double intercept_prior_mean,
+            double intercept_prior_variance,
+            double intercept_proposal_variance,
+            double coefficient_prior_mean,
+            double coefficient_prior_variance,
+            double coefficient_proposal_variance,
+            double latent_position_prior_mean,
+            double latent_position_prior_variance,
+            double latent_position_proposal_variance,
+            double random_number,
+            arma::cube edge_probabilities) {
+
+        // get important constants
+        int number_of_documents = document_edge_matrix.n_rows;
+        int number_of_actors = document_edge_matrix.n_cols;
+        int number_of_interaction_patterns = intercepts.n_elem;
+
+        // draw proposed interaction parameters
+        Rcpp::List proposed_parameters = mjd::sample_new_interaction_pattern_parameters(
+            intercepts,
+            coefficients,
+            latent_positions,
+            intercept_proposal_variance,
+            coefficient_proposal_variance,
+            latent_position_proposal_variance,
+            using_coefficients);
+
+        // allocate the appropriate objects out of the list returned above
+        arma::vec proposed_intercepts = proposed_parameters[0];
+        arma::mat proposed_coefficients = proposed_parameters[1];
+        arma::cube proposed_latent_positions = proposed_parameters[2];
+
+        // get the log prior probability of the current interaction pattern
+        // parameters
+        double log_current_prior = mjd::prior_probability_interaction_pattern_parameters(
+            intercepts,
+            coefficients,
+            latent_positions,
+            intercept_prior_mean,
+            intercept_prior_variance,
+            coefficient_prior_mean,
+            coefficient_prior_variance,
+            latent_position_prior_mean,
+            latent_position_prior_variance,
+            using_coefficients);
+
+        // get the log prior probability of the proposed interaction pattern
+        // parameters.
+        double log_proposed_prior = mjd::prior_probability_interaction_pattern_parameters(
+            proposed_intercepts,
+            proposed_coefficients,
+            proposed_latent_positions,
+            intercept_prior_mean,
+            intercept_prior_variance,
+            coefficient_prior_mean,
+            coefficient_prior_variance,
+            latent_position_prior_mean,
+            latent_position_prior_variance,
+            using_coefficients);
+
+        // allocate variables outside of loop.
+        double log_current_probability = 0;
+        double log_proposed_probability = 0;
+
+        arma::cube proposed_edge_probabilities = arma::zeros(number_of_actors,
+            number_of_actors,
+            number_of_interaction_patterns);
+
+        // loop over docs, actors, interaction patterns to fill edge_probabilities
+        for (int i = 0; i < number_of_actors; ++i) {
+            for (int j = 0; j < number_of_actors; ++j) {
+                // .tube gives us all slices
+                arma::vec current_covariates = covariates.tube(i,j);
+                if (i != j) {
+                    for (int k = 0; k < number_of_interaction_patterns; ++k) {
+                        proposed_edge_probabilities(i,j,k) = mjd::edge_probability(
+                            proposed_intercepts,
+                            proposed_coefficients,
+                            proposed_latent_positions,
+                            i,
+                            j,
+                            current_covariates,
+                            k,
+                            using_coefficients);
+                    }
+                }
+            }
+        }
+
+        // loop over documents
+        for (int i = 0; i < number_of_documents; ++i) {
+            // allocate all of our document specific variables
+            arma::vec current_document_topic_counts = document_topic_counts.row(i);
+            arma::vec document_edge_values = document_edge_matrix.row(i);
+            // get the current number of tokens
+            int tokens_in_document = arma::sum(current_document_topic_counts);
+            int document_sender = author_indexes[i];
+            // loop over tokens
+            for (int j = 0; j < number_of_actors; ++j) {
+                // if the assignment changed, then we need to update everything.
+                if (document_sender != j) {
+                    if (document_edge_values[i] == 1) {
+
+                        double temp = sum_over_t_edge_probability (
+                            edge_probabilities,
+                            tokens_in_document,
+                            0,
+                            current_document_topic_counts,
+                            -1,
+                            topic_interaction_patterns,
+                            document_sender,
+                            j,
+                            false);
+                        log_current_probability += log(temp);
+
+                        double temp2 = sum_over_t_edge_probability (
+                            proposed_edge_probabilities,
+                            tokens_in_document,
+                            0,
+                            current_document_topic_counts,
+                            -1,
+                            topic_interaction_patterns,
+                            document_sender,
+                            j,
+                            false);
+                        log_proposed_probability += log(temp2);
+                    } else {
+                        double temp = sum_over_t_edge_probability (
+                            edge_probabilities,
+                            tokens_in_document,
+                            0,
+                            current_document_topic_counts,
+                            -1,
+                            topic_interaction_patterns,
+                            document_sender,
+                            j,
+                            false);
+                        log_current_probability += log(1- temp);
+                        double temp2 = sum_over_t_edge_probability (
+                            proposed_edge_probabilities,
+                            tokens_in_document,
+                            0,
+                            current_document_topic_counts,
+                            -1,
+                            topic_interaction_patterns,
+                            document_sender,
+                            j,
+                            false);
+                        log_proposed_probability += log(1- temp2);
+                    }
+                } // end of condition making sure actor is not author
+            } // end of loop over actors
+        }// end of loop over documents
+
+        double accept_log_prob = log_proposed_probability + log_proposed_prior -
+             log_current_probability - log_current_prior;
+        double log_random_number = log(random_number);
+        Rcpp::List to_return(5);
+
+        if (accept_log_prob > log_random_number) {
+            to_return[0] = proposed_intercepts;
+            to_return[1] = proposed_coefficients;
+            to_return[2] = proposed_latent_positions;
+            to_return[3] = proposed_edge_probabilities;
+            to_return[4] = 1; //tells us whether we accepted
+        } else {
+            to_return[0] = intercepts;
+            to_return[1] = coefficients;
+            to_return[2] = latent_positions;
+            to_return[3] = edge_probabilities;
+            to_return[4] = 0; //tells us whether we accepted
+        }
+
+        return to_return;
+    }
+
+
 } // end of MJD namespace
 
 
@@ -758,9 +949,9 @@ double ppipp(arma::vec intercepts,
 List snipp(arma::vec intercepts,
           arma::mat coefficients,
           NumericVector latent_pos,
-          double intercept_prior_variance,
-          double coefficient_prior_variance,
-          double latent_position_prior_variance,
+          double intercept_proposal_variance,
+          double coefficient_proposal_variance,
+          double latent_position_proposal_variance,
           bool using_coefficients){
 
     // we have to do this stupid trick to pass in 3d arrays from R. We pass in as
@@ -773,9 +964,9 @@ List snipp(arma::vec intercepts,
         intercepts,
         coefficients,
         latent_positions,
-        intercept_prior_variance,
-        coefficient_prior_variance,
-        latent_position_prior_variance,
+        intercept_proposal_variance,
+        coefficient_proposal_variance,
+        latent_position_proposal_variance,
         using_coefficients);
 
     return new_params;

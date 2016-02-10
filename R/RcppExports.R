@@ -17,8 +17,8 @@ ppipp <- function(intercepts, coefficients, latent_pos, intercept_prior_mean, in
     .Call('CCAS_ppipp', PACKAGE = 'CCAS', intercepts, coefficients, latent_pos, intercept_prior_mean, intercept_prior_variance, coefficient_prior_mean, coefficient_prior_variance, latent_position_prior_mean, latent_position_prior_variance, using_coefficients)
 }
 
-snipp <- function(intercepts, coefficients, latent_pos, intercept_prior_variance, coefficient_prior_variance, latent_position_prior_variance, using_coefficients) {
-    .Call('CCAS_snipp', PACKAGE = 'CCAS', intercepts, coefficients, latent_pos, intercept_prior_variance, coefficient_prior_variance, latent_position_prior_variance, using_coefficients)
+snipp <- function(intercepts, coefficients, latent_pos, intercept_proposal_variance, coefficient_proposal_variance, latent_position_proposal_variance, using_coefficients) {
+    .Call('CCAS_snipp', PACKAGE = 'CCAS', intercepts, coefficients, latent_pos, intercept_proposal_variance, coefficient_proposal_variance, latent_position_proposal_variance, using_coefficients)
 }
 
 lsmc <- function(edge_probs, tokens_in_document, topic, current_token_topic_assignment, current_document_topic_counts, document_edge_values, topic_interaction_patterns, document_sender) {
