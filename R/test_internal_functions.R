@@ -24,8 +24,8 @@
 #' @param Test_LSM_Contribution Defaults to FALSE. If TRUE, then optional
 #' arguments edge_probs, tokens_in_document, topic,
 #' current_token_topic_assignment, current_document_topic_counts,
-#' document_edge_values, topic_interaction_patterns, document_sender,
-#' current_topic must be provided.
+#' document_edge_values, topic_interaction_patterns, document_sender must be
+#'  provided.
 #' @param Test_LDA_Contribution Defaults to FALSE. If TRUE, then optional
 #' arguments tokens_in_document, current_token_topic_assignment,
 #' current_document_topic_counts, word_type_topic_counts, topic_token_counts,
@@ -35,7 +35,7 @@
 #' current_token_topic_assignment, current_document_topic_counts,
 #' word_type_topic_counts, topic_token_counts, current_word_type, alpha_m,
 #' beta_n, document_edge_values, topic_interaction_patterns, document_sender,
-#' current_topic, rand_num must be provided.
+#'  rand_num must be provided.
 #' @param envir Should not be changed by the user, captures the current
 #' environment to facilitate testing.
 #' @param ... optional arguments necessary to run each of the internal functions.
@@ -88,7 +88,6 @@ test_internal_functions <- function(
         latent_position_prior_variance <- NULL
         topic <- NULL
         document_edge_values <- NULL
-        current_topic <- NULL
         word_type_topic_counts <- NULL
         topic_token_counts <- NULL
         current_word_type <- NULL
@@ -181,8 +180,7 @@ test_internal_functions <- function(
             current_document_topic_counts,
             document_edge_values,
             topic_interaction_patterns,
-            document_sender,
-            current_topic)
+            document_sender)
     }
 
     if (Test_LDA_Contribution) {
@@ -212,7 +210,6 @@ test_internal_functions <- function(
               document_edge_values,
               topic_interaction_patterns,
               document_sender,
-              current_topic,
               rand_num)
     }
 
