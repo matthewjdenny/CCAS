@@ -29,7 +29,7 @@
 #' @param Test_LDA_Contribution Defaults to FALSE. If TRUE, then optional
 #' arguments tokens_in_document, current_token_topic_assignment,
 #' current_document_topic_counts, word_type_topic_counts, topic_token_counts,
-#' topic, current_word_type, alpha_m, beta_n, beta, current_dtc must be provided.
+#' topic, current_word_type, alpha_m, beta_n, beta  must be provided.
 #' @param envir Should not be changed by the user, captures the current
 #' environment to facilitate testing.
 #' @param ... optional arguments necessary to run each of the internal functions.
@@ -86,7 +86,6 @@ test_internal_functions <- function(Test_Log_Space_Multinomial_Sampler = FALSE,
         current_word_type <- NULL
         alpha_m <- NULL
         beta_n <- NULL
-        current_dtc <- NULL
     }
 
     object <- as.list(substitute(list(...)))[-1L]
@@ -188,8 +187,7 @@ test_internal_functions <- function(Test_Log_Space_Multinomial_Sampler = FALSE,
             current_word_type,
             alpha_m,
             beta_n,
-            beta,
-            current_dtc)
+            beta)
     }
 
 
