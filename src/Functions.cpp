@@ -349,8 +349,7 @@ namespace mjd {
             arma::vec current_document_topic_counts,
             arma::vec document_edge_values,
             arma::vec topic_interaction_patterns,
-            int document_sender,
-            int current_topic) {
+            int document_sender) {
 
         // get number of interaction patterns
         int num_actors = document_edge_values.n_elem;
@@ -452,7 +451,6 @@ namespace mjd {
             arma::vec document_edge_values,
             arma::vec topic_interaction_patterns,
             int document_sender,
-            int current_topic,
             double rand_num) {
 
         // calculate beta, the sum over beta_n
@@ -474,8 +472,7 @@ namespace mjd {
                 current_document_topic_counts,
                 document_edge_values,
                 topic_interaction_patterns,
-                document_sender,
-                current_topic);
+                document_sender);
 
             double lda_contr = mjd::lda_contribution(
                 tokens_in_document,
@@ -502,6 +499,123 @@ namespace mjd {
         return new_assignment;
     }
 
+
+    // ***********************************************************************//
+    //                 Update All Token Topic Assignments                     //
+    // ***********************************************************************//
+
+    Rcpp::List update_token_topic_assignments(
+            arma::vec author_indexes,
+            arma::mat document_edge_matrix,
+            arma::vec topic_interaction_patterns,
+            arma::mat document_topic_counts,
+            arma::mat word_type_topic_counts,
+            arma::vec topic_token_counts,
+            Rcpp::List token_topic_assignments,
+            Rcpp::List token_word_types,
+            arma::vec intercepts,
+            arma::mat coefficients,
+            arma::cube latent_positions,
+            arma::cube covariates,
+            arma::vec alpha_m,
+            arma::vec beta_n,
+            arma::vec random_numbers,
+            bool using_coefficients) {
+
+        // get important constants
+        int number_of_documents = document_edge_matrix.n_rows;
+        int number_of_actors = document_edge_matrix.n_cols;
+        int number_of_interaction_patterns = intercepts.n_elem;
+        int rand_num_counter = 0;
+
+        arma::cube edge_probabilities = arma::zeros(number_of_actors,
+            number_of_actors,
+            number_of_interaction_patterns);
+
+        // loop over docs, actors, interaction patterns to fill edge_probabilities
+        for (int i = 0; i < number_of_actors; ++i) {
+            for (int j = 0; j < number_of_actors; ++j) {
+                // .tube gives us all slices
+                arma::vec current_covariates = covariates.tube(i,j);
+                if (i != j) {
+                    for (int k = 0; k < number_of_interaction_patterns; ++k) {
+                        edge_probabilities(i,j,k) = mjd::edge_probability(
+                            intercepts,
+                            coefficients,
+                            latent_positions,
+                            i,
+                            j,
+                            current_covariates,
+                            k,
+                            using_coefficients);
+                    }
+                }
+            }
+        }
+
+        // loop over documents
+        for (int i = 0; i < number_of_documents; ++i) {
+            // get the current token topic assignments as a vector
+            arma::vec current_token_topic_assignments = token_topic_assignments[i];
+            // get the current token word types as a vector
+            arma::vec current_token_word_types = token_word_types[i];
+            // get the current number of tokens
+            int tokens_in_document = current_token_topic_assignments.n_elem;
+            // allocate all of our document specific variables
+            arma::vec current_document_topic_counts = document_topic_counts.row(i);
+            arma::vec document_edge_values = document_edge_matrix.row(i);
+            int document_sender = author_indexes[i];
+
+            // loop over tokens
+            for (int j = 0; j < tokens_in_document; ++j) {
+                // allocate all of our token specific variables
+                int current_token_topic_assignment = current_token_topic_assignments[j];
+                int current_word_type = current_token_word_types[j];
+                double rand_num = random_numbers[rand_num_counter];
+                rand_num_counter += 1;
+
+                // now get the new assignment
+                int new_topic_assignment = update_single_token_topic_assignment(
+                    edge_probabilities,
+                    tokens_in_document,
+                    current_token_topic_assignment,
+                    current_document_topic_counts,
+                    word_type_topic_counts,
+                    topic_token_counts,
+                    current_word_type,
+                    alpha_m,
+                    beta_n,
+                    document_edge_values,
+                    topic_interaction_patterns,
+                    document_sender,
+                    rand_num);
+
+                // if the assignment changed, then we need to update everything.
+                if (new_topic_assignment != current_token_topic_assignment) {
+                    document_topic_counts(i,current_token_topic_assignment) -= 1;
+                    document_topic_counts(i,new_topic_assignment) += 1;
+                    current_token_topic_assignments[j] = new_topic_assignment;
+                    topic_token_counts[current_token_topic_assignment] -= 1;
+                    topic_token_counts[new_topic_assignment] += 1;
+                    word_type_topic_counts(current_word_type,
+                                           current_token_topic_assignment) -= 1;
+                    word_type_topic_counts(current_word_type,
+                                           new_topic_assignment) += 1;
+                }
+            }
+            // put the vector back in the list
+            token_topic_assignments[i] = current_token_topic_assignments;
+        }
+
+        // put everything in a list and return it
+        Rcpp::List to_return(4);
+        to_return[0] = document_topic_counts;
+        to_return[1] = word_type_topic_counts;
+        to_return[2] = topic_token_counts;
+        to_return[3] = token_topic_assignments;
+
+        return to_return;
+    }
 
 
 } // end of MJD namespace
@@ -674,8 +788,7 @@ double lsmc(NumericVector edge_probs,
             arma::vec current_document_topic_counts,
             arma::vec document_edge_values,
             arma::vec topic_interaction_patterns,
-            int document_sender,
-            int current_topic){
+            int document_sender){
 
     // we have to do this stupid trick to pass in 3d arrays from R. We pass in as
     // a vector, then instatiate a cube object from there.
@@ -691,8 +804,7 @@ double lsmc(NumericVector edge_probs,
         current_document_topic_counts,
         document_edge_values,
         topic_interaction_patterns,
-        document_sender,
-        current_topic);
+        document_sender);
 
     return contrib;
 }
@@ -740,7 +852,6 @@ int ustta(NumericVector edge_probs,
         arma::vec document_edge_values,
         arma::vec topic_interaction_patterns,
         int document_sender,
-        int current_topic,
         double rand_num){
 
     // we have to do this stupid trick to pass in 3d arrays from R. We pass in as
@@ -762,7 +873,6 @@ int ustta(NumericVector edge_probs,
             document_edge_values,
             topic_interaction_patterns,
             document_sender,
-            current_topic,
             rand_num);
 
     return assignment;

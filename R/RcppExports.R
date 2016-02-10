@@ -21,15 +21,15 @@ snipp <- function(intercepts, coefficients, latent_pos, intercept_prior_variance
     .Call('CCAS_snipp', PACKAGE = 'CCAS', intercepts, coefficients, latent_pos, intercept_prior_variance, coefficient_prior_variance, latent_position_prior_variance, using_coefficients)
 }
 
-lsmc <- function(edge_probs, tokens_in_document, topic, current_token_topic_assignment, current_document_topic_counts, document_edge_values, topic_interaction_patterns, document_sender, current_topic) {
-    .Call('CCAS_lsmc', PACKAGE = 'CCAS', edge_probs, tokens_in_document, topic, current_token_topic_assignment, current_document_topic_counts, document_edge_values, topic_interaction_patterns, document_sender, current_topic)
+lsmc <- function(edge_probs, tokens_in_document, topic, current_token_topic_assignment, current_document_topic_counts, document_edge_values, topic_interaction_patterns, document_sender) {
+    .Call('CCAS_lsmc', PACKAGE = 'CCAS', edge_probs, tokens_in_document, topic, current_token_topic_assignment, current_document_topic_counts, document_edge_values, topic_interaction_patterns, document_sender)
 }
 
 ldac <- function(tokens_in_document, current_token_topic_assignment, current_document_topic_counts, word_type_topic_counts, topic_token_counts, topic, current_word_type, alpha_m, beta_n, beta) {
     .Call('CCAS_ldac', PACKAGE = 'CCAS', tokens_in_document, current_token_topic_assignment, current_document_topic_counts, word_type_topic_counts, topic_token_counts, topic, current_word_type, alpha_m, beta_n, beta)
 }
 
-ustta <- function(edge_probs, tokens_in_document, current_token_topic_assignment, current_document_topic_counts, word_type_topic_counts, topic_token_counts, current_word_type, alpha_m, beta_n, document_edge_values, topic_interaction_patterns, document_sender, current_topic, rand_num) {
-    .Call('CCAS_ustta', PACKAGE = 'CCAS', edge_probs, tokens_in_document, current_token_topic_assignment, current_document_topic_counts, word_type_topic_counts, topic_token_counts, current_word_type, alpha_m, beta_n, document_edge_values, topic_interaction_patterns, document_sender, current_topic, rand_num)
+ustta <- function(edge_probs, tokens_in_document, current_token_topic_assignment, current_document_topic_counts, word_type_topic_counts, topic_token_counts, current_word_type, alpha_m, beta_n, document_edge_values, topic_interaction_patterns, document_sender, rand_num) {
+    .Call('CCAS_ustta', PACKAGE = 'CCAS', edge_probs, tokens_in_document, current_token_topic_assignment, current_document_topic_counts, word_type_topic_counts, topic_token_counts, current_word_type, alpha_m, beta_n, document_edge_values, topic_interaction_patterns, document_sender, rand_num)
 }
 
