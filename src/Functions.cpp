@@ -608,11 +608,12 @@ namespace mjd {
         }
 
         // put everything in a list and return it
-        Rcpp::List to_return(4);
+        Rcpp::List to_return(5);
         to_return[0] = document_topic_counts;
         to_return[1] = word_type_topic_counts;
         to_return[2] = topic_token_counts;
         to_return[3] = token_topic_assignments;
+        to_return[4] = edge_probabilities;
 
         return to_return;
     }
@@ -876,6 +877,56 @@ int ustta(NumericVector edge_probs,
             rand_num);
 
     return assignment;
+}
+
+// [[Rcpp::export]]
+List utta(arma::vec author_indexes,
+        arma::mat document_edge_matrix,
+        arma::vec topic_interaction_patterns,
+        arma::mat document_topic_counts,
+        arma::mat word_type_topic_counts,
+        arma::vec topic_token_counts,
+        Rcpp::List token_topic_assignments,
+        Rcpp::List token_word_types,
+        arma::vec intercepts,
+        arma::mat coefficients,
+        NumericVector latent_pos,
+        NumericVector covars,
+        arma::vec alpha_m,
+        arma::vec beta_n,
+        arma::vec random_numbers,
+        bool using_coefficients){
+
+    // Make sure you supply a NumericVector as input!
+    // we have to do this stupid trick to pass in 3d arrays from R. We pass in as
+    // a vector, then instatiate a cube object from there.
+    IntegerVector arrayDims = latent_pos.attr("dim");
+    arma::cube latent_positions(latent_pos.begin(), arrayDims[0], arrayDims[1], arrayDims[2], false);
+
+    IntegerVector arrayDims2 = covars.attr("dim");
+    arma::cube covariates(covars.begin(), arrayDims2[0], arrayDims2[1], arrayDims2[2], false);
+
+    //random_numbers has length equal to the total number of tokens in the corpus.
+    List ret_list = mjd::update_token_topic_assignments(
+            author_indexes,
+            document_edge_matrix,
+            topic_interaction_patterns,
+            document_topic_counts,
+            word_type_topic_counts,
+            topic_token_counts,
+            token_topic_assignments,
+            token_word_types,
+            intercepts,
+            coefficients,
+            latent_positions,
+            covariates,
+            alpha_m,
+            beta_n,
+            random_numbers,
+            using_coefficients);
+
+    return ret_list;
+
 }
 
 

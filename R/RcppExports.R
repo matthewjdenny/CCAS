@@ -33,3 +33,7 @@ ustta <- function(edge_probs, tokens_in_document, current_token_topic_assignment
     .Call('CCAS_ustta', PACKAGE = 'CCAS', edge_probs, tokens_in_document, current_token_topic_assignment, current_document_topic_counts, word_type_topic_counts, topic_token_counts, current_word_type, alpha_m, beta_n, document_edge_values, topic_interaction_patterns, document_sender, rand_num)
 }
 
+utta <- function(author_indexes, document_edge_matrix, topic_interaction_patterns, document_topic_counts, word_type_topic_counts, topic_token_counts, token_topic_assignments, token_word_types, intercepts, coefficients, latent_pos, covars, alpha_m, beta_n, random_numbers, using_coefficients) {
+    .Call('CCAS_utta', PACKAGE = 'CCAS', author_indexes, document_edge_matrix, topic_interaction_patterns, document_topic_counts, word_type_topic_counts, topic_token_counts, token_topic_assignments, token_word_types, intercepts, coefficients, latent_pos, covars, alpha_m, beta_n, random_numbers, using_coefficients)
+}
+

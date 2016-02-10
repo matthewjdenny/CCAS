@@ -35,7 +35,14 @@
 #' current_token_topic_assignment, current_document_topic_counts,
 #' word_type_topic_counts, topic_token_counts, current_word_type, alpha_m,
 #' beta_n, document_edge_values, topic_interaction_patterns, document_sender,
-#'  rand_num must be provided.
+#' rand_num must be provided.
+#' @param Test_Update_All_Token_Topic_Assignments Defaults to FALSE. If TRUE,
+#' then optional arguments author_indexes, document_edge_matrix,
+#' topic_interaction_patterns, document_topic_counts, word_type_topic_counts,
+#' topic_token_counts, token_topic_assignments, token_word_types, intercepts,
+#' coefficients, latent_pos, covars, alpha_m, beta_n, random_numbers,
+#' using_coefficients must be provided. Make sure that random_numbers has length
+#' equal to the total number of tokens in the corpus.
 #' @param envir Should not be changed by the user, captures the current
 #' environment to facilitate testing.
 #' @param ... optional arguments necessary to run each of the internal functions.
@@ -50,6 +57,7 @@ test_internal_functions <- function(
     Test_LSM_Contribution = FALSE,
     Test_LDA_Contribution = FALSE,
     Test_Update_Single_Token_Topic_Assignment = FALSE,
+    Test_Update_All_Token_Topic_Assignments = FALSE,
     envir = environment(),
                                     ...){
 
@@ -94,6 +102,13 @@ test_internal_functions <- function(
         alpha_m <- NULL
         beta_n <- NULL
         rand_num <- NULL
+        author_indexes <- NULL
+        document_edge_matrix <- NULL
+        document_topic_counts <- NULL
+        token_topic_assignments <- NULL
+        token_word_types <- NULL
+        covars <- NULL
+        random_numbers <- NULL
     }
 
     object <- as.list(substitute(list(...)))[-1L]
@@ -211,6 +226,25 @@ test_internal_functions <- function(
               topic_interaction_patterns,
               document_sender,
               rand_num)
+    }
+
+    if (Test_Update_All_Token_Topic_Assignments) {
+        return_object <-  utta(author_indexes,
+            document_edge_matrix,
+            topic_interaction_patterns,
+            document_topic_counts,
+            word_type_topic_counts,
+            topic_token_counts,
+            token_topic_assignments,
+            token_word_types,
+            intercepts,
+            coefficients,
+            latent_pos,
+            covars,
+            alpha_m,
+            beta_n,
+            random_numbers,
+            using_coefficients)
     }
 
 

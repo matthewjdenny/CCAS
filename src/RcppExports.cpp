@@ -153,3 +153,29 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
+// utta
+List utta(arma::vec author_indexes, arma::mat document_edge_matrix, arma::vec topic_interaction_patterns, arma::mat document_topic_counts, arma::mat word_type_topic_counts, arma::vec topic_token_counts, Rcpp::List token_topic_assignments, Rcpp::List token_word_types, arma::vec intercepts, arma::mat coefficients, NumericVector latent_pos, NumericVector covars, arma::vec alpha_m, arma::vec beta_n, arma::vec random_numbers, bool using_coefficients);
+RcppExport SEXP CCAS_utta(SEXP author_indexesSEXP, SEXP document_edge_matrixSEXP, SEXP topic_interaction_patternsSEXP, SEXP document_topic_countsSEXP, SEXP word_type_topic_countsSEXP, SEXP topic_token_countsSEXP, SEXP token_topic_assignmentsSEXP, SEXP token_word_typesSEXP, SEXP interceptsSEXP, SEXP coefficientsSEXP, SEXP latent_posSEXP, SEXP covarsSEXP, SEXP alpha_mSEXP, SEXP beta_nSEXP, SEXP random_numbersSEXP, SEXP using_coefficientsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< arma::vec >::type author_indexes(author_indexesSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type document_edge_matrix(document_edge_matrixSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type topic_interaction_patterns(topic_interaction_patternsSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type document_topic_counts(document_topic_countsSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type word_type_topic_counts(word_type_topic_countsSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type topic_token_counts(topic_token_countsSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type token_topic_assignments(token_topic_assignmentsSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type token_word_types(token_word_typesSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type intercepts(interceptsSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type coefficients(coefficientsSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type latent_pos(latent_posSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type covars(covarsSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type alpha_m(alpha_mSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type beta_n(beta_nSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type random_numbers(random_numbersSEXP);
+    Rcpp::traits::input_parameter< bool >::type using_coefficients(using_coefficientsSEXP);
+    __result = Rcpp::wrap(utta(author_indexes, document_edge_matrix, topic_interaction_patterns, document_topic_counts, word_type_topic_counts, topic_token_counts, token_topic_assignments, token_word_types, intercepts, coefficients, latent_pos, covars, alpha_m, beta_n, random_numbers, using_coefficients));
+    return __result;
+END_RCPP
+}
