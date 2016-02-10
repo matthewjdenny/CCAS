@@ -434,6 +434,74 @@ namespace mjd {
     }
 
 
+    // ***********************************************************************//
+    //                 Update Single Token Topic Assignment                   //
+    // ***********************************************************************//
+
+    int update_single_token_topic_assignment(
+            arma::cube edge_probabilities,
+            int tokens_in_document,
+            int current_token_topic_assignment,
+            arma::vec current_document_topic_counts,
+            arma::mat word_type_topic_counts,
+            arma::vec topic_token_counts,
+            int current_word_type,
+            arma::vec alpha_m,
+            arma::vec beta_n,
+            int current_dtc,
+            arma::vec document_edge_values,
+            arma::vec topic_interaction_patterns,
+            int document_sender,
+            int current_topic,
+            double rand_num) {
+
+        // calculate beta, the sum over beta_n
+        double beta = arma::sum(beta_n);
+
+        // get the number of topics
+        int number_of_topics = alpha_m.n_elem;
+
+        // generate a zero vector of length (number of topics)
+        arma::vec unnormalized_log_distribution = arma::zeros(number_of_topics);
+
+        // loop over the topics to populate the unnormailized log distribution.
+        for (int i = 0; i < number_of_topics; ++i) {
+            double lsm_contr = mjd::lsm_contribution (
+                edge_probabilities,
+                tokens_in_document,
+                i,
+                current_token_topic_assignment,
+                current_document_topic_counts,
+                document_edge_values,
+                topic_interaction_patterns,
+                document_sender,
+                current_topic);
+
+            double lda_contr = mjd::lda_contribution(
+                tokens_in_document,
+                current_token_topic_assignment,
+                current_document_topic_counts,
+                word_type_topic_counts,
+                topic_token_counts,
+                i,
+                current_word_type,
+                alpha_m,
+                beta_n,
+                beta,
+                current_dtc);
+
+            // add the values (since we are working in log space) and put them
+            // in the appropriate bin the in the distribution.
+            unnormalized_log_distribution[i] = lsm_contr + lda_contr;
+        }
+
+        // now we need to sample from this distribution
+        int new_assignment = mjd::log_space_multinomial_sampler (
+            unnormalized_log_distribution,
+            rand_num);
+
+        return new_assignment;
+    }
 
 
 
@@ -497,7 +565,7 @@ int lsms(arma::vec unnormalized_discrete_distribution,
     boost::mt19937 generator(seed);
     boost::uniform_01<double> uniform_distribution;
 
-    // get the random uniform draw and log it
+    // get the random uniform draw
     double rand_num = uniform_distribution(generator);
 
     // take a draw from the unnormalized log distribution
