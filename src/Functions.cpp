@@ -365,11 +365,11 @@ namespace mjd {
                     tokens_in_document,
                     current_token_topic_assignment,
                     current_document_topic_counts,
-                    -1,
+                    true,
                     topic_interaction_patterns,
                     document_sender,
                     i,
-                    false);
+                    -1);
                 //make sure we do not do integer division so we cast as a double
                 sum_term += 1/(double(tokens_in_document)) *
                     edge_probabilities(document_sender,
@@ -739,48 +739,48 @@ namespace mjd {
                         double temp = sum_over_t_edge_probability (
                             edge_probabilities,
                             tokens_in_document,
-                            0,
-                            current_document_topic_counts,
                             -1,
+                            current_document_topic_counts,
+                            false,
                             topic_interaction_patterns,
                             document_sender,
                             j,
-                            false);
+                            -1);
                         log_current_probability += log(temp);
 
                         double temp2 = sum_over_t_edge_probability (
                             proposed_edge_probabilities,
                             tokens_in_document,
-                            0,
-                            current_document_topic_counts,
                             -1,
+                            current_document_topic_counts,
+                            false,
                             topic_interaction_patterns,
                             document_sender,
                             j,
-                            false);
+                            -1);
                         log_proposed_probability += log(temp2);
                     } else {
                         double temp = sum_over_t_edge_probability (
                             edge_probabilities,
                             tokens_in_document,
-                            0,
-                            current_document_topic_counts,
                             -1,
+                            current_document_topic_counts,
+                            false,
                             topic_interaction_patterns,
                             document_sender,
                             j,
-                            false);
+                            -1);
                         log_current_probability += log(1- temp);
                         double temp2 = sum_over_t_edge_probability (
                             proposed_edge_probabilities,
                             tokens_in_document,
-                            0,
-                            current_document_topic_counts,
                             -1,
+                            current_document_topic_counts,
+                            false,
                             topic_interaction_patterns,
                             document_sender,
                             j,
-                            false);
+                            -1);
                         log_proposed_probability += log(1- temp2);
                     }
                 } // end of condition making sure actor is not author
@@ -807,6 +807,86 @@ namespace mjd {
         }
 
         return to_return;
+    }
+
+
+    // ***********************************************************************//
+    //                 Update Topic Interaction Pattern Assignments           //
+    // ***********************************************************************//
+
+    arma::vec update_topic_interaction_pattern_assignments(
+            arma::vec author_indexes,
+            arma::mat document_edge_matrix,
+            arma::mat document_topic_counts,
+            arma::vec topic_interaction_patterns,
+            arma::vec intercepts,
+            arma::mat coefficients,
+            arma::cube latent_positions,
+            arma::cube covariates,
+            bool using_coefficients,
+            double random_number,
+            arma::cube edge_probabilities) {
+
+        // get important constants
+        int number_of_documents = document_edge_matrix.n_rows;
+        int number_of_actors = document_edge_matrix.n_cols;
+        int number_of_interaction_patterns = intercepts.n_elem;
+        int number_of_topics = topic_interaction_patterns.n_elem;
+
+        // outer loop over topics
+        for (int t = 0; t < number_of_topics; ++t) {
+            //allocate topic specific variables
+            arma::vec interaction_pattern_assignment_log_probs = arma::zeros(
+                number_of_interaction_patterns);
+            arma::mat held_out_sum_over_t_terms = arma::zeros(
+                number_of_documents, number_of_actors);
+
+            //calculate held out sum over t terms
+            // loop over documents
+            for (int i = 0; i < number_of_documents; ++i) {
+                // allocate all of our document specific variables
+                arma::vec current_document_topic_counts = document_topic_counts.row(i);
+                arma::vec document_edge_values = document_edge_matrix.row(i);
+                // get the current number of tokens
+                int tokens_in_document = arma::sum(current_document_topic_counts);
+                int document_sender = author_indexes[i];
+                // loop over tokens
+                for (int j = 0; j < number_of_actors; ++j) {
+                    // if the assignment changed, then we need to update everything.
+                    if (document_sender != j) {
+                        if (document_edge_values[i] == 1) {
+                            double temp = sum_over_t_edge_probability (
+                                edge_probabilities,
+                                tokens_in_document,
+                                -1,
+                                current_document_topic_counts,
+                                false,
+                                topic_interaction_patterns,
+                                document_sender,
+                                j,
+                                t);
+                            held_out_sum_over_t_terms(i,j) = log(temp);
+                        } else {
+                            double temp = sum_over_t_edge_probability (
+                                edge_probabilities,
+                                tokens_in_document,
+                                -1,
+                                current_document_topic_counts,
+                                false,
+                                topic_interaction_patterns,
+                                document_sender,
+                                j,
+                                t);
+                            held_out_sum_over_t_terms(i,j) = log(1- temp);
+                        }
+                    } // end of condition making sure actor is not author
+                } // end of loop over actors
+            }// end of loop over documents
+
+        }
+
+        //return
+        return topic_interaction_patterns;
     }
 
 
