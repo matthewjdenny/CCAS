@@ -824,7 +824,7 @@ namespace mjd {
             arma::cube latent_positions,
             arma::cube covariates,
             bool using_coefficients,
-            double random_number,
+            arma::vec random_numbers,
             arma::cube edge_probabilities) {
 
         // get important constants
@@ -832,6 +832,7 @@ namespace mjd {
         int number_of_actors = document_edge_matrix.n_cols;
         int number_of_interaction_patterns = intercepts.n_elem;
         int number_of_topics = topic_interaction_patterns.n_elem;
+        int number_counter = 0;
 
         // outer loop over topics
         for (int t = 0; t < number_of_topics; ++t) {
@@ -865,7 +866,7 @@ namespace mjd {
                                 document_sender,
                                 j,
                                 t);
-                            held_out_sum_over_t_terms(i,j) = log(temp);
+                            held_out_sum_over_t_terms(i,j) = temp;
                         } else {
                             double temp = sum_over_t_edge_probability (
                                 edge_probabilities,
@@ -877,13 +878,51 @@ namespace mjd {
                                 document_sender,
                                 j,
                                 t);
-                            held_out_sum_over_t_terms(i,j) = log(1- temp);
+                            held_out_sum_over_t_terms(i,j) = 1- temp;
                         }
                     } // end of condition making sure actor is not author
                 } // end of loop over actors
             }// end of loop over documents
 
-        }
+            // loop over clusters to populate distribution
+            for (int c = 0; c < number_of_interaction_patterns; ++c) {
+                double log_prob = 0;
+                // loop over documents
+                for (int i = 0; i < number_of_documents; ++i) {
+                    // allocate all of our document specific variables
+                    arma::vec current_document_topic_counts = document_topic_counts.row(i);
+                    arma::vec document_edge_values = document_edge_matrix.row(i);
+                    // get the current number of tokens
+                    int tokens_in_document = arma::sum(current_document_topic_counts);
+                    int document_sender = author_indexes[i];
+                    // loop over tokens
+                    for (int j = 0; j < number_of_actors; ++j) {
+                        // if the assignment changed, then we need to update everything.
+                        if (document_sender != j) {
+                            double ttc = double(current_document_topic_counts[t])/
+                            double(tokens_in_document);
+                            if (document_edge_values[i] == 1) {
+                                log_prob += log(held_out_sum_over_t_terms(i,j) +
+                                    double(ttc *
+                                    edge_probabilities(document_sender,j,c)));
+                            } else {
+                                log_prob += log(held_out_sum_over_t_terms(i,j) +
+                                    1 - double(ttc *
+                                    edge_probabilities(document_sender,j,c)));
+                            }
+                        } // end of condition making sure actor is not author
+                    } // end of loop over actors
+                }// end of loop over documents
+                interaction_pattern_assignment_log_probs[c] = log_prob;
+            }//end of loop over clusters
+            double random_number = random_numbers[number_counter];
+            number_counter += 1;
+            int new_assignment = log_space_multinomial_sampler(
+                interaction_pattern_assignment_log_probs,
+                random_number);
+
+            topic_interaction_patterns[t] =  new_assignment;
+        }//end of loop over topics
 
         //return
         return topic_interaction_patterns;
