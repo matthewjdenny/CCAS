@@ -263,9 +263,9 @@ namespace mjd {
         arma::vec intercepts,
         arma::mat coefficients,
         arma::cube latent_positions,
-        double intercept_proposal_variance,
-        double coefficient_proposal_variance,
-        double latent_position_proposal_variance,
+        arma::vec intercept_proposal_variances,
+        arma::vec coefficient_proposal_variances,
+        arma::vec latent_position_proposal_variances,
         bool using_coefficients) {
 
         // get number of interaction patterns
@@ -299,7 +299,7 @@ namespace mjd {
             // code. First argument is the mean of the normal distribution we
             // are sampling from and second is its variance.
             proposed_intercepts[i]= R::rnorm(intercepts[i],
-                                              intercept_proposal_variance);
+                                              intercept_proposal_variances[i]);
         }
 
         // if we are using coefficients, sample new coefficients centered at
@@ -311,7 +311,7 @@ namespace mjd {
                     // code. First argument is the mean of the normal distribution we
                     // are sampling from and second is its variance.
                     proposed_coefficients(i,j) += R::rnorm(coefficients(i,j),
-                                                    coefficient_proposal_variance);
+                                                    coefficient_proposal_variances[i]);
                 }
             }
         }
@@ -325,7 +325,7 @@ namespace mjd {
                     // are sampling from and second is its variance.
                     proposed_latent_positions(i,j,k) = R::rnorm(
                         latent_positions(i,j,k),
-                        latent_position_proposal_variance);
+                        latent_position_proposal_variances[i]);
                 }
             }
         }
@@ -635,13 +635,13 @@ namespace mjd {
             bool using_coefficients,
             double intercept_prior_mean,
             double intercept_prior_variance,
-            double intercept_proposal_variance,
+            arma::vec intercept_proposal_variances,
             double coefficient_prior_mean,
             double coefficient_prior_variance,
-            double coefficient_proposal_variance,
+            arma::vec coefficient_proposal_variances,
             double latent_position_prior_mean,
             double latent_position_prior_variance,
-            double latent_position_proposal_variance,
+            arma::vec latent_position_proposal_variances,
             double random_number,
             arma::cube edge_probabilities) {
 
@@ -655,9 +655,9 @@ namespace mjd {
             intercepts,
             coefficients,
             latent_positions,
-            intercept_proposal_variance,
-            coefficient_proposal_variance,
-            latent_position_proposal_variance,
+            intercept_proposal_variances,
+            coefficient_proposal_variances,
+            latent_position_proposal_variances,
             using_coefficients);
 
         // allocate the appropriate objects out of the list returned above
@@ -1068,9 +1068,9 @@ double ppipp(arma::vec intercepts,
 List snipp(arma::vec intercepts,
           arma::mat coefficients,
           NumericVector latent_pos,
-          double intercept_proposal_variance,
-          double coefficient_proposal_variance,
-          double latent_position_proposal_variance,
+          arma::vec intercept_proposal_variances,
+          arma::vec coefficient_proposal_variances,
+          arma::vec latent_position_proposal_variances,
           bool using_coefficients){
 
     // we have to do this stupid trick to pass in 3d arrays from R. We pass in as
@@ -1083,9 +1083,9 @@ List snipp(arma::vec intercepts,
         intercepts,
         coefficients,
         latent_positions,
-        intercept_proposal_variance,
-        coefficient_proposal_variance,
-        latent_position_proposal_variance,
+        intercept_proposal_variances,
+        coefficient_proposal_variances,
+        latent_position_proposal_variances,
         using_coefficients);
 
     return new_params;
