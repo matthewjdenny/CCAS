@@ -1005,7 +1005,8 @@ namespace mjd {
             int metropolis_iterations,
             int total_number_of_tokens,
             int iterations_before_t_i_p_updates,
-            int update_t_i_p_every_x_iterations) {
+            int update_t_i_p_every_x_iterations,
+            bool perform_adaptive_metropolis) {
 
         // Set RNG and define uniform distribution
         boost::mt19937 generator(seed);
@@ -1017,10 +1018,11 @@ namespace mjd {
         // allocated global variables
         int t_i_p_update_counter = 0;
         int num_interaction_patterns = intercept_proposal_variances.n_elem;
-        //int num_coefficients = covariates.n_slices;
+        int num_topics = topic_interaction_patterns.n_elem;
         int num_actors = document_edge_matrix.n_cols;
         arma::cube edge_probabilities = arma::zeros(num_actors, num_actors,
                                               num_interaction_patterns);
+        arma::vec accept_rates = arma::zeros(num_interaction_patterns);
 
         // allocate data structures to store samples in.
 
@@ -1076,6 +1078,12 @@ namespace mjd {
                 // pattern assignments every x iterations
                 if (t_i_p_update_counter >= update_t_i_p_every_x_iterations) {
 
+                    // generate a vector of random numbers to pass in to the topic-token
+                    // update function.
+                    arma::vec random_numbers = arma::zeros(num_topics);
+                    for (int k = 0; k < num_topics; ++k) {
+                        random_numbers[k] = uniform_distribution(generator);
+                    }
                     //update topic interaction patterns
                     topic_interaction_patterns = update_topic_interaction_pattern_assignments(
                         author_indexes,
@@ -1094,12 +1102,76 @@ namespace mjd {
                 }
                 //increment counter
                 t_i_p_update_counter += 1;
-            }
+            } // end of topic interaction pattern update loop
+
+            // eventually we will update LDA hyperparameters here
+
+            // perform adaptive metropolis updates if there has been atleast
+            // one outer iteration
+            if (i > 0) {
+                // only perform adaptive metropolis if it is turned on via the
+                // boolean
+                if (perform_adaptive_metropolis) {
+                    Rcpp::List am_updates =  adaptive_metropolis(
+                            intercept_proposal_variances,
+                            coefficient_proposal_variances,
+                            latent_position_proposal_variances,
+                            accept_rates,
+                            target_accept_rate,
+                            tollerance,
+                            update_size);
+
+                    // deal with type ambiguity while extracting objects from an
+                    // Rcpp List, then assign everything to the appropriate
+                    // vectors.
+                    arma::vec temp = am_updates[0];
+                    intercept_proposal_variances = temp;
+                    arma::vec temp2 = am_updates[1];
+                    coefficient_proposal_variances = temp2;
+                    arma::vec temp3 = am_updates[2];
+                    latent_position_proposal_variances = temp3;
+
+                }// end of conditional for whether we perform adaptive MH
+            }// end of conditional checking to see if we are past the first update.
 
 
+            arma::vec accept_or_reject = arma::zeros(metropolis_iterations);
             // loop over metropolis hastings iterations
-            for (int j = 0; j < iterations; ++j) {
+            for (int j = 0; j < metropolis_iterations; ++j) {
+                double random_number =  uniform_distribution(generator);
+                Rcpp::List MH_List =  update_interaction_pattern_parameters(
+                        author_indexes,
+                        document_edge_matrix,
+                        document_topic_counts,
+                        topic_interaction_patterns,
+                        intercepts,
+                        coefficients,
+                        latent_positions,
+                        covariates,
+                        using_coefficients,
+                        intercept_prior_mean,
+                        intercept_prior_variance,
+                        intercept_proposal_variances,
+                        coefficient_prior_mean,
+                        coefficient_prior_variance,
+                        coefficient_proposal_variances,
+                        latent_position_prior_mean,
+                        latent_position_prior_variance,
+                        latent_position_proposal_variances,
+                        random_number,
+                        edge_probabilities);
 
+                // extract everything from the list returned by the MH parameter
+                // update function.
+                arma::vec temp = MH_List[0];
+                intercepts = temp;
+                arma::mat temp2 = MH_List[1];
+                coefficients = temp2;
+                arma::cube temp3 = MH_List[2];
+                latent_positions = temp3;
+                arma::cube temp4 = MH_List[3];
+                edge_probabilities = temp4;
+                accept_or_reject[j] = MH_List[4];
 
             }// end of metropolis hastings loop
 
