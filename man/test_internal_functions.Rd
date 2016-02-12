@@ -9,7 +9,8 @@ test_internal_functions(Test_Log_Space_Multinomial_Sampler = FALSE,
   Test_Prior_Pobability_Of_I_P_Params = FALSE,
   Test_Sample_New_I_P_Parameters = FALSE, Test_LSM_Contribution = FALSE,
   Test_LDA_Contribution = FALSE,
-  Test_Update_Single_Token_Topic_Assignment = FALSE, envir = environment(),
+  Test_Update_Single_Token_Topic_Assignment = FALSE,
+  Test_Update_All_Token_Topic_Assignments = FALSE, envir = environment(),
   ...)
 }
 \arguments{
@@ -33,10 +34,12 @@ intercept_prior_variance, coefficient_prior_mean, coefficient_prior_variance,
 latent_position_prior_mean, latent_position_prior_variance,
 using_coefficients must be provided.}
 
-\item{Test_Sample_New_I_P_Parameters}{Defaults to FALSE. If TRUE, then optional
-arguments intercepts, coefficients, latent_pos, intercept_prior_variance,
-coefficient_prior_variance, latent_position_prior_variance,
-using_coefficients must be provided.}
+\item{Test_Sample_New_I_P_Parameters}{Defaults to FALSE. If TRUE, then
+optional  arguments intercepts, coefficients, latent_pos,
+intercept_proposal_variances, coefficient_proposal_variances,
+latent_position_proposal_variances, (all of which must be of length = number
+of interaction patterns, and should all be equal) using_coefficients must be
+provided.}
 
 \item{Test_LSM_Contribution}{Defaults to FALSE. If TRUE, then optional
 arguments edge_probs, tokens_in_document, topic,
@@ -54,7 +57,15 @@ then optional arguments edge_probs, tokens_in_document,
 current_token_topic_assignment, current_document_topic_counts,
 word_type_topic_counts, topic_token_counts, current_word_type, alpha_m,
 beta_n, document_edge_values, topic_interaction_patterns, document_sender,
- rand_num must be provided.}
+rand_num must be provided.}
+
+\item{Test_Update_All_Token_Topic_Assignments}{Defaults to FALSE. If TRUE,
+then optional arguments author_indexes, document_edge_matrix,
+topic_interaction_patterns, document_topic_counts, word_type_topic_counts,
+topic_token_counts, token_topic_assignments, token_word_types, intercepts,
+coefficients, latent_pos, covars, alpha_m, beta_n, random_numbers,
+using_coefficients must be provided. Make sure that random_numbers has length
+equal to the total number of tokens in the corpus.}
 
 \item{envir}{Should not be changed by the user, captures the current
 environment to facilitate testing.}

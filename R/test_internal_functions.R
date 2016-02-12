@@ -19,8 +19,10 @@
 #' using_coefficients must be provided.
 #' @param Test_Sample_New_I_P_Parameters Defaults to FALSE. If TRUE, then
 #' optional  arguments intercepts, coefficients, latent_pos,
-#' intercept_proposal_variance, coefficient_proposal_variance,
-#' latent_position_proposal_variance, using_coefficients must be provided.
+#' intercept_proposal_variances, coefficient_proposal_variances,
+#' latent_position_proposal_variances, (all of which must be of length = number
+#' of interaction patterns, and should all be equal) using_coefficients must be
+#' provided.
 #' @param Test_LSM_Contribution Defaults to FALSE. If TRUE, then optional
 #' arguments edge_probs, tokens_in_document, topic,
 #' current_token_topic_assignment, current_document_topic_counts,
@@ -183,9 +185,9 @@ test_internal_functions <- function(
         return_object <- snipp(intercepts,
               coefficients,
               latent_pos,
-              intercept_proposal_variance,
-              coefficient_proposal_variance,
-              latent_position_proposal_variance,
+              intercept_proposal_variances,
+              coefficient_proposal_variances,
+              latent_position_proposal_variances,
               using_coefficients)
     }
 
