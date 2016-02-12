@@ -1016,6 +1016,11 @@ namespace mjd {
 
         // allocated global variables
         int t_i_p_update_counter = 0;
+        int num_interaction_patterns = intercept_proposal_variances.n_elem;
+        //int num_coefficients = covariates.n_slices;
+        int num_actors = document_edge_matrix.n_cols;
+        arma::cube edge_probabilities = arma::zeros(num_actors, num_actors,
+                                              num_interaction_patterns);
 
         // allocate data structures to store samples in.
 
@@ -1048,11 +1053,49 @@ namespace mjd {
                 random_numbers,
                 using_coefficients);
 
+            // take everything out of the returned list and put it back in the
+            // main objects. We have to do this silly double assignment because
+            // the direct assignment from and Rcpp::List object is ambiguous.
+
+            arma::mat temp = Topic_Updates[0];
+            document_topic_counts = temp;
+            arma::mat temp2 = Topic_Updates[1];
+            word_type_topic_counts = temp2;
+            arma::vec temp3 = Topic_Updates[2];
+            topic_token_counts = temp3;
+            //can do direct assignment here because the list entry is itself a
+            //list object.
+            token_topic_assignments = Topic_Updates[3];
+            arma::cube temp4 = Topic_Updates[4];
+            edge_probabilities = temp4;
+
             // only update topic interaction pattern assignments if we have
             // completed atleast x iterations.
-            if (i >= iterations_before_topic_interation_pattern_updates) {
+            if (i >= iterations_before_t_i_p_updates) {
+                // this conditional allows us to only update topic interaction
+                // pattern assignments every x iterations
+                if (t_i_p_update_counter >= update_t_i_p_every_x_iterations) {
 
+                    //update topic interaction patterns
+                    topic_interaction_patterns = update_topic_interaction_pattern_assignments(
+                        author_indexes,
+                        document_edge_matrix,
+                        document_topic_counts,
+                        topic_interaction_patterns,
+                        intercepts,
+                        coefficients,
+                        latent_positions,
+                        covariates,
+                        using_coefficients,
+                        random_numbers,
+                        edge_probabilities);
+                    //reset counter
+                    t_i_p_update_counter = 0;
+                }
+                //increment counter
+                t_i_p_update_counter += 1;
             }
+
 
             // loop over metropolis hastings iterations
             for (int j = 0; j < iterations; ++j) {
