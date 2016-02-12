@@ -884,7 +884,7 @@ namespace mjd {
                 } // end of loop over actors
             }// end of loop over documents
 
-            // loop over clusters to populate distribution
+            // loop over interaction patterns to populate distribution
             for (int c = 0; c < number_of_interaction_patterns; ++c) {
                 double log_prob = 0;
                 // loop over documents
@@ -928,7 +928,98 @@ namespace mjd {
         return topic_interaction_patterns;
     }
 
+    // ***********************************************************************//
+    //                             Adaptive Metropolis                        //
+    // ***********************************************************************//
 
+    Rcpp::List adaptive_metropolis(
+            arma::vec intercept_proposal_variances,
+            arma::vec coefficient_proposal_variances,
+            arma::vec latent_position_proposal_variances,
+            arma::vec accept_rates,
+            double target_accept_rate,
+            double tollerance,
+            double update_size) {
+
+        // get number of interaction patterns
+        int number_of_interaction_patterns = intercept_proposal_variances.n_elem;
+
+        // loop over interaction patterns
+        for (int i = 0; i < number_of_interaction_patterns; ++i) {
+            if (accept_rates[i] < (target_accept_rate - tollerance)) {
+                intercept_proposal_variances[i] -= update_size;
+                coefficient_proposal_variances[i] -= update_size;
+                latent_position_proposal_variances[i] -= update_size;
+            }
+            if (accept_rates[i] > (target_accept_rate + tollerance)) {
+                intercept_proposal_variances[i] += update_size;
+                coefficient_proposal_variances[i] += update_size;
+                latent_position_proposal_variances[i] += update_size;
+            }
+        }
+        Rcpp::List ret_list(3);
+        ret_list[0] = intercept_proposal_variances;
+        ret_list[1] = coefficient_proposal_variances;
+        ret_list[2] = latent_position_proposal_variances;
+
+        return ret_list;
+    }
+
+
+
+
+    // ***********************************************************************//
+    //                             Inference                                  //
+    // ***********************************************************************//
+
+    Rcpp::List inference(
+            arma::vec author_indexes,
+            arma::mat document_edge_matrix,
+            arma::mat document_topic_counts,
+            arma::vec topic_interaction_patterns,
+            arma::mat word_type_topic_counts,
+            arma::vec topic_token_counts,
+            Rcpp::List token_topic_assignments,
+            Rcpp::List token_word_types,
+            arma::vec intercepts,
+            arma::mat coefficients,
+            arma::cube latent_positions,
+            arma::cube covariates,
+            arma::vec alpha_m,
+            arma::vec beta_n,
+            bool using_coefficients,
+            double intercept_prior_mean,
+            double intercept_prior_variance,
+            arma::vec intercept_proposal_variances,
+            double coefficient_prior_mean,
+            double coefficient_prior_variance,
+            arma::vec coefficient_proposal_variances,
+            double latent_position_prior_mean,
+            double latent_position_prior_variance,
+            arma::vec latent_position_proposal_variances,
+            double target_accept_rate,
+            double tollerance,
+            double update_size,
+            int seed) {
+
+        // Set RNG and define uniform distribution
+        //boost::mt19937 generator(seed);
+        //boost::uniform_01<double> uniform_distribution;
+
+        //arma::arma_rng::set_seed(seed);
+        //arma::vec  v = arma::randu<arma::vec>(5);
+
+        // example get the random uniform draw
+        // double rand_num = uniform_distribution(generator);
+
+
+
+
+        // allocate a list to store everything in.
+        Rcpp::List ret_list(10);
+        // return everything
+        return ret_list;
+    }
 } // end of MJD namespace
 
 
