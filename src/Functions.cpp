@@ -1000,20 +1000,67 @@ namespace mjd {
             double target_accept_rate,
             double tollerance,
             double update_size,
-            int seed) {
+            int seed,
+            int iterations,
+            int metropolis_iterations,
+            int total_number_of_tokens,
+            int iterations_before_t_i_p_updates,
+            int update_t_i_p_every_x_iterations) {
 
         // Set RNG and define uniform distribution
-        //boost::mt19937 generator(seed);
-        //boost::uniform_01<double> uniform_distribution;
-
-        //arma::arma_rng::set_seed(seed);
-        //arma::vec  v = arma::randu<arma::vec>(5);
+        boost::mt19937 generator(seed);
+        boost::uniform_01<double> uniform_distribution;
 
         // example get the random uniform draw
         // double rand_num = uniform_distribution(generator);
 
+        // allocated global variables
+        int t_i_p_update_counter = 0;
+
+        // allocate data structures to store samples in.
+
+        // loop over interaction patterns
+        for (int i = 0; i < iterations; ++i) {
+
+            // generate a vector of random numbers to pass in to the topic-token
+            // update function.
+            arma::vec random_numbers = arma::zeros(total_number_of_tokens);
+            for (int k = 0; k < total_number_of_tokens; ++k) {
+                random_numbers[k] = uniform_distribution(generator);
+            }
+
+            // update all token topic assignments
+            Rcpp::List Topic_Updates = update_token_topic_assignments(
+                author_indexes,
+                document_edge_matrix,
+                topic_interaction_patterns,
+                document_topic_counts,
+                word_type_topic_counts,
+                topic_token_counts,
+                token_topic_assignments,
+                token_word_types,
+                intercepts,
+                coefficients,
+                latent_positions,
+                covariates,
+                alpha_m,
+                beta_n,
+                random_numbers,
+                using_coefficients);
+
+            // only update topic interaction pattern assignments if we have
+            // completed atleast x iterations.
+            if (i >= iterations_before_topic_interation_pattern_updates) {
+
+            }
+
+            // loop over metropolis hastings iterations
+            for (int j = 0; j < iterations; ++j) {
 
 
+            }// end of metropolis hastings loop
+
+        }// end up gibbs/main sampling loop
 
         // allocate a list to store everything in.
         Rcpp::List ret_list(10);
