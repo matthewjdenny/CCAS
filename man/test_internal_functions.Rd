@@ -11,8 +11,9 @@ test_internal_functions(Test_Log_Space_Multinomial_Sampler = FALSE,
   Test_LDA_Contribution = FALSE,
   Test_Update_Single_Token_Topic_Assignment = FALSE,
   Test_Update_All_Token_Topic_Assignments = FALSE,
-  Test_Update_Interaction_Pattern_Parameters = FALSE, envir = environment(),
-  ...)
+  Test_Update_Interaction_Pattern_Parameters = FALSE,
+  Test_Update_Topic_Interaction_Pattern_Assignments = FALSE,
+  envir = environment(), ...)
 }
 \arguments{
 \item{Test_Log_Space_Multinomial_Sampler}{Defualts to FALSE. If TRUE, then
@@ -77,6 +78,12 @@ coefficient_prior_mean, coefficient_prior_variance,
 coefficient_proposal_variances, latent_position_prior_mean,
 latent_position_prior_variance, latent_position_proposal_variances, rand_num,
 edge_probs must be provided.}
+
+\item{Test_Update_Topic_Interaction_Pattern_Assignments}{Defaults to FALSE.
+If TRUE, then optional arguments author_indexes, document_edge_matrix,
+document_topic_counts, topic_interaction_patterns, intercepts, coefficients,
+latent_pos, covars, using_coefficients, random_numbers, edge_probs must be
+provided.}
 
 \item{envir}{Should not be changed by the user, captures the current
 environment to facilitate testing.}

@@ -54,6 +54,11 @@
 #' coefficient_proposal_variances, latent_position_prior_mean,
 #' latent_position_prior_variance, latent_position_proposal_variances, rand_num,
 #' edge_probs must be provided.
+#' @param Test_Update_Topic_Interaction_Pattern_Assignments Defaults to FALSE.
+#' If TRUE, then optional arguments author_indexes, document_edge_matrix,
+#' document_topic_counts, topic_interaction_patterns, intercepts, coefficients,
+#' latent_pos, covars, using_coefficients, random_numbers, edge_probs must be
+#' provided.
 #' @param envir Should not be changed by the user, captures the current
 #' environment to facilitate testing.
 #' @param ... optional arguments necessary to run each of the internal functions.
@@ -70,6 +75,7 @@ test_internal_functions <- function(
     Test_Update_Single_Token_Topic_Assignment = FALSE,
     Test_Update_All_Token_Topic_Assignments = FALSE,
     Test_Update_Interaction_Pattern_Parameters = FALSE,
+    Test_Update_Topic_Interaction_Pattern_Assignments = FALSE,
     envir = environment(),
                                     ...){
 
@@ -284,6 +290,20 @@ test_internal_functions <- function(
             latent_position_proposal_variances,
             rand_num,
             edge_probs)
+    }
+
+    if (Test_Update_Topic_Interaction_Pattern_Assignments) {
+        return_object <- utipa(author_indexes,
+                               document_edge_matrix,
+                               document_topic_counts,
+                               topic_interaction_patterns,
+                               intercepts,
+                               coefficients,
+                               latent_pos,
+                               covars,
+                               using_coefficients,
+                               random_numbers,
+                               edge_probs)
     }
 
 
