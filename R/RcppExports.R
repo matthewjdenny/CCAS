@@ -41,3 +41,7 @@ uipp <- function(author_indexes, document_edge_matrix, document_topic_counts, to
     .Call('CCAS_uipp', PACKAGE = 'CCAS', author_indexes, document_edge_matrix, document_topic_counts, topic_interaction_patterns, intercepts, coefficients, latent_pos, covars, using_coefficients, intercept_prior_mean, intercept_prior_variance, intercept_proposal_variances, coefficient_prior_mean, coefficient_prior_variance, coefficient_proposal_variances, latent_position_prior_mean, latent_position_prior_variance, latent_position_proposal_variances, random_number, edge_probs)
 }
 
+utipa <- function(author_indexes, document_edge_matrix, document_topic_counts, topic_interaction_patterns, intercepts, coefficients, latent_pos, covars, using_coefficients, random_numbers, edge_probs) {
+    .Call('CCAS_utipa', PACKAGE = 'CCAS', author_indexes, document_edge_matrix, document_topic_counts, topic_interaction_patterns, intercepts, coefficients, latent_pos, covars, using_coefficients, random_numbers, edge_probs)
+}
+

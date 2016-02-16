@@ -1637,6 +1637,53 @@ List uipp(arma::vec author_indexes,
 }
 
 
+// [[Rcpp::export]]
+arma::vec utipa(arma::vec author_indexes,
+           arma::mat document_edge_matrix,
+           arma::mat document_topic_counts,
+           arma::vec topic_interaction_patterns,
+           arma::vec intercepts,
+           arma::mat coefficients,
+           NumericVector latent_pos,
+           NumericVector covars,
+           bool using_coefficients,
+           arma::vec random_numbers,
+           NumericVector edge_probs){
+
+    // Make sure you supply a NumericVector as input!
+    // we have to do this stupid trick to pass in 3d arrays from R. We pass in as
+    // a vector, then instatiate a cube object from there.
+    IntegerVector arrayDims = latent_pos.attr("dim");
+    arma::cube latent_positions(latent_pos.begin(), arrayDims[0], arrayDims[1],
+                                arrayDims[2], false);
+
+    IntegerVector arrayDims2 = covars.attr("dim");
+    arma::cube covariates(covars.begin(), arrayDims2[0], arrayDims2[1],
+                          arrayDims2[2], false);
+
+    IntegerVector arrayDims3 = edge_probs.attr("dim");
+    arma::cube edge_probabilities(edge_probs.begin(), arrayDims3[0],
+                                  arrayDims3[1], arrayDims3[2], false);
+
+    //random_numbers has length equal to the total number of tokens in the corpus.
+    arma::vec return_vec =  mjd::update_topic_interaction_pattern_assignments(
+            author_indexes,
+            document_edge_matrix,
+            document_topic_counts,
+            topic_interaction_patterns,
+            intercepts,
+            coefficients,
+            latent_positions,
+            covariates,
+            using_coefficients,
+            random_numbers,
+            edge_probabilities);
+
+    return return_vec;
+
+}
+
+
 
 
 

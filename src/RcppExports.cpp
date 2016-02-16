@@ -209,3 +209,24 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
+// utipa
+arma::vec utipa(arma::vec author_indexes, arma::mat document_edge_matrix, arma::mat document_topic_counts, arma::vec topic_interaction_patterns, arma::vec intercepts, arma::mat coefficients, NumericVector latent_pos, NumericVector covars, bool using_coefficients, arma::vec random_numbers, NumericVector edge_probs);
+RcppExport SEXP CCAS_utipa(SEXP author_indexesSEXP, SEXP document_edge_matrixSEXP, SEXP document_topic_countsSEXP, SEXP topic_interaction_patternsSEXP, SEXP interceptsSEXP, SEXP coefficientsSEXP, SEXP latent_posSEXP, SEXP covarsSEXP, SEXP using_coefficientsSEXP, SEXP random_numbersSEXP, SEXP edge_probsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< arma::vec >::type author_indexes(author_indexesSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type document_edge_matrix(document_edge_matrixSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type document_topic_counts(document_topic_countsSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type topic_interaction_patterns(topic_interaction_patternsSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type intercepts(interceptsSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type coefficients(coefficientsSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type latent_pos(latent_posSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type covars(covarsSEXP);
+    Rcpp::traits::input_parameter< bool >::type using_coefficients(using_coefficientsSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type random_numbers(random_numbersSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type edge_probs(edge_probsSEXP);
+    __result = Rcpp::wrap(utipa(author_indexes, document_edge_matrix, document_topic_counts, topic_interaction_patterns, intercepts, coefficients, latent_pos, covars, using_coefficients, random_numbers, edge_probs));
+    return __result;
+END_RCPP
+}
