@@ -247,3 +247,47 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
+// model_inference
+List model_inference(arma::vec author_indexes, arma::mat document_edge_matrix, arma::mat document_topic_counts, arma::vec topic_interaction_patterns, arma::mat word_type_topic_counts, arma::vec topic_token_counts, Rcpp::List token_topic_assignments, Rcpp::List token_word_types, arma::vec intercepts, arma::mat coefficients, NumericVector latent_pos, NumericVector covars, arma::vec alpha_m, arma::vec beta_n, bool using_coefficients, double intercept_prior_mean, double intercept_prior_variance, arma::vec intercept_proposal_variances, double coefficient_prior_mean, double coefficient_prior_variance, arma::vec coefficient_proposal_variances, double latent_position_prior_mean, double latent_position_prior_variance, arma::vec latent_position_proposal_variances, double target_accept_rate, double tollerance, double update_size, int seed, int iterations, int metropolis_iterations, int total_number_of_tokens, int iterations_before_t_i_p_updates, int update_t_i_p_every_x_iterations, bool perform_adaptive_metropolis);
+RcppExport SEXP CCAS_model_inference(SEXP author_indexesSEXP, SEXP document_edge_matrixSEXP, SEXP document_topic_countsSEXP, SEXP topic_interaction_patternsSEXP, SEXP word_type_topic_countsSEXP, SEXP topic_token_countsSEXP, SEXP token_topic_assignmentsSEXP, SEXP token_word_typesSEXP, SEXP interceptsSEXP, SEXP coefficientsSEXP, SEXP latent_posSEXP, SEXP covarsSEXP, SEXP alpha_mSEXP, SEXP beta_nSEXP, SEXP using_coefficientsSEXP, SEXP intercept_prior_meanSEXP, SEXP intercept_prior_varianceSEXP, SEXP intercept_proposal_variancesSEXP, SEXP coefficient_prior_meanSEXP, SEXP coefficient_prior_varianceSEXP, SEXP coefficient_proposal_variancesSEXP, SEXP latent_position_prior_meanSEXP, SEXP latent_position_prior_varianceSEXP, SEXP latent_position_proposal_variancesSEXP, SEXP target_accept_rateSEXP, SEXP tolleranceSEXP, SEXP update_sizeSEXP, SEXP seedSEXP, SEXP iterationsSEXP, SEXP metropolis_iterationsSEXP, SEXP total_number_of_tokensSEXP, SEXP iterations_before_t_i_p_updatesSEXP, SEXP update_t_i_p_every_x_iterationsSEXP, SEXP perform_adaptive_metropolisSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< arma::vec >::type author_indexes(author_indexesSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type document_edge_matrix(document_edge_matrixSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type document_topic_counts(document_topic_countsSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type topic_interaction_patterns(topic_interaction_patternsSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type word_type_topic_counts(word_type_topic_countsSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type topic_token_counts(topic_token_countsSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type token_topic_assignments(token_topic_assignmentsSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type token_word_types(token_word_typesSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type intercepts(interceptsSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type coefficients(coefficientsSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type latent_pos(latent_posSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type covars(covarsSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type alpha_m(alpha_mSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type beta_n(beta_nSEXP);
+    Rcpp::traits::input_parameter< bool >::type using_coefficients(using_coefficientsSEXP);
+    Rcpp::traits::input_parameter< double >::type intercept_prior_mean(intercept_prior_meanSEXP);
+    Rcpp::traits::input_parameter< double >::type intercept_prior_variance(intercept_prior_varianceSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type intercept_proposal_variances(intercept_proposal_variancesSEXP);
+    Rcpp::traits::input_parameter< double >::type coefficient_prior_mean(coefficient_prior_meanSEXP);
+    Rcpp::traits::input_parameter< double >::type coefficient_prior_variance(coefficient_prior_varianceSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type coefficient_proposal_variances(coefficient_proposal_variancesSEXP);
+    Rcpp::traits::input_parameter< double >::type latent_position_prior_mean(latent_position_prior_meanSEXP);
+    Rcpp::traits::input_parameter< double >::type latent_position_prior_variance(latent_position_prior_varianceSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type latent_position_proposal_variances(latent_position_proposal_variancesSEXP);
+    Rcpp::traits::input_parameter< double >::type target_accept_rate(target_accept_rateSEXP);
+    Rcpp::traits::input_parameter< double >::type tollerance(tolleranceSEXP);
+    Rcpp::traits::input_parameter< double >::type update_size(update_sizeSEXP);
+    Rcpp::traits::input_parameter< int >::type seed(seedSEXP);
+    Rcpp::traits::input_parameter< int >::type iterations(iterationsSEXP);
+    Rcpp::traits::input_parameter< int >::type metropolis_iterations(metropolis_iterationsSEXP);
+    Rcpp::traits::input_parameter< int >::type total_number_of_tokens(total_number_of_tokensSEXP);
+    Rcpp::traits::input_parameter< int >::type iterations_before_t_i_p_updates(iterations_before_t_i_p_updatesSEXP);
+    Rcpp::traits::input_parameter< int >::type update_t_i_p_every_x_iterations(update_t_i_p_every_x_iterationsSEXP);
+    Rcpp::traits::input_parameter< bool >::type perform_adaptive_metropolis(perform_adaptive_metropolisSEXP);
+    __result = Rcpp::wrap(model_inference(author_indexes, document_edge_matrix, document_topic_counts, topic_interaction_patterns, word_type_topic_counts, topic_token_counts, token_topic_assignments, token_word_types, intercepts, coefficients, latent_pos, covars, alpha_m, beta_n, using_coefficients, intercept_prior_mean, intercept_prior_variance, intercept_proposal_variances, coefficient_prior_mean, coefficient_prior_variance, coefficient_proposal_variances, latent_position_prior_mean, latent_position_prior_variance, latent_position_proposal_variances, target_accept_rate, tollerance, update_size, seed, iterations, metropolis_iterations, total_number_of_tokens, iterations_before_t_i_p_updates, update_t_i_p_every_x_iterations, perform_adaptive_metropolis));
+    return __result;
+END_RCPP
+}

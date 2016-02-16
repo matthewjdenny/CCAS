@@ -1706,7 +1706,92 @@ List am(arma::vec intercept_proposal_variances,
 
 }
 
+// [[Rcpp::export]]
+List model_inference(arma::vec author_indexes,
+                     arma::mat document_edge_matrix,
+                     arma::mat document_topic_counts,
+                     arma::vec topic_interaction_patterns,
+                     arma::mat word_type_topic_counts,
+                     arma::vec topic_token_counts,
+                     Rcpp::List token_topic_assignments,
+                     Rcpp::List token_word_types,
+                     arma::vec intercepts,
+                     arma::mat coefficients,
+                     NumericVector latent_pos,
+                     NumericVector covars,
+                     arma::vec alpha_m,
+                     arma::vec beta_n,
+                     bool using_coefficients,
+                     double intercept_prior_mean,
+                     double intercept_prior_variance,
+                     arma::vec intercept_proposal_variances,
+                     double coefficient_prior_mean,
+                     double coefficient_prior_variance,
+                     arma::vec coefficient_proposal_variances,
+                     double latent_position_prior_mean,
+                     double latent_position_prior_variance,
+                     arma::vec latent_position_proposal_variances,
+                     double target_accept_rate,
+                     double tollerance,
+                     double update_size,
+                     int seed,
+                     int iterations,
+                     int metropolis_iterations,
+                     int total_number_of_tokens,
+                     int iterations_before_t_i_p_updates,
+                     int update_t_i_p_every_x_iterations,
+                     bool perform_adaptive_metropolis){
 
+    // Make sure you supply a NumericVector as input!
+    // we have to do this stupid trick to pass in 3d arrays from R. We pass in as
+    // a vector, then instatiate a cube object from there.
+    IntegerVector arrayDims = latent_pos.attr("dim");
+    arma::cube latent_positions(latent_pos.begin(), arrayDims[0], arrayDims[1],
+                                arrayDims[2], false);
+
+    IntegerVector arrayDims2 = covars.attr("dim");
+    arma::cube covariates(covars.begin(), arrayDims2[0], arrayDims2[1],
+                          arrayDims2[2], false);
+
+    List ret_list =  mjd::inference(
+        author_indexes,
+        document_edge_matrix,
+        document_topic_counts,
+        topic_interaction_patterns,
+        word_type_topic_counts,
+        topic_token_counts,
+        token_topic_assignments,
+        token_word_types,
+        intercepts,
+        coefficients,
+        latent_positions,
+        covariates,
+        alpha_m,
+        beta_n,
+        using_coefficients,
+        intercept_prior_mean,
+        intercept_prior_variance,
+        intercept_proposal_variances,
+        coefficient_prior_mean,
+        coefficient_prior_variance,
+        coefficient_proposal_variances,
+        latent_position_prior_mean,
+        latent_position_prior_variance,
+        latent_position_proposal_variances,
+        target_accept_rate,
+        tollerance,
+        update_size,
+        seed,
+        iterations,
+        metropolis_iterations,
+        total_number_of_tokens,
+        iterations_before_t_i_p_updates,
+        update_t_i_p_every_x_iterations,
+        perform_adaptive_metropolis);
+
+    return ret_list;
+
+}
 
 
 
