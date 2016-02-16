@@ -13,7 +13,8 @@ test_internal_functions(Test_Log_Space_Multinomial_Sampler = FALSE,
   Test_Update_All_Token_Topic_Assignments = FALSE,
   Test_Update_Interaction_Pattern_Parameters = FALSE,
   Test_Update_Topic_Interaction_Pattern_Assignments = FALSE,
-  Test_Adaptive_Metropolis = FALSE, envir = environment(), ...)
+  Test_Adaptive_Metropolis = FALSE, Test_Inference = FALSE,
+  envir = environment(), ...)
 }
 \arguments{
 \item{Test_Log_Space_Multinomial_Sampler}{Defualts to FALSE. If TRUE, then
@@ -89,6 +90,19 @@ provided.}
 arguments intercept_proposal_variances, coefficient_proposal_variances,
 latent_position_proposal_variances, accept_rates, target_accept_rate,
 tollerance, update_size must be provided.}
+
+\item{Test_Inference}{If TRUE, then optional arguments author_indexes,
+document_edge_matrix, document_topic_counts, topic_interaction_patterns,
+word_type_topic_counts, topic_token_counts, token_topic_assignments,
+token_word_types, intercepts, coefficients, latent_pos, covars, alpha_m,
+beta_n, using_coefficients, intercept_prior_mean, intercept_prior_variance,
+intercept_proposal_variances, coefficient_prior_mean,
+coefficient_prior_variance, coefficient_proposal_variances,
+latent_position_prior_mean, latent_position_prior_variance,
+latent_position_proposal_variances, target_accept_rate, tollerance,
+update_size, seed, iterations, metropolis_iterations, total_number_of_tokens,
+iterations_before_t_i_p_updates, update_t_i_p_every_x_iterations,
+perform_adaptive_metropolis must be provided.}
 
 \item{envir}{Should not be changed by the user, captures the current
 environment to facilitate testing.}

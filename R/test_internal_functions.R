@@ -63,6 +63,18 @@
 #' arguments intercept_proposal_variances, coefficient_proposal_variances,
 #' latent_position_proposal_variances, accept_rates, target_accept_rate,
 #' tollerance, update_size must be provided.
+#' @param Test_Inference If TRUE, then optional arguments author_indexes,
+#' document_edge_matrix, document_topic_counts, topic_interaction_patterns,
+#' word_type_topic_counts, topic_token_counts, token_topic_assignments,
+#' token_word_types, intercepts, coefficients, latent_pos, covars, alpha_m,
+#' beta_n, using_coefficients, intercept_prior_mean, intercept_prior_variance,
+#' intercept_proposal_variances, coefficient_prior_mean,
+#' coefficient_prior_variance, coefficient_proposal_variances,
+#' latent_position_prior_mean, latent_position_prior_variance,
+#' latent_position_proposal_variances, target_accept_rate, tollerance,
+#' update_size, seed, iterations, metropolis_iterations, total_number_of_tokens,
+#' iterations_before_t_i_p_updates, update_t_i_p_every_x_iterations,
+#' perform_adaptive_metropolis must be provided.
 #' @param envir Should not be changed by the user, captures the current
 #' environment to facilitate testing.
 #' @param ... optional arguments necessary to run each of the internal functions.
@@ -81,6 +93,7 @@ test_internal_functions <- function(
     Test_Update_Interaction_Pattern_Parameters = FALSE,
     Test_Update_Topic_Interaction_Pattern_Assignments = FALSE,
     Test_Adaptive_Metropolis = FALSE,
+    Test_Inference = FALSE,
     envir = environment(),
                                     ...){
 
@@ -139,6 +152,12 @@ test_internal_functions <- function(
         target_accept_rate <- NULL
         tollerance <- NULL
         update_size <- NULL
+        iterations <- NULL
+        metropolis_iterations <- NULL
+        total_number_of_tokens <- NULL
+        iterations_before_t_i_p_updates <- NULL
+        update_t_i_p_every_x_iterations <- NULL
+        perform_adaptive_metropolis <- NULL
     }
 
     object <- as.list(substitute(list(...)))[-1L]
@@ -323,6 +342,44 @@ test_internal_functions <- function(
                             target_accept_rate,
                             tollerance,
                             update_size)
+    }
+
+    if (Test_Inference) {
+        return_object <- model_inference(
+            author_indexes,
+            document_edge_matrix,
+            document_topic_counts,
+            topic_interaction_patterns,
+            word_type_topic_counts,
+            topic_token_counts,
+            token_topic_assignments,
+            token_word_types,
+            intercepts,
+            coefficients,
+            latent_pos,
+            covars,
+            alpha_m,
+            beta_n,
+            using_coefficients,
+            intercept_prior_mean,
+            intercept_prior_variance,
+            intercept_proposal_variances,
+            coefficient_prior_mean,
+            coefficient_prior_variance,
+            coefficient_proposal_variances,
+            latent_position_prior_mean,
+            latent_position_prior_variance,
+            latent_position_proposal_variances,
+            target_accept_rate,
+            tollerance,
+            update_size,
+            seed,
+            iterations,
+            metropolis_iterations,
+            total_number_of_tokens,
+            iterations_before_t_i_p_updates,
+            update_t_i_p_every_x_iterations,
+            perform_adaptive_metropolis)
     }
 
 
