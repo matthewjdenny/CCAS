@@ -45,6 +45,15 @@
 #' coefficients, latent_pos, covars, alpha_m, beta_n, random_numbers,
 #' using_coefficients must be provided. Make sure that random_numbers has length
 #' equal to the total number of tokens in the corpus.
+#' @param Test_Update_Interaction_Pattern_Parameters Defaults to FALSE. If TRUE,
+#' then optional arguments author_indexes, document_edge_matrix,
+#' document_topic_counts, topic_interaction_patterns, intercepts, coefficients,
+#' latent_pos, covars, using_coefficients, intercept_prior_mean,
+#' intercept_prior_variance, intercept_proposal_variances,
+#' coefficient_prior_mean, coefficient_prior_variance,
+#' coefficient_proposal_variances, latent_position_prior_mean,
+#' latent_position_prior_variance, latent_position_proposal_variances, rand_num,
+#' edge_probs must be provided.
 #' @param envir Should not be changed by the user, captures the current
 #' environment to facilitate testing.
 #' @param ... optional arguments necessary to run each of the internal functions.
@@ -60,6 +69,7 @@ test_internal_functions <- function(
     Test_LDA_Contribution = FALSE,
     Test_Update_Single_Token_Topic_Assignment = FALSE,
     Test_Update_All_Token_Topic_Assignments = FALSE,
+    Test_Update_Interaction_Pattern_Parameters = FALSE,
     envir = environment(),
                                     ...){
 
@@ -92,13 +102,13 @@ test_internal_functions <- function(
         latent_pos <- NULL
         intercept_prior_mean <- NULL
         intercept_prior_variance <- NULL
-        intercept_proposal_variance <- NULL
+        intercept_proposal_variances <- NULL
         coefficient_prior_mean <- NULL
         coefficient_prior_variance <- NULL
-        coefficient_proposal_variance <- NULL
+        coefficient_proposal_variances <- NULL
         latent_position_prior_mean <- NULL
         latent_position_prior_variance <- NULL
-        latent_position_proposal_variance <- NULL
+        latent_position_proposal_variances <- NULL
         topic <- NULL
         document_edge_values <- NULL
         word_type_topic_counts <- NULL
@@ -118,9 +128,9 @@ test_internal_functions <- function(
 
     object <- as.list(substitute(list(...)))[-1L]
     if (length(object) > 0) {
-        for (i in 1:length(object)){
+        for (i in 1:length(object)) {
             # try both direct assignment and get()
-            if(typeof(object[[i]]) == "symbol"){
+            if (typeof(object[[i]]) == "symbol") {
                 # have to do this double get trick to make it work in all contexts.
                 temp <- dynGet(as.character(object[[i]]),
                                        ifnotfound = get(as.character(object[[i]]),
@@ -133,11 +143,11 @@ test_internal_functions <- function(
     }
 
     # test the lsms function
-    if(Test_Log_Space_Multinomial_Sampler){
-        if(is.null(distribution)){
+    if (Test_Log_Space_Multinomial_Sampler) {
+        if (is.null(distribution)) {
             stop("you must provide an optional variable 'distribution', which is an unnormalized vetor of log probabilities.")
         }
-        if(is.null(seed)){
+        if (is.null(seed)) {
             stop("you must provide an optional variable 'seed', which is an integer.")
         }
         return_object <- lsms(distribution,
@@ -250,6 +260,30 @@ test_internal_functions <- function(
             beta_n,
             random_numbers,
             using_coefficients)
+    }
+
+    if (Test_Update_Interaction_Pattern_Parameters) {
+        return_object <- uipp(
+            author_indexes,
+            document_edge_matrix,
+            document_topic_counts,
+            topic_interaction_patterns,
+            intercepts,
+            coefficients,
+            latent_pos,
+            covars,
+            using_coefficients,
+            intercept_prior_mean,
+            intercept_prior_variance,
+            intercept_proposal_variances,
+            coefficient_prior_mean,
+            coefficient_prior_variance,
+            coefficient_proposal_variances,
+            latent_position_prior_mean,
+            latent_position_prior_variance,
+            latent_position_proposal_variances,
+            rand_num,
+            edge_probs)
     }
 
 

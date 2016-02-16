@@ -10,7 +10,8 @@ test_internal_functions(Test_Log_Space_Multinomial_Sampler = FALSE,
   Test_Sample_New_I_P_Parameters = FALSE, Test_LSM_Contribution = FALSE,
   Test_LDA_Contribution = FALSE,
   Test_Update_Single_Token_Topic_Assignment = FALSE,
-  Test_Update_All_Token_Topic_Assignments = FALSE, envir = environment(),
+  Test_Update_All_Token_Topic_Assignments = FALSE,
+  Test_Update_Interaction_Pattern_Parameters = FALSE, envir = environment(),
   ...)
 }
 \arguments{
@@ -66,6 +67,16 @@ topic_token_counts, token_topic_assignments, token_word_types, intercepts,
 coefficients, latent_pos, covars, alpha_m, beta_n, random_numbers,
 using_coefficients must be provided. Make sure that random_numbers has length
 equal to the total number of tokens in the corpus.}
+
+\item{Test_Update_Interaction_Pattern_Parameters}{Defaults to FALSE. If TRUE,
+then optional arguments author_indexes, document_edge_matrix,
+document_topic_counts, topic_interaction_patterns, intercepts, coefficients,
+latent_pos, covars, using_coefficients, intercept_prior_mean,
+intercept_prior_variance, intercept_proposal_variances,
+coefficient_prior_mean, coefficient_prior_variance,
+coefficient_proposal_variances, latent_position_prior_mean,
+latent_position_prior_variance, latent_position_proposal_variances, rand_num,
+edge_probs must be provided.}
 
 \item{envir}{Should not be changed by the user, captures the current
 environment to facilitate testing.}
