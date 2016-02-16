@@ -230,3 +230,20 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
+// am
+List am(arma::vec intercept_proposal_variances, arma::vec coefficient_proposal_variances, arma::vec latent_position_proposal_variances, arma::vec accept_rates, double target_accept_rate, double tollerance, double update_size);
+RcppExport SEXP CCAS_am(SEXP intercept_proposal_variancesSEXP, SEXP coefficient_proposal_variancesSEXP, SEXP latent_position_proposal_variancesSEXP, SEXP accept_ratesSEXP, SEXP target_accept_rateSEXP, SEXP tolleranceSEXP, SEXP update_sizeSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< arma::vec >::type intercept_proposal_variances(intercept_proposal_variancesSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type coefficient_proposal_variances(coefficient_proposal_variancesSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type latent_position_proposal_variances(latent_position_proposal_variancesSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type accept_rates(accept_ratesSEXP);
+    Rcpp::traits::input_parameter< double >::type target_accept_rate(target_accept_rateSEXP);
+    Rcpp::traits::input_parameter< double >::type tollerance(tolleranceSEXP);
+    Rcpp::traits::input_parameter< double >::type update_size(update_sizeSEXP);
+    __result = Rcpp::wrap(am(intercept_proposal_variances, coefficient_proposal_variances, latent_position_proposal_variances, accept_rates, target_accept_rate, tollerance, update_size));
+    return __result;
+END_RCPP
+}

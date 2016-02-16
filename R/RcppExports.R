@@ -45,3 +45,7 @@ utipa <- function(author_indexes, document_edge_matrix, document_topic_counts, t
     .Call('CCAS_utipa', PACKAGE = 'CCAS', author_indexes, document_edge_matrix, document_topic_counts, topic_interaction_patterns, intercepts, coefficients, latent_pos, covars, using_coefficients, random_numbers, edge_probs)
 }
 
+am <- function(intercept_proposal_variances, coefficient_proposal_variances, latent_position_proposal_variances, accept_rates, target_accept_rate, tollerance, update_size) {
+    .Call('CCAS_am', PACKAGE = 'CCAS', intercept_proposal_variances, coefficient_proposal_variances, latent_position_proposal_variances, accept_rates, target_accept_rate, tollerance, update_size)
+}
+

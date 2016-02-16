@@ -1684,6 +1684,29 @@ arma::vec utipa(arma::vec author_indexes,
 }
 
 
+// [[Rcpp::export]]
+List am(arma::vec intercept_proposal_variances,
+        arma::vec coefficient_proposal_variances,
+        arma::vec latent_position_proposal_variances,
+        arma::vec accept_rates,
+        double target_accept_rate,
+        double tollerance,
+        double update_size){
+
+    List ret_list = mjd::adaptive_metropolis(
+            intercept_proposal_variances,
+            coefficient_proposal_variances,
+            latent_position_proposal_variances,
+            accept_rates,
+            target_accept_rate,
+            tollerance,
+            update_size);
+
+    return ret_list;
+
+}
+
+
 
 
 
