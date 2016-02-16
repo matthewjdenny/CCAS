@@ -37,3 +37,7 @@ utta <- function(author_indexes, document_edge_matrix, topic_interaction_pattern
     .Call('CCAS_utta', PACKAGE = 'CCAS', author_indexes, document_edge_matrix, topic_interaction_patterns, document_topic_counts, word_type_topic_counts, topic_token_counts, token_topic_assignments, token_word_types, intercepts, coefficients, latent_pos, covars, alpha_m, beta_n, random_numbers, using_coefficients)
 }
 
+uipp <- function(author_indexes, document_edge_matrix, document_topic_counts, topic_interaction_patterns, intercepts, coefficients, latent_pos, covars, using_coefficients, intercept_prior_mean, intercept_prior_variance, intercept_proposal_variances, coefficient_prior_mean, coefficient_prior_variance, coefficient_proposal_variances, latent_position_prior_mean, latent_position_prior_variance, latent_position_proposal_variances, random_number, edge_probs) {
+    .Call('CCAS_uipp', PACKAGE = 'CCAS', author_indexes, document_edge_matrix, document_topic_counts, topic_interaction_patterns, intercepts, coefficients, latent_pos, covars, using_coefficients, intercept_prior_mean, intercept_prior_variance, intercept_proposal_variances, coefficient_prior_mean, coefficient_prior_variance, coefficient_proposal_variances, latent_position_prior_mean, latent_position_prior_variance, latent_position_proposal_variances, random_number, edge_probs)
+}
+

@@ -179,3 +179,33 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
+// uipp
+List uipp(arma::vec author_indexes, arma::mat document_edge_matrix, arma::mat document_topic_counts, arma::vec topic_interaction_patterns, arma::vec intercepts, arma::mat coefficients, NumericVector latent_pos, NumericVector covars, bool using_coefficients, double intercept_prior_mean, double intercept_prior_variance, arma::vec intercept_proposal_variances, double coefficient_prior_mean, double coefficient_prior_variance, arma::vec coefficient_proposal_variances, double latent_position_prior_mean, double latent_position_prior_variance, arma::vec latent_position_proposal_variances, double random_number, NumericVector edge_probs);
+RcppExport SEXP CCAS_uipp(SEXP author_indexesSEXP, SEXP document_edge_matrixSEXP, SEXP document_topic_countsSEXP, SEXP topic_interaction_patternsSEXP, SEXP interceptsSEXP, SEXP coefficientsSEXP, SEXP latent_posSEXP, SEXP covarsSEXP, SEXP using_coefficientsSEXP, SEXP intercept_prior_meanSEXP, SEXP intercept_prior_varianceSEXP, SEXP intercept_proposal_variancesSEXP, SEXP coefficient_prior_meanSEXP, SEXP coefficient_prior_varianceSEXP, SEXP coefficient_proposal_variancesSEXP, SEXP latent_position_prior_meanSEXP, SEXP latent_position_prior_varianceSEXP, SEXP latent_position_proposal_variancesSEXP, SEXP random_numberSEXP, SEXP edge_probsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< arma::vec >::type author_indexes(author_indexesSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type document_edge_matrix(document_edge_matrixSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type document_topic_counts(document_topic_countsSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type topic_interaction_patterns(topic_interaction_patternsSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type intercepts(interceptsSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type coefficients(coefficientsSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type latent_pos(latent_posSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type covars(covarsSEXP);
+    Rcpp::traits::input_parameter< bool >::type using_coefficients(using_coefficientsSEXP);
+    Rcpp::traits::input_parameter< double >::type intercept_prior_mean(intercept_prior_meanSEXP);
+    Rcpp::traits::input_parameter< double >::type intercept_prior_variance(intercept_prior_varianceSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type intercept_proposal_variances(intercept_proposal_variancesSEXP);
+    Rcpp::traits::input_parameter< double >::type coefficient_prior_mean(coefficient_prior_meanSEXP);
+    Rcpp::traits::input_parameter< double >::type coefficient_prior_variance(coefficient_prior_varianceSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type coefficient_proposal_variances(coefficient_proposal_variancesSEXP);
+    Rcpp::traits::input_parameter< double >::type latent_position_prior_mean(latent_position_prior_meanSEXP);
+    Rcpp::traits::input_parameter< double >::type latent_position_prior_variance(latent_position_prior_varianceSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type latent_position_proposal_variances(latent_position_proposal_variancesSEXP);
+    Rcpp::traits::input_parameter< double >::type random_number(random_numberSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type edge_probs(edge_probsSEXP);
+    __result = Rcpp::wrap(uipp(author_indexes, document_edge_matrix, document_topic_counts, topic_interaction_patterns, intercepts, coefficients, latent_pos, covars, using_coefficients, intercept_prior_mean, intercept_prior_variance, intercept_proposal_variances, coefficient_prior_mean, coefficient_prior_variance, coefficient_proposal_variances, latent_position_prior_mean, latent_position_prior_variance, latent_position_proposal_variances, random_number, edge_probs));
+    return __result;
+END_RCPP
+}
