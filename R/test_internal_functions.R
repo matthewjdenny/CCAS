@@ -59,6 +59,10 @@
 #' document_topic_counts, topic_interaction_patterns, intercepts, coefficients,
 #' latent_pos, covars, using_coefficients, random_numbers, edge_probs must be
 #' provided.
+#' @param Test_Adaptive_Metropolis Defaults to FALSE. If TRUE, then optional
+#' arguments intercept_proposal_variances, coefficient_proposal_variances,
+#' latent_position_proposal_variances, accept_rates, target_accept_rate,
+#' tollerance, update_size must be provided.
 #' @param envir Should not be changed by the user, captures the current
 #' environment to facilitate testing.
 #' @param ... optional arguments necessary to run each of the internal functions.
@@ -76,6 +80,7 @@ test_internal_functions <- function(
     Test_Update_All_Token_Topic_Assignments = FALSE,
     Test_Update_Interaction_Pattern_Parameters = FALSE,
     Test_Update_Topic_Interaction_Pattern_Assignments = FALSE,
+    Test_Adaptive_Metropolis = FALSE,
     envir = environment(),
                                     ...){
 
@@ -130,6 +135,10 @@ test_internal_functions <- function(
         token_word_types <- NULL
         covars <- NULL
         random_numbers <- NULL
+        accept_rates <- NULL
+        target_accept_rate <- NULL
+        tollerance <- NULL
+        update_size <- NULL
     }
 
     object <- as.list(substitute(list(...)))[-1L]
@@ -305,6 +314,18 @@ test_internal_functions <- function(
                                random_numbers,
                                edge_probs)
     }
+
+    if (Test_Adaptive_Metropolis) {
+        return_object <- am(intercept_proposal_variances,
+                            coefficient_proposal_variances,
+                            latent_position_proposal_variances,
+                            accept_rates,
+                            target_accept_rate,
+                            tollerance,
+                            update_size)
+    }
+
+
 
 
     # return whatever needs to be returned

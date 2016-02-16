@@ -13,7 +13,7 @@ test_internal_functions(Test_Log_Space_Multinomial_Sampler = FALSE,
   Test_Update_All_Token_Topic_Assignments = FALSE,
   Test_Update_Interaction_Pattern_Parameters = FALSE,
   Test_Update_Topic_Interaction_Pattern_Assignments = FALSE,
-  envir = environment(), ...)
+  Test_Adaptive_Metropolis = FALSE, envir = environment(), ...)
 }
 \arguments{
 \item{Test_Log_Space_Multinomial_Sampler}{Defualts to FALSE. If TRUE, then
@@ -84,6 +84,11 @@ If TRUE, then optional arguments author_indexes, document_edge_matrix,
 document_topic_counts, topic_interaction_patterns, intercepts, coefficients,
 latent_pos, covars, using_coefficients, random_numbers, edge_probs must be
 provided.}
+
+\item{Test_Adaptive_Metropolis}{Defaults to FALSE. If TRUE, then optional
+arguments intercept_proposal_variances, coefficient_proposal_variances,
+latent_position_proposal_variances, accept_rates, target_accept_rate,
+tollerance, update_size must be provided.}
 
 \item{envir}{Should not be changed by the user, captures the current
 environment to facilitate testing.}
