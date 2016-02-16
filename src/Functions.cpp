@@ -1050,6 +1050,9 @@ namespace mjd {
             num_actors,
             metropolis_iterations * num_latent_dimensions);
 
+        arma::mat store_accept_rates = arma::zeros(iterations,
+                                                   num_interaction_patterns);
+
         // loop over interaction patterns
         for (int i = 0; i < iterations; ++i) {
 
@@ -1158,7 +1161,8 @@ namespace mjd {
                 }// end of conditional for whether we perform adaptive MH
             }// end of conditional checking to see if we are past the first update.
 
-
+            // these variables will be used for storage
+            int latent_position_storage_counter = 0;
             arma::vec accept_or_reject = arma::zeros(metropolis_iterations);
             // loop over metropolis hastings iterations
             for (int j = 0; j < metropolis_iterations; ++j) {
@@ -1197,23 +1201,70 @@ namespace mjd {
                 edge_probabilities = temp4;
                 accept_or_reject[j] = MH_List[4];
 
+                // if we are on the last iteration of gibbs sampling, then we
+                // need to save everything
+                if (i == (iterations-1)) {
+                   for (int k = 0; k < num_interaction_patterns; ++k) {
+                       //save intercepts
+                       double temp = intercepts[k];
+                       store_intercepts(j,k) = temp;
+
+                       if (using_coefficients) {
+                           for (int l = 0; l < num_coefficients; ++l) {
+                               double temp2 = coefficients(k,l);
+                               store_coefficients(j,k,l) = temp2;
+                           }
+                       }
+                   }
+                   // store latent positions -- we need the latent dimensions
+                   // to be the outter loop so that we can increment the counter
+                   // of which slice we insert into.
+                   for (int m = 0; m < num_latent_dimensions; ++m) {
+                       for (int k = 0; k < num_interaction_patterns; ++k) {
+                           for (int l = 0; l < num_actors; ++l) {
+                               double temp3 = latent_positions(k,l,m);
+                               store_latent_positions(k,l,
+                                    latent_position_storage_counter) = temp3;
+                           }
+                       }
+                       latent_position_storage_counter += 1;
+                   }
+                }//end of storage conditional
+
             }// end of metropolis hastings loop
+
+            // store topic interaction pattern assignments
+            for (int k = 0; k < num_topics; ++k) {
+                int temp = topic_interaction_patterns[k];
+                store_topic_interaction_patterns(i,k) = temp;
+            }
+            // store MCMC accept rates for each iteration
+            for (int k = 0; k < num_interaction_patterns; ++k) {
+                // calculate the accept proportion
+                double temp = arma::sum(accept_or_reject)/double(
+                    metropolis_iterations);
+                // in this case, we are constraining it to be the same across all
+                // interaction patterns
+                accept_rates[k] = temp;
+                store_accept_rates(i,k) = temp;
+            }
 
         }// end up gibbs/main sampling loop
 
         // allocate a list to store everything in.
         Rcpp::List ret_list(10);
         ret_list[0] = store_topic_interaction_patterns;
-        ret_list[0] = store_intercepts;
-        ret_list[0] = store_coefficients;
-        ret_list[0] = store_latent_positions;
+        ret_list[1] = store_intercepts;
+        ret_list[2] = store_coefficients;
+        ret_list[3] = store_latent_positions;
+        ret_list[4] = document_topic_counts;
+        ret_list[5] = word_type_topic_counts;
+        ret_list[6] = topic_token_counts;
+        ret_list[7] = token_topic_assignments;
         // return everything
         return ret_list;
     }
 } // end of MJD namespace
-
-
-
 
 
     // ***********************************************************************//
