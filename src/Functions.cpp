@@ -12,6 +12,10 @@ using std::max;
 using std::abs;
 // use the mjd namespace so we can call in other functions
 namespace mjd {
+    using std::log;
+    using std::exp;
+    using std::max;
+    using std::abs;
 
     // ***********************************************************************//
     //                 Log Space Multinomial Sampler                          //
@@ -1020,11 +1024,31 @@ namespace mjd {
         int num_interaction_patterns = intercept_proposal_variances.n_elem;
         int num_topics = topic_interaction_patterns.n_elem;
         int num_actors = document_edge_matrix.n_cols;
+        int num_latent_dimensions = latent_positions.n_slices;
+        //get the number of if we are using them, set this eqaul to two since we
+        //need to allocate the matrix even if we are not using it.
+        int num_coefficients = 2;
+        if(using_coefficients){
+            num_coefficients = coefficients.n_cols;
+        }
+
         arma::cube edge_probabilities = arma::zeros(num_actors, num_actors,
                                               num_interaction_patterns);
         arma::vec accept_rates = arma::zeros(num_interaction_patterns);
 
         // allocate data structures to store samples in.
+        arma::mat store_topic_interaction_patterns = arma::zeros(
+            iterations, num_topics);
+        arma::mat store_intercepts = arma::zeros(metropolis_iterations,
+            num_interaction_patterns);
+        arma::cube store_coefficients = arma::zeros(num_interaction_patterns,
+            num_coefficients, metropolis_iterations);
+        //we are going to have to stack cubes here, hence the multiplication
+        //in the last dimension
+        arma::cube store_latent_positions = arma::zeros(
+            num_interaction_patterns,
+            num_actors,
+            metropolis_iterations * num_latent_dimensions);
 
         // loop over interaction patterns
         for (int i = 0; i < iterations; ++i) {
@@ -1179,6 +1203,10 @@ namespace mjd {
 
         // allocate a list to store everything in.
         Rcpp::List ret_list(10);
+        ret_list[0] = store_topic_interaction_patterns;
+        ret_list[0] = store_intercepts;
+        ret_list[0] = store_coefficients;
+        ret_list[0] = store_latent_positions;
         // return everything
         return ret_list;
     }
