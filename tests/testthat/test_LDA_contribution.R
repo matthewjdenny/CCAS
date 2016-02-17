@@ -9,7 +9,7 @@ test_that("That LDA contribution works", {
     # five topics
     alpha = 1
     temp <- runif(num_topics)
-    alpha_m = alpha * temp2/sum(temp2)
+    alpha_m = alpha * temp/sum(temp)
 
     # ten unique words
     beta = 2
