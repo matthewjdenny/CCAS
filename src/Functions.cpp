@@ -10,12 +10,16 @@ using std::log;
 using std::exp;
 using std::max;
 using std::abs;
+using std::sqrt;
+using std::pow;
 // use the mjd namespace so we can call in other functions
 namespace mjd {
     using std::log;
     using std::exp;
     using std::max;
     using std::abs;
+    using std::sqrt;
+    using std::pow;
 
     // ***********************************************************************//
     //                 Log Space Multinomial Sampler                          //
@@ -113,13 +117,22 @@ namespace mjd {
 
         // subtract out distance between two actors in latent space
         int num_latent_spaces = latent_positions.n_slices;
+        double squared_dist = 0;
+        //generate the sum of squares
         for (int i = 0; i < num_latent_spaces; ++i) {
-            linear_predictor += abs((latent_positions(interaction_pattern, sender, i) -
-                latent_positions(interaction_pattern, recipient, i)));
+            squared_dist = pow(
+                (latent_positions(interaction_pattern, sender, i) -
+                latent_positions(interaction_pattern, recipient, i)), 2);
         }
+        // take the square root and subtract it (the further away nodes are, the
+        // less likely the tie.)
+        linear_predictor -= sqrt(squared_dist);
+
+        // for testing, print out the linear predictor
+        //Rcpp::Rcout << "Linear Predictor: " << linear_predictor << std::endl;
 
         // now run through logit
-        double edge_prob = (1/double(1+ exp(-linear_predictor)));
+        double edge_prob = (1/double(1 + exp(-linear_predictor)));
         return edge_prob;
     }
 
@@ -157,18 +170,20 @@ namespace mjd {
                 if (leave_out_topic != i) {
                     sum += (double(current_document_topic_counts[i])/
                                 double(tokens_in_document)) *
-                                    edge_probabilities(document_sender,
-                                                       document_recipient,
-                                                       i);
+                                    edge_probabilities(
+                                        document_sender,
+                                        document_recipient,
+                                        topic_interaction_patterns[i]);
                 }
             }
         } else {
             for (int i = 0; i < num_topics; ++i) {
                 sum += (double(current_document_topic_counts[i])/
                             double(tokens_in_document)) *
-                                edge_probabilities(document_sender,
-                                                   document_recipient,
-                                                   i);
+                                edge_probabilities(
+                                    document_sender,
+                                    document_recipient,
+                                    topic_interaction_patterns[i]);
             }
         }
 
