@@ -1109,6 +1109,7 @@ namespace mjd {
 
         // loop over interaction patterns
         for (int i = 0; i < iterations; ++i) {
+            Rcpp::Rcout << "Iteration: " << i << std::endl;
 
             // generate a vector of random numbers to pass in to the topic-token
             // update function.
@@ -1266,7 +1267,7 @@ namespace mjd {
                        if (using_coefficients) {
                            for (int l = 0; l < num_coefficients; ++l) {
                                double temp2 = coefficients(k,l);
-                               store_coefficients(j,k,l) = temp2;
+                               store_coefficients(k,l,j) = temp2;
                            }
                        }
                    }
