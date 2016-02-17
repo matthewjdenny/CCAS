@@ -39,7 +39,7 @@ test_that("That Update_Token_Topic_Assignments works", {
                     dim = c(num_actors, num_actors, num_covar))
 
     # create token topic assignemnts and token word types list
-    token_topic_assignments <- vector(mode = "list",
+    init_token_topic_assignments <- vector(mode = "list",
                                       length = num_documents)
     token_word_types <- vector(mode = "list",
                                length = num_documents)
@@ -49,19 +49,19 @@ test_that("That Update_Token_Topic_Assignments works", {
                                      nrow = num_terms,
                                      ncol = num_topics)
     for (i in 1:num_documents) {
-        token_topic_assignments[[i]] <- floor(runif(n = words_per_doc,
+        init_token_topic_assignments[[i]] <- floor(runif(n = words_per_doc,
                                                     min = 0,
                                                     max = num_topics - .000001))
         token_word_types[[i]] <- floor(runif(n = words_per_doc,
                                              min = 0,
                                              max = num_terms - .000001))
         for(j in 0:(num_topics-1)){
-            document_topic_counts[i,j] <- length(which(token_topic_assignments[[i]]== j))
+            document_topic_counts[i,j] <- length(which(init_token_topic_assignments[[i]]== j))
         }
         for(l in 1:words_per_doc){
             for(j in 1:num_terms){
                 for(k in 1:num_topics){
-                    if(token_word_types[[i]][l] == (j - 1) & token_topic_assignments[[i]][l] == (k -1)){
+                    if(token_word_types[[i]][l] == (j - 1) & init_token_topic_assignments[[i]][l] == (k -1)){
                         word_type_topic_counts[j,k] <- word_type_topic_counts[j,k] + 1
                     }
                 }
@@ -70,6 +70,8 @@ test_that("That Update_Token_Topic_Assignments works", {
     }
 
     topic_token_counts <- colSums(word_type_topic_counts)
+
+    test <- init_token_topic_assignments
 
 
     # first lets try without covariates
@@ -81,7 +83,7 @@ test_that("That Update_Token_Topic_Assignments works", {
         document_topic_counts = document_topic_counts,
         word_type_topic_counts = word_type_topic_counts,
         topic_token_counts = topic_token_counts,
-        token_topic_assignments = token_topic_assignments,
+        token_topic_assignments = init_token_topic_assignments,
         token_word_types = token_word_types,
         intercepts = intercepts,
         coefficients = coefficients,
@@ -93,8 +95,10 @@ test_that("That Update_Token_Topic_Assignments works", {
         using_coefficients = FALSE)
 
     # check to see if anything changed
-    for(i in 1:num_documents){
-        print(result[[4]][[i]] == token_topic_assignments[[i]])
+    # THe strange thing about Rcpp shallow data structures is that they
+    # change the original along with the underlying data
+    for (i in 1:num_documents) {
+        print(result[[4]][[i]] == test[[i]])
     }
 
     # no errors!
