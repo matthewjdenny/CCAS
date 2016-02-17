@@ -772,11 +772,12 @@ namespace mjd {
             int tokens_in_document = arma::sum(current_document_topic_counts);
             int document_sender = author_indexes[i];
             // loop over tokens
+            // for testing
+            // Rcpp::Rcout << "Document " << i << std::endl;
             for (int j = 0; j < number_of_actors; ++j) {
                 // if the assignment changed, then we need to update everything.
                 if (document_sender != j) {
                     if (document_edge_values[i] == 1) {
-
                         double temp = sum_over_t_edge_probability (
                             edge_probabilities,
                             tokens_in_document,
