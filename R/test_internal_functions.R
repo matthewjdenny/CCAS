@@ -4,16 +4,15 @@
 #' @param Test_Log_Space_Multinomial_Sampler Defualts to FALSE. If TRUE, then
 #' optional arguments 'distribution' and 'seed' must be provided.
 #' @param Test_Edge_Probability Defaults to FALSE. If TRUE, then optional arguments
-#' 'intercepts', 'coefficients', 'latent_pos', 'sender', 'recipient',
-#' 'current_covariates', 'interaction_pattern', and 'using_coefficients' must be
+#' 'intercepts, coefficients, latent_pos, document_sender, document_recipient,
+#' 'current_covariates', interaction_pattern, and using_coefficients must be
 #' provided.
 #' @param Test_Sum_Over_T_Edge_Probs Defaults to FALSE. If TRUE, then optional
 #' arguments 'edge_probs', 'tokens_in_document', 'current_token_topic_assignment',
 #' 'current_document_topic_counts', 'leave_out_current_token',
 #' 'topic_interaction_patterns', 'document_sender','document_recipient', and
 #' 'leave_out_topic'. must be provided.
-#' @param Test_Prior_Pobability_Of_I_P_Params Defaults to FALSE. If TRUE, then optional
-#' arguments intercepts, coefficients, latent_pos, intercept_prior_mean,
+#' @param Test_Prior_Pobability_Of_I_P_Params Defaults to FALSE. If TRUE, then optional arguments intercepts, coefficients, latent_pos, intercept_prior_mean,
 #' intercept_prior_variance, coefficient_prior_mean, coefficient_prior_variance,
 #' latent_position_prior_mean, latent_position_prior_variance,
 #' using_coefficients must be provided.
@@ -75,9 +74,57 @@
 #' update_size, seed, iterations, metropolis_iterations, total_number_of_tokens,
 #' iterations_before_t_i_p_updates, update_t_i_p_every_x_iterations,
 #' perform_adaptive_metropolis must be provided.
-#' @param envir Should not be changed by the user, captures the current
-#' environment to facilitate testing.
-#' @param ... optional arguments necessary to run each of the internal functions.
+#' @param seed An integerg.
+#' @param distribution A log-space vector
+#' @param intercepts A vector.
+#' @param coefficients A matrix.
+#' @param latent_pos An array.
+#' @param document_sender An integer.
+#' @param document_recipient An integer.
+#' @param current_covariates A vector
+#' @param interaction_pattern An integer
+#' @param using_coefficients A boolean.
+#' @param edge_probs An array
+#' @param tokens_in_document An integer
+#' @param current_token_topic_assignment An integer
+#' @param current_document_topic_counts A vector.
+#' @param leave_out_current_token A logical
+#' @param topic_interaction_patterns a vector
+#' @param leave_out_topic An integer.
+#' @param intercept_prior_mean A double.
+#' @param intercept_prior_variance A double.
+#' @param intercept_proposal_variances A vector.
+#' @param coefficient_prior_mean A double.
+#' @param coefficient_prior_variance A double.
+#' @param coefficient_proposal_variances A vector.
+#' @param latent_position_prior_mean A double.
+#' @param latent_position_prior_variance A double.
+#' @param latent_position_proposal_variances A vector.
+#' @param topic An integer.
+#' @param document_edge_values A vector.
+#' @param word_type_topic_counts A matrix
+#' @param topic_token_counts A matrix.
+#' @param current_word_type An integer.
+#' @param alpha_m A vector
+#' @param beta_n A vector
+#' @param rand_num An integer
+#' @param author_indexes A vector
+#' @param document_edge_matrix A matrix
+#' @param document_topic_counts A matrix
+#' @param token_topic_assignments A List
+#' @param token_word_types A List
+#' @param covars An array
+#' @param random_numbers A vector
+#' @param accept_rates A vector.
+#' @param target_accept_rate A double.
+#' @param tollerance A dobule.
+#' @param update_size A double.
+#' @param iterations An integer.
+#' @param metropolis_iterations An integer.
+#' @param total_number_of_tokens An integer.
+#' @param iterations_before_t_i_p_updates An integer.
+#' @param update_t_i_p_every_x_iterations An integer.
+#' @param perform_adaptive_metropolis A boolean.
 #' @return Whatever is returned by the internal function being tested
 #' @export
 test_internal_functions <- function(
@@ -94,96 +141,62 @@ test_internal_functions <- function(
     Test_Update_Topic_Interaction_Pattern_Assignments = FALSE,
     Test_Adaptive_Metropolis = FALSE,
     Test_Inference = FALSE,
-    envir = environment(),
-                                    ...){
+    seed = NULL,
+    distribution = NULL,
+    intercepts = NULL,
+    coefficients = NULL,
+    latent_pos = NULL,
+    document_sender = NULL,
+    document_recipient = NULL,
+    current_covariates = NULL,
+    interaction_pattern = NULL,
+    using_coefficients = NULL,
+    edge_probs = NULL,
+    tokens_in_document = NULL,
+    current_token_topic_assignment = NULL,
+    current_document_topic_counts = NULL,
+    leave_out_current_token = NULL,
+    topic_interaction_patterns = NULL,
+    leave_out_topic = NULL,
+    intercept_prior_mean = NULL,
+    intercept_prior_variance = NULL,
+    intercept_proposal_variances = NULL,
+    coefficient_prior_mean = NULL,
+    coefficient_prior_variance = NULL,
+    coefficient_proposal_variances = NULL,
+    latent_position_prior_mean = NULL,
+    latent_position_prior_variance = NULL,
+    latent_position_proposal_variances = NULL,
+    topic = NULL,
+    document_edge_values = NULL,
+    word_type_topic_counts = NULL,
+    topic_token_counts = NULL,
+    current_word_type = NULL,
+    alpha_m = NULL,
+    beta_n = NULL,
+    rand_num = NULL,
+    author_indexes = NULL,
+    document_edge_matrix = NULL,
+    document_topic_counts = NULL,
+    token_topic_assignments = NULL,
+    token_word_types = NULL,
+    covars = NULL,
+    random_numbers = NULL,
+    accept_rates = NULL,
+    target_accept_rate = NULL,
+    tollerance = NULL,
+    update_size = NULL,
+    iterations = NULL,
+    metropolis_iterations = NULL,
+    total_number_of_tokens = NULL,
+    iterations_before_t_i_p_updates = NULL,
+    update_t_i_p_every_x_iterations = NULL,
+    perform_adaptive_metropolis = NULL){
 
-    # set all optional variables potentially used in the function to NULL inside
-    # a conditional that is never satisfied so that we avoid R CMD check error.
-    dont_preassign <- TRUE
-    if(!dont_preassign){
-        return_object <- NULL
-        seed <- NULL
-        distribution <- NULL
-        intercepts <- NULL
-        coefficients <- NULL
-        latent_pos <- NULL
-        sender <- NULL
-        recipient <- NULL
-        current_covariates <- NULL
-        interaction_pattern <- NULL
-        using_coefficients <- NULL
-        edge_probs <- NULL
-        tokens_in_document <- NULL
-        current_token_topic_assignment <- NULL
-        current_document_topic_counts <- NULL
-        leave_out_current_token <- NULL
-        topic_interaction_patterns <- NULL
-        document_sender <- NULL
-        document_recipient <- NULL
-        leave_out_topic <- NULL
-        intercepts <- NULL
-        coefficients <- NULL
-        latent_pos <- NULL
-        intercept_prior_mean <- NULL
-        intercept_prior_variance <- NULL
-        intercept_proposal_variances <- NULL
-        coefficient_prior_mean <- NULL
-        coefficient_prior_variance <- NULL
-        coefficient_proposal_variances <- NULL
-        latent_position_prior_mean <- NULL
-        latent_position_prior_variance <- NULL
-        latent_position_proposal_variances <- NULL
-        topic <- NULL
-        document_edge_values <- NULL
-        word_type_topic_counts <- NULL
-        topic_token_counts <- NULL
-        current_word_type <- NULL
-        alpha_m <- NULL
-        beta_n <- NULL
-        rand_num <- NULL
-        author_indexes <- NULL
-        document_edge_matrix <- NULL
-        document_topic_counts <- NULL
-        token_topic_assignments <- NULL
-        token_word_types <- NULL
-        covars <- NULL
-        random_numbers <- NULL
-        accept_rates <- NULL
-        target_accept_rate <- NULL
-        tollerance <- NULL
-        update_size <- NULL
-        iterations <- NULL
-        metropolis_iterations <- NULL
-        total_number_of_tokens <- NULL
-        iterations_before_t_i_p_updates <- NULL
-        update_t_i_p_every_x_iterations <- NULL
-        perform_adaptive_metropolis <- NULL
-    }
-
-    object <- as.list(substitute(list(...)))[-1L]
-    if (length(object) > 0) {
-        for (i in 1:length(object)) {
-            # try both direct assignment and get()
-            if (typeof(object[[i]]) == "symbol") {
-                # have to do this double get trick to make it work in all contexts.
-                temp <- dynGet(as.character(object[[i]]),
-                                       ifnotfound = get(as.character(object[[i]]),
-                                                        envir = envir))
-                assign(names(object)[i],temp)
-            }else{
-                assign(names(object)[i],object[[i]])
-            }
-        }
-    }
+    return_object <- NULL
 
     # test the lsms function
     if (Test_Log_Space_Multinomial_Sampler) {
-        if (is.null(distribution)) {
-            stop("you must provide an optional variable 'distribution', which is an unnormalized vetor of log probabilities.")
-        }
-        if (is.null(seed)) {
-            stop("you must provide an optional variable 'seed', which is an integer.")
-        }
         return_object <- lsms(distribution,
                               seed)
     }
@@ -193,8 +206,8 @@ test_internal_functions <- function(
         return_object <- ep(intercepts,
                          coefficients,
                          latent_pos,
-                         sender,
-                         recipient,
+                         document_sender,
+                         document_recipient,
                          current_covariates,
                          interaction_pattern,
                          using_coefficients)

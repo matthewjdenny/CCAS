@@ -13,16 +13,38 @@ test_internal_functions(Test_Log_Space_Multinomial_Sampler = FALSE,
   Test_Update_All_Token_Topic_Assignments = FALSE,
   Test_Update_Interaction_Pattern_Parameters = FALSE,
   Test_Update_Topic_Interaction_Pattern_Assignments = FALSE,
-  Test_Adaptive_Metropolis = FALSE, Test_Inference = FALSE,
-  envir = environment(), ...)
+  Test_Adaptive_Metropolis = FALSE, Test_Inference = FALSE, seed = NULL,
+  distribution = NULL, intercepts = NULL, coefficients = NULL,
+  latent_pos = NULL, document_sender = NULL, document_recipient = NULL,
+  current_covariates = NULL, interaction_pattern = NULL,
+  using_coefficients = NULL, edge_probs = NULL, tokens_in_document = NULL,
+  current_token_topic_assignment = NULL,
+  current_document_topic_counts = NULL, leave_out_current_token = NULL,
+  topic_interaction_patterns = NULL, leave_out_topic = NULL,
+  intercept_prior_mean = NULL, intercept_prior_variance = NULL,
+  intercept_proposal_variances = NULL, coefficient_prior_mean = NULL,
+  coefficient_prior_variance = NULL, coefficient_proposal_variances = NULL,
+  latent_position_prior_mean = NULL, latent_position_prior_variance = NULL,
+  latent_position_proposal_variances = NULL, topic = NULL,
+  document_edge_values = NULL, word_type_topic_counts = NULL,
+  topic_token_counts = NULL, current_word_type = NULL, alpha_m = NULL,
+  beta_n = NULL, rand_num = NULL, author_indexes = NULL,
+  document_edge_matrix = NULL, document_topic_counts = NULL,
+  token_topic_assignments = NULL, token_word_types = NULL, covars = NULL,
+  random_numbers = NULL, accept_rates = NULL, target_accept_rate = NULL,
+  tollerance = NULL, update_size = NULL, iterations = NULL,
+  metropolis_iterations = NULL, total_number_of_tokens = NULL,
+  iterations_before_t_i_p_updates = NULL,
+  update_t_i_p_every_x_iterations = NULL,
+  perform_adaptive_metropolis = NULL)
 }
 \arguments{
 \item{Test_Log_Space_Multinomial_Sampler}{Defualts to FALSE. If TRUE, then
 optional arguments 'distribution' and 'seed' must be provided.}
 
 \item{Test_Edge_Probability}{Defaults to FALSE. If TRUE, then optional arguments
-'intercepts', 'coefficients', 'latent_pos', 'sender', 'recipient',
-'current_covariates', 'interaction_pattern', and 'using_coefficients' must be
+'intercepts, coefficients, latent_pos, document_sender, document_recipient,
+'current_covariates', interaction_pattern, and using_coefficients must be
 provided.}
 
 \item{Test_Sum_Over_T_Edge_Probs}{Defaults to FALSE. If TRUE, then optional
@@ -31,8 +53,7 @@ arguments 'edge_probs', 'tokens_in_document', 'current_token_topic_assignment',
 'topic_interaction_patterns', 'document_sender','document_recipient', and
 'leave_out_topic'. must be provided.}
 
-\item{Test_Prior_Pobability_Of_I_P_Params}{Defaults to FALSE. If TRUE, then optional
-arguments intercepts, coefficients, latent_pos, intercept_prior_mean,
+\item{Test_Prior_Pobability_Of_I_P_Params}{Defaults to FALSE. If TRUE, then optional arguments intercepts, coefficients, latent_pos, intercept_prior_mean,
 intercept_prior_variance, coefficient_prior_mean, coefficient_prior_variance,
 latent_position_prior_mean, latent_position_prior_variance,
 using_coefficients must be provided.}
@@ -104,10 +125,107 @@ update_size, seed, iterations, metropolis_iterations, total_number_of_tokens,
 iterations_before_t_i_p_updates, update_t_i_p_every_x_iterations,
 perform_adaptive_metropolis must be provided.}
 
-\item{envir}{Should not be changed by the user, captures the current
-environment to facilitate testing.}
+\item{seed}{An integerg.}
 
-\item{...}{optional arguments necessary to run each of the internal functions.}
+\item{distribution}{A log-space vector}
+
+\item{intercepts}{A vector.}
+
+\item{coefficients}{A matrix.}
+
+\item{latent_pos}{An array.}
+
+\item{document_sender}{An integer.}
+
+\item{document_recipient}{An integer.}
+
+\item{current_covariates}{A vector}
+
+\item{interaction_pattern}{An integer}
+
+\item{using_coefficients}{A boolean.}
+
+\item{edge_probs}{An array}
+
+\item{tokens_in_document}{An integer}
+
+\item{current_token_topic_assignment}{An integer}
+
+\item{current_document_topic_counts}{A vector.}
+
+\item{leave_out_current_token}{A logical}
+
+\item{topic_interaction_patterns}{a vector}
+
+\item{leave_out_topic}{An integer.}
+
+\item{intercept_prior_mean}{A double.}
+
+\item{intercept_prior_variance}{A double.}
+
+\item{intercept_proposal_variances}{A vector.}
+
+\item{coefficient_prior_mean}{A double.}
+
+\item{coefficient_prior_variance}{A double.}
+
+\item{coefficient_proposal_variances}{A vector.}
+
+\item{latent_position_prior_mean}{A double.}
+
+\item{latent_position_prior_variance}{A double.}
+
+\item{latent_position_proposal_variances}{A vector.}
+
+\item{topic}{An integer.}
+
+\item{document_edge_values}{A vector.}
+
+\item{word_type_topic_counts}{A matrix}
+
+\item{topic_token_counts}{A matrix.}
+
+\item{current_word_type}{An integer.}
+
+\item{alpha_m}{A vector}
+
+\item{beta_n}{A vector}
+
+\item{rand_num}{An integer}
+
+\item{author_indexes}{A vector}
+
+\item{document_edge_matrix}{A matrix}
+
+\item{document_topic_counts}{A matrix}
+
+\item{token_topic_assignments}{A List}
+
+\item{token_word_types}{A List}
+
+\item{covars}{An array}
+
+\item{random_numbers}{A vector}
+
+\item{accept_rates}{A vector.}
+
+\item{target_accept_rate}{A double.}
+
+\item{tollerance}{A dobule.}
+
+\item{update_size}{A double.}
+
+\item{iterations}{An integer.}
+
+\item{metropolis_iterations}{An integer.}
+
+\item{total_number_of_tokens}{An integer.}
+
+\item{iterations_before_t_i_p_updates}{An integer.}
+
+\item{update_t_i_p_every_x_iterations}{An integer.}
+
+\item{perform_adaptive_metropolis}{A boolean.}
 }
 \value{
 Whatever is returned by the internal function being tested
