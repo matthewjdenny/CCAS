@@ -26,10 +26,11 @@ test_that("That calculating edge probability works", {
     hand_calculation <- plogis(lin_pred)
 
     # I have noticed some small differences in the values of the hand and
-    # function calculated values after the 4th decimal place. Will want to
-    # investigate but is likely due to a loss of precision while passing numbers
-    # in to C++ which will not be an issue in C++ since we are going to be
-    # calculating everythin in that space.
+    # function calculated values after the 4th decimal place. I have confirmed
+    # that these result from rounding that gets done when passing numbers into
+    # C++ using the NumericVector class in Rcpp. Will look to see if there is
+    # another way we can pass stuff in to get exact results. Does not affect
+    # functions that do not need to pass in arrays.
 
     expect_equal(round(result,4),round(hand_calculation,4))
 
