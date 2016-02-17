@@ -494,6 +494,8 @@ namespace mjd {
                 document_edge_values,
                 topic_interaction_patterns,
                 document_sender);
+            // for testing.
+            // Rcpp::Rcout << "LSM Contribution: " << lsm_contr << std::endl;
 
             double lda_contr = mjd::lda_contribution(
                 tokens_in_document,
@@ -506,6 +508,8 @@ namespace mjd {
                 alpha_m,
                 beta_n,
                 beta);
+            // for testing.
+            // Rcpp::Rcout << "LDA Contribution: " << lda_contr << std::endl;
 
             // add the values (since we are working in log space) and put them
             // in the appropriate bin the in the distribution.
