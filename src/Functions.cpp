@@ -587,8 +587,16 @@ namespace mjd {
             // get the current number of tokens
             int tokens_in_document = current_token_topic_assignments.n_elem;
             // allocate all of our document specific variables
-            arma::vec current_document_topic_counts = document_topic_counts.row(i);
-            arma::vec document_edge_values = document_edge_matrix.row(i);
+
+            // we need to allocate row vectors from a matrix before we can
+            // convert to arma::vec as desired (typeing issue)
+            arma::rowvec temp = document_topic_counts.row(i);
+            arma::rowvec temp2 = document_edge_matrix.row(i);
+
+            // now we convert to an arma::vec (ugly but it works)
+            arma::vec current_document_topic_counts = arma::conv_to<arma::vec>::from(temp);
+            arma::vec document_edge_values = arma::conv_to<arma::vec>::from(temp2);
+
             int document_sender = author_indexes[i];
 
             // loop over tokens
@@ -749,9 +757,17 @@ namespace mjd {
 
         // loop over documents
         for (int i = 0; i < number_of_documents; ++i) {
+
             // allocate all of our document specific variables
-            arma::vec current_document_topic_counts = document_topic_counts.row(i);
-            arma::vec document_edge_values = document_edge_matrix.row(i);
+
+            // we need to allocate row vectors from a matrix before we can
+            // convert to arma::vec as desired (typeing issue)
+            arma::rowvec temp = document_topic_counts.row(i);
+            arma::rowvec temp2 = document_edge_matrix.row(i);
+
+            // now we convert to an arma::vec (ugly but it works)
+            arma::vec current_document_topic_counts = arma::conv_to<arma::vec>::from(temp);
+            arma::vec document_edge_values = arma::conv_to<arma::vec>::from(temp2);
             // get the current number of tokens
             int tokens_in_document = arma::sum(current_document_topic_counts);
             int document_sender = author_indexes[i];
@@ -871,8 +887,16 @@ namespace mjd {
             // loop over documents
             for (int i = 0; i < number_of_documents; ++i) {
                 // allocate all of our document specific variables
-                arma::vec current_document_topic_counts = document_topic_counts.row(i);
-                arma::vec document_edge_values = document_edge_matrix.row(i);
+
+                // we need to allocate row vectors from a matrix before we can
+                // convert to arma::vec as desired (typeing issue)
+                arma::rowvec temp = document_topic_counts.row(i);
+                arma::rowvec temp2 = document_edge_matrix.row(i);
+
+                // now we convert to an arma::vec (ugly but it works)
+                arma::vec current_document_topic_counts = arma::conv_to<arma::vec>::from(temp);
+                arma::vec document_edge_values = arma::conv_to<arma::vec>::from(temp2);
+
                 // get the current number of tokens
                 int tokens_in_document = arma::sum(current_document_topic_counts);
                 int document_sender = author_indexes[i];
@@ -915,8 +939,16 @@ namespace mjd {
                 // loop over documents
                 for (int i = 0; i < number_of_documents; ++i) {
                     // allocate all of our document specific variables
-                    arma::vec current_document_topic_counts = document_topic_counts.row(i);
-                    arma::vec document_edge_values = document_edge_matrix.row(i);
+
+                    // we need to allocate row vectors from a matrix before we can
+                    // convert to arma::vec as desired (typeing issue)
+                    arma::rowvec temp = document_topic_counts.row(i);
+                    arma::rowvec temp2 = document_edge_matrix.row(i);
+
+                    // now we convert to an arma::vec (ugly but it works)
+                    arma::vec current_document_topic_counts = arma::conv_to<arma::vec>::from(temp);
+                    arma::vec document_edge_values = arma::conv_to<arma::vec>::from(temp2);
+
                     // get the current number of tokens
                     int tokens_in_document = arma::sum(current_document_topic_counts);
                     int document_sender = author_indexes[i];
