@@ -28,7 +28,7 @@ test_internal_functions(Test_Log_Space_Multinomial_Sampler = FALSE,
   latent_position_proposal_variances = NULL, topic = NULL,
   document_edge_values = NULL, word_type_topic_counts = NULL,
   topic_token_counts = NULL, current_word_type = NULL, alpha_m = NULL,
-  beta_n = NULL, rand_num = NULL, author_indexes = NULL,
+  beta_n = NULL, beta = NULL, rand_num = NULL, author_indexes = NULL,
   document_edge_matrix = NULL, document_topic_counts = NULL,
   token_topic_assignments = NULL, token_word_types = NULL, covars = NULL,
   random_numbers = NULL, accept_rates = NULL, target_accept_rate = NULL,
@@ -191,6 +191,8 @@ perform_adaptive_metropolis must be provided.}
 \item{alpha_m}{A vector}
 
 \item{beta_n}{A vector}
+
+\item{beta}{Is equal to sum(beta_n)}
 
 \item{rand_num}{An integer}
 

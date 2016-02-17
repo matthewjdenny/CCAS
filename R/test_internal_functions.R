@@ -108,6 +108,7 @@
 #' @param current_word_type An integer.
 #' @param alpha_m A vector
 #' @param beta_n A vector
+#' @param beta Is equal to sum(beta_n)
 #' @param rand_num An integer
 #' @param author_indexes A vector
 #' @param document_edge_matrix A matrix
@@ -175,6 +176,7 @@ test_internal_functions <- function(
     current_word_type = NULL,
     alpha_m = NULL,
     beta_n = NULL,
+    beta = NULL,
     rand_num = NULL,
     author_indexes = NULL,
     document_edge_matrix = NULL,
