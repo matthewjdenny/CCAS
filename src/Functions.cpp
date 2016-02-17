@@ -1283,7 +1283,8 @@ namespace mjd {
                            }
                        }
                        latent_position_storage_counter += 1;
-                   }
+                   }// loop over latent dimensions has to be last as they are
+                   // stacked in the returned array
                 }//end of storage conditional
 
             }// end of metropolis hastings loop
