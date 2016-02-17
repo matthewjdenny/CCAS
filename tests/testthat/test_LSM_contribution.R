@@ -1,4 +1,4 @@
-test_that("That sampling new interaction pattern params works", {
+test_that("That LSM contribution works", {
     skip_on_cran()
 
     # create an example distribution
