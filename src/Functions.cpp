@@ -184,6 +184,8 @@ namespace mjd {
                                     document_sender,
                                     document_recipient,
                                     topic_interaction_patterns[i]);
+                // for testing, print out the sum as we generate it.
+                // Rcpp::Rcout << "Sum: " << sum << std::endl;
             }
         }
 
@@ -1348,7 +1350,7 @@ int lsms(arma::vec unnormalized_discrete_distribution,
 }
 
 // [[Rcpp::export]]
-int sotep(NumericVector edge_probs,
+double sotep(NumericVector edge_probs,
           int tokens_in_document,
           int current_token_topic_assignment,
           arma::vec current_document_topic_counts,

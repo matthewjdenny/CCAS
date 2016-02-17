@@ -37,7 +37,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // sotep
-int sotep(NumericVector edge_probs, int tokens_in_document, int current_token_topic_assignment, arma::vec current_document_topic_counts, bool leave_out_current_token, arma::vec topic_interaction_patterns, int document_sender, int document_recipient, int leave_out_topic);
+double sotep(NumericVector edge_probs, int tokens_in_document, int current_token_topic_assignment, arma::vec current_document_topic_counts, bool leave_out_current_token, arma::vec topic_interaction_patterns, int document_sender, int document_recipient, int leave_out_topic);
 RcppExport SEXP CCAS_sotep(SEXP edge_probsSEXP, SEXP tokens_in_documentSEXP, SEXP current_token_topic_assignmentSEXP, SEXP current_document_topic_countsSEXP, SEXP leave_out_current_tokenSEXP, SEXP topic_interaction_patternsSEXP, SEXP document_senderSEXP, SEXP document_recipientSEXP, SEXP leave_out_topicSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;

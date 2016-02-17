@@ -395,10 +395,6 @@ test_internal_functions <- function(
             update_t_i_p_every_x_iterations,
             perform_adaptive_metropolis)
     }
-
-
-
-
     # return whatever needs to be returned
     return(return_object)
 }
