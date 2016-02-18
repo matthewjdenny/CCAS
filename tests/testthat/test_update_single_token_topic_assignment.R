@@ -26,7 +26,7 @@ test_that("That Update_Single_Token_Topic_Assignment works", {
     # first lets try without covariates
     result <- test_internal_functions(
         Test_Update_Single_Token_Topic_Assignment = TRUE,
-        edge_probs = edge_probs,
+        edge_probabilities = edge_probs,
         tokens_in_document = 24,
         current_token_topic_assignment = 2,
         current_document_topic_counts = c(5,10,2,6,1),

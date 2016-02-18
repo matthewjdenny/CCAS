@@ -74,8 +74,8 @@ test_that("That Update_Interaction_Pattern_Parameters works", {
         topic_interaction_patterns = topic_interaction_patterns,
         intercepts = intercepts,
         coefficients = coefficients,
-        latent_pos = latent_pos,
-        covars = covars,
+        latent_positions = latent_pos,
+        covariates = covars,
         using_coefficients = TRUE,
         intercept_prior_mean = 0,
         intercept_prior_variance = 4,
@@ -87,7 +87,7 @@ test_that("That Update_Interaction_Pattern_Parameters works", {
         latent_position_prior_variance = 4,
         latent_position_proposal_variances = c(0.5,0.5,0.5,0.5),
         rand_num = runif(1),
-        edge_probs = edge_probs)
+        edge_probabilities = edge_probs)
 
     # no errors!
 

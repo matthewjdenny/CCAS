@@ -16,7 +16,8 @@ test_that("That Adaptive_Metropolis works", {
         tollerance = 0.05,
         update_size = 0.05)
 
-    expect_equal(result[[1]], c(0.5,0.45,0.55,0.5))
+    res <- as.numeric(result[[1]])
+    expect_equal(res, c(0.5,0.55,0.45,0.5))
     # no errors!
 
 })

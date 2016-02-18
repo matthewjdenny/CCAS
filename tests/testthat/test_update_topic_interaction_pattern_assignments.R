@@ -74,11 +74,11 @@ test_that("That Update_Topic_Interaction_Pattern_Assignments works", {
         topic_interaction_patterns = topic_interaction_patterns,
         intercepts = intercepts,
         coefficients = coefficients,
-        latent_pos = latent_pos,
-        covars = covars,
+        latent_positions = latent_pos,
+        covariates = covars,
         using_coefficients = TRUE,
         random_numbers = runif(num_topics),
-        edge_probs = edge_probs)
+        edge_probabilities = edge_probs)
 
     # no errors!
 

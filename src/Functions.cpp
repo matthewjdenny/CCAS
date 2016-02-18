@@ -1344,18 +1344,12 @@ using namespace Rcpp;
 // [[Rcpp::export]]
 double ep(arma::vec intercepts,
        arma::mat coefficients,
-       NumericVector latent_pos,
+       arma::cube latent_positions,
        int sender,
        int recipient,
        arma::vec current_covariates,
        int interaction_pattern,
        bool using_coefficients){
-
-    // we have to do this stupid trick to pass in 3d arrays from R. We pass in as
-    // a vector, then instatiate a cube object from there.
-    IntegerVector arrayDims = latent_pos.attr("dim");
-    arma::cube latent_positions(latent_pos.begin(), arrayDims[0], arrayDims[1],
-                                arrayDims[2], false);
 
     double prob = mjd::edge_probability (intercepts,
             coefficients,
@@ -1389,7 +1383,7 @@ int lsms(arma::vec unnormalized_discrete_distribution,
 }
 
 // [[Rcpp::export]]
-double sotep(NumericVector edge_probs,
+double sotep(arma::cube edge_probabilities,
           int tokens_in_document,
           int current_token_topic_assignment,
           arma::vec current_document_topic_counts,
@@ -1398,12 +1392,6 @@ double sotep(NumericVector edge_probs,
           int document_sender,
           int document_recipient,
           int leave_out_topic){
-
-    // we have to do this stupid trick to pass in 3d arrays from R. We pass in as
-    // a vector, then instatiate a cube object from there.
-    IntegerVector arrayDims = edge_probs.attr("dim");
-    arma::cube edge_probabilities(edge_probs.begin(), arrayDims[0], arrayDims[1],
-                                arrayDims[2], false);
 
     double sum = mjd::sum_over_t_edge_probability (
         edge_probabilities,
@@ -1422,7 +1410,7 @@ double sotep(NumericVector edge_probs,
 // [[Rcpp::export]]
 double ppipp(arma::vec intercepts,
           arma::mat coefficients,
-          NumericVector latent_pos,
+          arma::cube latent_positions,
           double intercept_prior_mean,
           double intercept_prior_variance,
           double coefficient_prior_mean,
@@ -1433,9 +1421,9 @@ double ppipp(arma::vec intercepts,
 
     // we have to do this stupid trick to pass in 3d arrays from R. We pass in as
     // a vector, then instatiate a cube object from there.
-    IntegerVector arrayDims = latent_pos.attr("dim");
-    arma::cube latent_positions(latent_pos.begin(), arrayDims[0], arrayDims[1],
-                                  arrayDims[2], false);
+    // IntegerVector arrayDims = latent_pos.attr("dim");
+    // arma::cube latent_positions(latent_pos.begin(), arrayDims[0], arrayDims[1],
+    //                               arrayDims[2], false);
 
     double log_prob = mjd::prior_probability_interaction_pattern_parameters (
         intercepts,
@@ -1455,17 +1443,11 @@ double ppipp(arma::vec intercepts,
 // [[Rcpp::export]]
 List snipp(arma::vec intercepts,
           arma::mat coefficients,
-          NumericVector latent_pos,
+          arma::cube latent_positions,
           arma::vec intercept_proposal_variances,
           arma::vec coefficient_proposal_variances,
           arma::vec latent_position_proposal_variances,
           bool using_coefficients){
-
-    // we have to do this stupid trick to pass in 3d arrays from R. We pass in as
-    // a vector, then instatiate a cube object from there.
-    IntegerVector arrayDims = latent_pos.attr("dim");
-    arma::cube latent_positions(latent_pos.begin(), arrayDims[0], arrayDims[1],
-                                arrayDims[2], false);
 
     List new_params = mjd::sample_new_interaction_pattern_parameters (
         intercepts,
@@ -1480,7 +1462,7 @@ List snipp(arma::vec intercepts,
 }
 
 // [[Rcpp::export]]
-double lsmc(NumericVector edge_probs,
+double lsmc(arma::cube edge_probabilities,
             int tokens_in_document,
             int topic,
             int current_token_topic_assignment,
@@ -1488,12 +1470,6 @@ double lsmc(NumericVector edge_probs,
             arma::vec document_edge_values,
             arma::vec topic_interaction_patterns,
             int document_sender){
-
-    // we have to do this stupid trick to pass in 3d arrays from R. We pass in as
-    // a vector, then instatiate a cube object from there.
-    IntegerVector arrayDims = edge_probs.attr("dim");
-    arma::cube edge_probabilities(edge_probs.begin(), arrayDims[0], arrayDims[1],
-                                  arrayDims[2], false);
 
     double contrib = mjd::lsm_contribution (
         edge_probabilities,
@@ -1539,7 +1515,7 @@ double ldac(int tokens_in_document,
 
 
 // [[Rcpp::export]]
-int ustta(NumericVector edge_probs,
+int ustta(arma::cube edge_probabilities,
         int tokens_in_document,
         int current_token_topic_assignment,
         arma::vec current_document_topic_counts,
@@ -1552,12 +1528,6 @@ int ustta(NumericVector edge_probs,
         arma::vec topic_interaction_patterns,
         int document_sender,
         double rand_num){
-
-    // we have to do this stupid trick to pass in 3d arrays from R. We pass in as
-    // a vector, then instatiate a cube object from there.
-    IntegerVector arrayDims = edge_probs.attr("dim");
-    arma::cube edge_probabilities(edge_probs.begin(), arrayDims[0], arrayDims[1],
-                                  arrayDims[2], false);
 
     int assignment = mjd::update_single_token_topic_assignment(
             edge_probabilities,
@@ -1588,21 +1558,12 @@ List utta(arma::vec author_indexes,
         Rcpp::List token_word_types,
         arma::vec intercepts,
         arma::mat coefficients,
-        NumericVector latent_pos,
-        NumericVector covars,
+        arma::cube latent_positions,
+        arma::cube covariates,
         arma::vec alpha_m,
         arma::vec beta_n,
         arma::vec random_numbers,
         bool using_coefficients){
-
-    // Make sure you supply a NumericVector as input!
-    // we have to do this stupid trick to pass in 3d arrays from R. We pass in as
-    // a vector, then instatiate a cube object from there.
-    IntegerVector arrayDims = latent_pos.attr("dim");
-    arma::cube latent_positions(latent_pos.begin(), arrayDims[0], arrayDims[1], arrayDims[2], false);
-
-    IntegerVector arrayDims2 = covars.attr("dim");
-    arma::cube covariates(covars.begin(), arrayDims2[0], arrayDims2[1], arrayDims2[2], false);
 
     //random_numbers has length equal to the total number of tokens in the corpus.
     List ret_list = mjd::update_token_topic_assignments(
@@ -1635,8 +1596,8 @@ List uipp(arma::vec author_indexes,
           arma::vec topic_interaction_patterns,
           arma::vec intercepts,
           arma::mat coefficients,
-          NumericVector latent_pos,
-          NumericVector covars,
+          arma::cube latent_positions,
+          arma::cube covariates,
           bool using_coefficients,
           double intercept_prior_mean,
           double intercept_prior_variance,
@@ -1648,22 +1609,7 @@ List uipp(arma::vec author_indexes,
           double latent_position_prior_variance,
           arma::vec latent_position_proposal_variances,
           double random_number,
-          NumericVector edge_probs){
-
-    // Make sure you supply a NumericVector as input!
-    // we have to do this stupid trick to pass in 3d arrays from R. We pass in as
-    // a vector, then instatiate a cube object from there.
-    IntegerVector arrayDims = latent_pos.attr("dim");
-    arma::cube latent_positions(latent_pos.begin(), arrayDims[0], arrayDims[1],
-                                arrayDims[2], false);
-
-    IntegerVector arrayDims2 = covars.attr("dim");
-    arma::cube covariates(covars.begin(), arrayDims2[0], arrayDims2[1],
-                          arrayDims2[2], false);
-
-    IntegerVector arrayDims3 = edge_probs.attr("dim");
-    arma::cube edge_probabilities(edge_probs.begin(), arrayDims3[0],
-                                  arrayDims3[1], arrayDims3[2], false);
+          arma::cube edge_probabilities){
 
     //random_numbers has length equal to the total number of tokens in the corpus.
     List ret_list =  mjd::update_interaction_pattern_parameters(
@@ -1700,26 +1646,11 @@ arma::vec utipa(arma::vec author_indexes,
            arma::vec topic_interaction_patterns,
            arma::vec intercepts,
            arma::mat coefficients,
-           NumericVector latent_pos,
-           NumericVector covars,
+           arma::cube latent_positions,
+           arma::cube covariates,
            bool using_coefficients,
            arma::vec random_numbers,
-           NumericVector edge_probs){
-
-    // Make sure you supply a NumericVector as input!
-    // we have to do this stupid trick to pass in 3d arrays from R. We pass in as
-    // a vector, then instatiate a cube object from there.
-    IntegerVector arrayDims = latent_pos.attr("dim");
-    arma::cube latent_positions(latent_pos.begin(), arrayDims[0], arrayDims[1],
-                                arrayDims[2], false);
-
-    IntegerVector arrayDims2 = covars.attr("dim");
-    arma::cube covariates(covars.begin(), arrayDims2[0], arrayDims2[1],
-                          arrayDims2[2], false);
-
-    IntegerVector arrayDims3 = edge_probs.attr("dim");
-    arma::cube edge_probabilities(edge_probs.begin(), arrayDims3[0],
-                                  arrayDims3[1], arrayDims3[2], false);
+           arma::cube edge_probabilities){
 
     //random_numbers has length equal to the total number of tokens in the corpus.
     arma::vec return_vec =  mjd::update_topic_interaction_pattern_assignments(
@@ -1773,8 +1704,8 @@ List model_inference(arma::vec author_indexes,
                      Rcpp::List token_word_types,
                      arma::vec intercepts,
                      arma::mat coefficients,
-                     NumericVector latent_pos,
-                     NumericVector covars,
+                     arma::cube latent_positions,
+                     arma::cube covariates,
                      arma::vec alpha_m,
                      arma::vec beta_n,
                      bool using_coefficients,
@@ -1797,17 +1728,6 @@ List model_inference(arma::vec author_indexes,
                      int iterations_before_t_i_p_updates,
                      int update_t_i_p_every_x_iterations,
                      bool perform_adaptive_metropolis){
-
-    // Make sure you supply a NumericVector as input!
-    // we have to do this stupid trick to pass in 3d arrays from R. We pass in as
-    // a vector, then instatiate a cube object from there.
-    IntegerVector arrayDims = latent_pos.attr("dim");
-    arma::cube latent_positions(latent_pos.begin(), arrayDims[0], arrayDims[1],
-                                arrayDims[2], false);
-
-    IntegerVector arrayDims2 = covars.attr("dim");
-    arma::cube covariates(covars.begin(), arrayDims2[0], arrayDims2[1],
-                          arrayDims2[2], false);
 
     List ret_list =  mjd::inference(
         author_indexes,

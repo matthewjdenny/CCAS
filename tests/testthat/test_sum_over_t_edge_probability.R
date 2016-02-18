@@ -9,7 +9,7 @@ test_that("That the sum over t edge probabilities works", {
     # first lets try without holding out a token or topic
     result <- test_internal_functions(
         Test_Sum_Over_T_Edge_Probs = TRUE,
-        edge_probs = edge_probs,
+        edge_probabilities = edge_probs,
         tokens_in_document = 24,
         current_token_topic_assignment = 2,
         current_document_topic_counts = c(5,10,2,6,1),
@@ -38,7 +38,7 @@ test_that("That the sum over t edge probabilities works", {
     # now lets try holding out a topic
     result2 <- test_internal_functions(
         Test_Sum_Over_T_Edge_Probs = TRUE,
-        edge_probs = edge_probs,
+        edge_probabilities = edge_probs,
         tokens_in_document = 24,
         current_token_topic_assignment = 2,
         current_document_topic_counts = c(5,10,2,6,1),
@@ -64,7 +64,7 @@ test_that("That the sum over t edge probabilities works", {
     # now lets try holding out a topic
     result3 <- test_internal_functions(
         Test_Sum_Over_T_Edge_Probs = TRUE,
-        edge_probs = edge_probs,
+        edge_probabilities = edge_probs,
         tokens_in_document = 24,
         current_token_topic_assignment = 2,
         current_document_topic_counts = c(5,10,2,6,1),

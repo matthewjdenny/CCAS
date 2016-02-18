@@ -9,7 +9,7 @@ test_that("That LSM contribution works", {
     # first lets try without covariates
     result <- test_internal_functions(
         Test_LSM_Contribution = TRUE,
-        edge_probs = edge_probs,
+        edge_probabilities = edge_probs,
         tokens_in_document = 24,
         topic = 1,
         current_token_topic_assignment = 2,

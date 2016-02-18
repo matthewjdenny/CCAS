@@ -79,13 +79,13 @@
 #' @param distribution A log-space vector
 #' @param intercepts A vector.
 #' @param coefficients A matrix.
-#' @param latent_pos An array.
+#' @param latent_positions An array.
 #' @param document_sender An integer.
 #' @param document_recipient An integer.
 #' @param current_covariates A vector
 #' @param interaction_pattern An integer
 #' @param using_coefficients A boolean.
-#' @param edge_probs An array
+#' @param edge_probabilities An array
 #' @param tokens_in_document An integer
 #' @param current_token_topic_assignment An integer
 #' @param current_document_topic_counts A vector.
@@ -115,7 +115,7 @@
 #' @param document_topic_counts A matrix
 #' @param token_topic_assignments A List
 #' @param token_word_types A List
-#' @param covars An array
+#' @param covariates An array
 #' @param random_numbers A vector
 #' @param accept_rates A vector.
 #' @param target_accept_rate A double.
@@ -147,13 +147,13 @@ test_internal_functions <- function(
     distribution = NULL,
     intercepts = NULL,
     coefficients = NULL,
-    latent_pos = NULL,
+    latent_positions = NULL,
     document_sender = NULL,
     document_recipient = NULL,
     current_covariates = NULL,
     interaction_pattern = NULL,
     using_coefficients = NULL,
-    edge_probs = NULL,
+    edge_probabilities = NULL,
     tokens_in_document = NULL,
     current_token_topic_assignment = NULL,
     current_document_topic_counts = NULL,
@@ -183,7 +183,7 @@ test_internal_functions <- function(
     document_topic_counts = NULL,
     token_topic_assignments = NULL,
     token_word_types = NULL,
-    covars = NULL,
+    covariates = NULL,
     random_numbers = NULL,
     accept_rates = NULL,
     target_accept_rate = NULL,
@@ -208,7 +208,7 @@ test_internal_functions <- function(
     if (Test_Edge_Probability) {
         return_object <- ep(intercepts,
                          coefficients,
-                         latent_pos,
+                         latent_positions,
                          document_sender,
                          document_recipient,
                          current_covariates,
@@ -217,7 +217,7 @@ test_internal_functions <- function(
     }
 
     if (Test_Sum_Over_T_Edge_Probs) {
-        return_object <- sotep(edge_probs,
+        return_object <- sotep(edge_probabilities,
               tokens_in_document,
               current_token_topic_assignment,
               current_document_topic_counts,
@@ -231,7 +231,7 @@ test_internal_functions <- function(
     if (Test_Prior_Pobability_Of_I_P_Params) {
         return_object <- ppipp(intercepts,
               coefficients,
-              latent_pos,
+              latent_positions,
               intercept_prior_mean,
               intercept_prior_variance,
               coefficient_prior_mean,
@@ -244,7 +244,7 @@ test_internal_functions <- function(
     if (Test_Sample_New_I_P_Parameters) {
         return_object <- snipp(intercepts,
               coefficients,
-              latent_pos,
+              latent_positions,
               intercept_proposal_variances,
               coefficient_proposal_variances,
               latent_position_proposal_variances,
@@ -253,7 +253,7 @@ test_internal_functions <- function(
 
     if (Test_LSM_Contribution) {
         return_object <- lsmc(
-            edge_probs,
+            edge_probabilities,
             tokens_in_document,
             topic,
             current_token_topic_assignment,
@@ -278,7 +278,7 @@ test_internal_functions <- function(
     }
 
     if (Test_Update_Single_Token_Topic_Assignment) {
-        return_object <- ustta(edge_probs,
+        return_object <- ustta(edge_probabilities,
               tokens_in_document,
               current_token_topic_assignment,
               current_document_topic_counts,
@@ -304,8 +304,8 @@ test_internal_functions <- function(
             token_word_types,
             intercepts,
             coefficients,
-            latent_pos,
-            covars,
+            latent_positions,
+            covariates,
             alpha_m,
             beta_n,
             random_numbers,
@@ -320,8 +320,8 @@ test_internal_functions <- function(
             topic_interaction_patterns,
             intercepts,
             coefficients,
-            latent_pos,
-            covars,
+            latent_positions,
+            covariates,
             using_coefficients,
             intercept_prior_mean,
             intercept_prior_variance,
@@ -333,7 +333,7 @@ test_internal_functions <- function(
             latent_position_prior_variance,
             latent_position_proposal_variances,
             rand_num,
-            edge_probs)
+            edge_probabilities)
     }
 
     if (Test_Update_Topic_Interaction_Pattern_Assignments) {
@@ -343,11 +343,11 @@ test_internal_functions <- function(
                                topic_interaction_patterns,
                                intercepts,
                                coefficients,
-                               latent_pos,
-                               covars,
+                               latent_positions,
+                               covariates,
                                using_coefficients,
                                random_numbers,
-                               edge_probs)
+                               edge_probabilities)
     }
 
     if (Test_Adaptive_Metropolis) {
@@ -372,8 +372,8 @@ test_internal_functions <- function(
             token_word_types,
             intercepts,
             coefficients,
-            latent_pos,
-            covars,
+            latent_positions,
+            covariates,
             alpha_m,
             beta_n,
             using_coefficients,

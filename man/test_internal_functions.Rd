@@ -15,9 +15,10 @@ test_internal_functions(Test_Log_Space_Multinomial_Sampler = FALSE,
   Test_Update_Topic_Interaction_Pattern_Assignments = FALSE,
   Test_Adaptive_Metropolis = FALSE, Test_Inference = FALSE, seed = NULL,
   distribution = NULL, intercepts = NULL, coefficients = NULL,
-  latent_pos = NULL, document_sender = NULL, document_recipient = NULL,
-  current_covariates = NULL, interaction_pattern = NULL,
-  using_coefficients = NULL, edge_probs = NULL, tokens_in_document = NULL,
+  latent_positions = NULL, document_sender = NULL,
+  document_recipient = NULL, current_covariates = NULL,
+  interaction_pattern = NULL, using_coefficients = NULL,
+  edge_probabilities = NULL, tokens_in_document = NULL,
   current_token_topic_assignment = NULL,
   current_document_topic_counts = NULL, leave_out_current_token = NULL,
   topic_interaction_patterns = NULL, leave_out_topic = NULL,
@@ -30,11 +31,11 @@ test_internal_functions(Test_Log_Space_Multinomial_Sampler = FALSE,
   topic_token_counts = NULL, current_word_type = NULL, alpha_m = NULL,
   beta_n = NULL, beta = NULL, rand_num = NULL, author_indexes = NULL,
   document_edge_matrix = NULL, document_topic_counts = NULL,
-  token_topic_assignments = NULL, token_word_types = NULL, covars = NULL,
-  random_numbers = NULL, accept_rates = NULL, target_accept_rate = NULL,
-  tollerance = NULL, update_size = NULL, iterations = NULL,
-  metropolis_iterations = NULL, total_number_of_tokens = NULL,
-  iterations_before_t_i_p_updates = NULL,
+  token_topic_assignments = NULL, token_word_types = NULL,
+  covariates = NULL, random_numbers = NULL, accept_rates = NULL,
+  target_accept_rate = NULL, tollerance = NULL, update_size = NULL,
+  iterations = NULL, metropolis_iterations = NULL,
+  total_number_of_tokens = NULL, iterations_before_t_i_p_updates = NULL,
   update_t_i_p_every_x_iterations = NULL,
   perform_adaptive_metropolis = NULL)
 }
@@ -134,7 +135,7 @@ perform_adaptive_metropolis must be provided.}
 
 \item{coefficients}{A matrix.}
 
-\item{latent_pos}{An array.}
+\item{latent_positions}{An array.}
 
 \item{document_sender}{An integer.}
 
@@ -146,7 +147,7 @@ perform_adaptive_metropolis must be provided.}
 
 \item{using_coefficients}{A boolean.}
 
-\item{edge_probs}{An array}
+\item{edge_probabilities}{An array}
 
 \item{tokens_in_document}{An integer}
 
@@ -206,7 +207,7 @@ perform_adaptive_metropolis must be provided.}
 
 \item{token_word_types}{A List}
 
-\item{covars}{An array}
+\item{covariates}{An array}
 
 \item{random_numbers}{A vector}
 

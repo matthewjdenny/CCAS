@@ -12,7 +12,7 @@ test_that("That calculating edge probability works", {
         Test_Edge_Probability = TRUE,
         intercepts =  c(1.0,2.0,3.0,4.0),
         coefficients = coefficients,
-        latent_pos = latent_pos,
+        latent_positions = latent_pos,
         document_sender = 0, # note that these have to be zero indexed
         document_recipient = 2, # note that these have to be zero indexed
         current_covariates = c(0,2.0,0,-4.0),
@@ -39,7 +39,7 @@ test_that("That calculating edge probability works", {
         Test_Edge_Probability = TRUE,
         intercepts =  c(1,2,3,4),
         coefficients = coefficients,
-        latent_pos = latent_pos,
+        latent_positions = latent_pos,
         document_sender = 0, # note that these have to be zero indexed
         document_recipient = 2, # note that these have to be zero indexed
         current_covariates = c(0,3,0,4),
