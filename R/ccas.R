@@ -49,6 +49,9 @@ ccas <- function(specification,
     # possible terms for inclusion in model specification.
     possible_terms <- c("euclidean","sender","receiver","nodemix")
 
+    # make sure that specification is a formula object
+    specification <- as.formula(specification)
+
     # parse the specification and return a list object.
     parsed_specifcation <- parsed_specifcation(specification,
                                                using_covariates,
