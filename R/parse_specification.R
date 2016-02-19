@@ -1,13 +1,19 @@
 parse_specification <- function(specification,
                                 using_covariates,
                                 covariate_data,
-                                possible_terms){
+                                possible_structural_terms,
+                                possible_covariate_terms,
+                                possible_network_terms){
 
     num_stats <- length(possible_terms)
     # parse the formula
     if (class(specification) != "formula") {
         stop("'specification' must be a formula object.")
     }
+
+    lhs <- deparse(formula[[2]])  # name of the response variable
+    messageNet <- dynGet(as.character(lhs),
+                         ifnotfound = get(as.character(lhs)))
 
     rhs <- paste0(deparse(specification[[3]]), collapse = "")  # rhs of formula
     rhs <- gsub("\\s+", "", rhs)  # get rid of redundant spaces
