@@ -47,7 +47,9 @@ ccas <- function(specification,
     }
 
     # possible terms for inclusion in model specification.
-    possible_terms <- c("euclidean","sender","receiver","nodemix")
+    possible_structural_terms <- c("euclidean")
+    possible_covariate_terms <- c("sender","receiver","nodemix")
+    possible_network_terms <- c("netcov")
 
     # make sure that specification is a formula object
     specification <- as.formula(specification)
@@ -56,7 +58,9 @@ ccas <- function(specification,
     parsed_specifcation <- parsed_specifcation(specification,
                                                using_covariates,
                                                covariate_data,
-                                               possible_terms)
+                                               possible_structural_terms,
+                                               possible_covariate_terms,
+                                               possible_network_terms)
 
     # initialize an object of class CCAS to store everything. This will include
     # initializing all latent variables and organizing data in a format that is
