@@ -38,6 +38,11 @@ prepare_data <- function(document_authors,
         stop("nrow(document_edge_matrix), nrow(document_term_matrix), length(document_authors) must all be equal, you provided data objects implying a different number of documents.")
     }
 
+    # make sure that the author indexes match up to the edge matrix
+    if (max(document_authors) > ncol(document_edge_matrix)) {
+        stop(paste("The values in document_authors must correspond to the columns in document_edge_matrix. You provided a document_author index that was larger than the number of columns in document_edge_matrix. Please respecify..."))
+    }
+
     # calculate some corpus level statistics
     vocabulary_size <- length(vocabulary)
     cat("Vocabulary size:", vocabulary_size, "unique terms...\n")
@@ -46,6 +51,8 @@ prepare_data <- function(document_authors,
     num_documents <- nrow(document_edge_matrix)
     num_edges <- sum(document_edge_matrix)
     cat("Total number of message recipients:", num_edges, "\n")
+    num_tokens <- sum(document_term_matrix)
+    cat("Total number of tokens in corpus:", num_tokens, "\n")
 
     ComNet_Object <- new("ComNet",
         document_authors = document_authors,
@@ -59,13 +66,15 @@ prepare_data <- function(document_authors,
         vocabulary_size = vocabulary_size,
         token_word_type_list = token_word_type_list,
         token_topic_assignment_list = token_topic_assignment_list,
-        network_covariates_list = network_covariates_list,
         aggregate_network = aggregate_network)
 
     # only assign if covariate_data is not NULL in order to aviod error
     if (using_covariates) {
         ComNet_Object@covariate_data <- covariate_data
     }
+
+    # network_covariates_list will be left NULL for now but will eventually
+    # store any network covariates passed in to the ccas function.
 
     return(ComNet_Object)
 }
