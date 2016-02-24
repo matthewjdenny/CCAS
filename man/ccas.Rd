@@ -4,21 +4,13 @@
 \alias{ccas}
 \title{Infer Communication Content and Structure}
 \usage{
-ccas(specification, document_authors, document_edge_matrix,
-  document_term_matrix, covariate_data = NULL, vocabulary = NULL,
-  interaction_patterns = 4, topics = 40, alpha = 1, beta = 0.01,
-  iterations = 1000, metropolis_hastings_iterations = 500,
-  target_accept_rate = 0.25, tollerance = 0.05)
+ccas(formula, document_authors, document_edge_matrix, document_term_matrix,
+  covariate_data = NULL, vocabulary = NULL, interaction_patterns = 4,
+  topics = 40, alpha = 1, beta = 0.01, iterations = 1000,
+  metropolis_hastings_iterations = 500, target_accept_rate = 0.25,
+  tollerance = 0.05)
 }
 \arguments{
-\item{specification}{A formulat object of the form 'ComNet ~
-euclidean(d = 2)' where d is the number of dimensions in the latent space
-that the user would like to include, and Comnet is a ComNet object generated
-by the prepare_data() function. May also include optional terms
-'sender("covariate_name")',
-'receiver("covariate_name")' and 'nodemix("covariate_name", base = value)'
-which are defined analogously to the arguments in the latentnet package.}
-
 \item{document_authors}{A vector recording the index of the sender of each
 document.}
 
@@ -47,6 +39,14 @@ count of unique term j in document i.}
 \item{target_accept_rate}{Defaults to 0.25.}
 
 \item{tollerance}{Defaults to 0.05.}
+
+\item{specification}{A formulat object of the form 'ComNet ~
+euclidean(d = 2)' where d is the number of dimensions in the latent space
+that the user would like to include, and Comnet is a ComNet object generated
+by the prepare_data() function. May also include optional terms
+'sender("covariate_name")',
+'receiver("covariate_name")' and 'nodemix("covariate_name", base = value)'
+which are defined analogously to the arguments in the latentnet package.}
 }
 \value{
 An object of class CCAS containing estimation results.

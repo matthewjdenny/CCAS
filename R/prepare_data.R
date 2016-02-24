@@ -10,7 +10,8 @@
 #' count of unique term j in document i.
 #' @param covariate_data Defaults to NULL.
 #' @param vocabulary Defaults to NULL.
-#' @return An object of class ComNet
+#' @return An object of class ComNet.
+#' @export
 prepare_data <- function(document_authors,
                          document_edge_matrix,
                          document_term_matrix,

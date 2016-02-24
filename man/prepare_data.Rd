@@ -22,7 +22,7 @@ count of unique term j in document i.}
 \item{vocabulary}{Defaults to NULL.}
 }
 \value{
-An object of class ComNet
+An object of class ComNet.
 }
 \description{
 Reads in and stores communication network data in a ComNet
