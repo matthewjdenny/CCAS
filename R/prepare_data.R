@@ -66,20 +66,50 @@ prepare_data <- function(document_authors,
     for (i in 1:num_documents) {
         # deal with token_word_type_list, token_topic_assignment_list
         tokens_in_current_doc <- sum(document_term_matrix[i,])
-        cur_types <- rep(0, tokens_in_current_doc)
-        cur_topics <- rep(0, tokens_in_current_doc)
 
-        # fin out which word types occur a positive nubmer of times in the
-        # document
-        inds <- which(document_term_matrix[i,] > 0)
+        # if there is atleast one token in the document
+        if (tokens_in_current_doc > 0) {
+            cur_types <- rep(0, tokens_in_current_doc)
+            cur_topics <- rep(0, tokens_in_current_doc)
 
-        if (length(inds) > 0) {
+            # fin out which word types occur a positive nubmer of times in the
+            # document
+            inds <- which(document_term_matrix[i,] > 0)
+
+            # this counter indicates which entry in the vector we are filling
+            counter <- 1
+
+            # loop over each unique word type
+            for (j in 1:length(inds)) {
+                # loop over the numer of times the term appears in the document
+                for (k in 1:document_term_matrix[i,inds[j]]) {
+                    # record the index of the token type in the types vector
+                    cur_types[counter] <- inds[j]
+
+                    # increment the counter
+                    counter <- counter + 1
+                }
+            }
+
+            # assign the vectors to a list
+            token_word_type_list[[i]] <- cur_types
+            token_topic_assignment_list[[i]] <- cur_topics
 
         } else {
             # if there were no words in the current document, record this.
             blank_documents[i] <- 1
         }
-    }
+
+        # now deal with edge matrix
+        cur_edges <- document_edge_matrix[i,]
+        if (sum(cur_edges) > 0) {
+            aggregate_network[document_authors[i],] <-
+                aggregate_network[document_authors[i],] + cur_edges
+        } else {
+            stop(paste("Document",i,"does not have any recipients, please remove"))
+        }
+
+    } # end of loop over documents
 
     ComNet_Object <- new("ComNet",
         document_authors = document_authors,
