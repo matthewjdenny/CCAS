@@ -54,6 +54,33 @@ prepare_data <- function(document_authors,
     num_tokens <- sum(document_term_matrix)
     cat("Total number of tokens in corpus:", num_tokens, "\n")
 
+    # generate token_word_type_list and a blank token_topic_assignment_list that
+    # will be filled in later. Also generate an aggregate_network by agregating
+    # over the document_edge_matrix
+
+    # first allocated blank data objects
+    token_word_type_list <- vector(mode = "list", length = num_documents)
+    token_topic_assignment_list <- vector(mode = "list", length = num_documents)
+    aggregate_network <- matrix(0, nrow = num_documents, ncol = num_documents)
+    blank_documents <- rep(0 , num_documents)
+    for (i in 1:num_documents) {
+        # deal with token_word_type_list, token_topic_assignment_list
+        tokens_in_current_doc <- sum(document_term_matrix[i,])
+        cur_types <- rep(0, tokens_in_current_doc)
+        cur_topics <- rep(0, tokens_in_current_doc)
+
+        # fin out which word types occur a positive nubmer of times in the
+        # document
+        inds <- which(document_term_matrix[i,] > 0)
+
+        if (length(inds) > 0) {
+
+        } else {
+            # if there were no words in the current document, record this.
+            blank_documents[i] <- 1
+        }
+    }
+
     ComNet_Object <- new("ComNet",
         document_authors = document_authors,
         document_term_matrix = document_term_matrix,
@@ -66,7 +93,8 @@ prepare_data <- function(document_authors,
         vocabulary_size = vocabulary_size,
         token_word_type_list = token_word_type_list,
         token_topic_assignment_list = token_topic_assignment_list,
-        aggregate_network = aggregate_network)
+        aggregate_network = aggregate_network,
+        blank_documents = blank_documents)
 
     # only assign if covariate_data is not NULL in order to aviod error
     if (using_covariates) {
