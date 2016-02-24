@@ -11,9 +11,11 @@ ccas(specification, document_authors, document_edge_matrix,
   target_accept_rate = 0.25, tollerance = 0.05)
 }
 \arguments{
-\item{specification}{A formulat object of the form '~ euclidean(d = 2)' where
-d is the number of dimensions in the latent space that the user would like to
-include. may also include optional terms 'sender("covariate_name")',
+\item{specification}{A formulat object of the form 'ComNet ~
+euclidean(d = 2)' where d is the number of dimensions in the latent space
+that the user would like to include, and Comnet is a ComNet object generated
+by the prepare_data() function. May also include optional terms
+'sender("covariate_name")',
 'receiver("covariate_name")' and 'nodemix("covariate_name", base = value)'
 which are defined analogously to the arguments in the latentnet package.}
 
