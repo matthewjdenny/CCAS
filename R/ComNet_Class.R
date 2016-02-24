@@ -15,7 +15,8 @@ setClass(Class = "ComNet",
              token_topic_assignment_list = "list",
              network_covariates_list = "list",
              aggregate_network = "matrix",
-             blank_documents = "numeric"
+             blank_documents = "numeric",
+             using_covariates = "logical"
          ),
          validity = function(object) {
              #              if (!"matrix" %in% class(object@network) & is.null(object@network)

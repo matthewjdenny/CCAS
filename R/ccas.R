@@ -27,7 +27,7 @@
 #' @param tollerance Defaults to 0.05.
 #' @return An object of class CCAS containing estimation results.
 #' @export
-ccas <- function(specification,
+ccas <- function(formula,
                  document_authors,
                  document_edge_matrix,
                  document_term_matrix,
@@ -53,13 +53,11 @@ ccas <- function(specification,
     possible_covariate_terms <- c("sender","receiver","nodemix")
     possible_network_terms <- c("netcov")
 
-    # make sure that specification is a formula object
-    specification <- as.formula(specification)
+    # make sure that formula is a formula object
+    formula <- as.formula(formula)
 
     # parse the specification and return a list object.
-    parsed_specifcation <- parsed_specifcation(specification,
-                                               using_covariates,
-                                               covariate_data,
+    parsed_specifcation <- parsed_specifcation(formula,
                                                possible_structural_terms,
                                                possible_covariate_terms,
                                                possible_network_terms)

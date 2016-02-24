@@ -124,7 +124,8 @@ prepare_data <- function(document_authors,
         token_word_type_list = token_word_type_list,
         token_topic_assignment_list = token_topic_assignment_list,
         aggregate_network = aggregate_network,
-        blank_documents = blank_documents)
+        blank_documents = blank_documents,
+        using_covariates = using_covariates)
 
     # only assign if covariate_data is not NULL in order to aviod error
     if (using_covariates) {
