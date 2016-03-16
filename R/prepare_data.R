@@ -46,7 +46,7 @@ prepare_data <- function(document_authors,
 
     # calculate some corpus level statistics
     vocabulary_size <- length(vocabulary)
-    cat("Vocabulary size:", vocabulary_size, "unique terms...\n")
+    cat("Vocabulary size:", vocabulary_size, "unique terms\n")
     num_actors <- ncol(document_edge_matrix)
     cat("Number of actors:", num_actors, "\n")
     num_documents <- nrow(document_edge_matrix)
@@ -130,6 +130,14 @@ prepare_data <- function(document_authors,
 
     # only assign if covariate_data is not NULL in order to aviod error
     if (using_covariates) {
+        # make sure that all factor variables are converted to strings
+        for (i in 1:ncol(covariate_data)) {
+            if (class(covariate_data[,i]) == "factor") {
+                covariate_data[,i] <- as.character(covariate_data[,i])
+            }
+        }
+
+        # now assign to slot in object
         ComNet_Object@covariate_data <- covariate_data
     }
 
