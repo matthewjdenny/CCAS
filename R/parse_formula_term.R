@@ -13,7 +13,7 @@ parse_formula_term <- function(term,
 
     # generate return list object
     return_list <- list(term = parsed[1],
-                        weight = 1,
+                        d = 1,
                         covariate = NA,
                         base = NA,
                         network = NA,
@@ -24,7 +24,7 @@ parse_formula_term <- function(term,
                         network_matrix_object = NA,
                         num_levels = NA,
                         base_index = NA)
-    possible_fields <- c("term","alpha","covariate", "base", "network",
+    possible_fields <- c("term","d","covariate", "base", "network",
                          "threshold", "levels", "same", "")
     # if there is an argument to the term -- this will be a lazy implementation
     # where if you do not get the name right, it will simply not be set and a
@@ -56,16 +56,16 @@ parse_formula_term <- function(term,
                 # make sure the argument is numeric
                 args[[1]] <- as.numeric(args[[1]])
                 if(is.numeric(args[[1]])){
-                    return_list$weight <- args[[1]]
+                    return_list$d <- as.numeric(args[[1]])
                 }else{
-                    stop(paste("You must supply a numeric weight for structural covariate:", return_list$term))
+                    stop(paste("You must supply a numeric d for latent space specification term:", return_list$term))
                 }
             }else{
                 which_arg <- which(possible_fields == args[[1]][1])
                 if(length(which_arg) == 0){
                     stop(paste("You supplied an argument:",args[[1]][1],"which is not recognized."))
                 }else{
-                    return_list[[which_arg]] <- args[[1]][2]
+                    return_list[[which_arg]] <- as.numeric(args[[1]][2])
                 }
             }
             ###### for covariates ######
