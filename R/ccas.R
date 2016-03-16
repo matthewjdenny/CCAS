@@ -37,11 +37,24 @@ ccas <- function(formula,
     # make sure that formula is a formula object
     formula <- as.formula(formula)
 
-    # parse the specification and return a list object.
-    parsed_specifcation <- parse_specifcation(formula,
+    # parse the forumla and return a list object containing the ComNet object
+    # and the latent space model spcification
+    parsed_specifcation <- parse_specification(formula,
                                               possible_structural_terms,
                                               possible_covariate_terms,
-                                              possible_network_terms)
+                                              possible_network_terms,
+                                              terms_to_parse = "structural")
+
+    # get the ComNet object from the specification
+    ComNet_Object <- parsed_specifcation$ComNet
+
+    # now extract indicator of whether we are using covariates
+    using_covariates <- parsed_specifcation$using_covariates
+
+    # if we are using covariates, then generate the covariate array:
+    if (using_covariates) {
+
+    }
 
     # initialize an object of class CCAS to store everything. This will include
     # initializing all latent variables and organizing data in a format that is

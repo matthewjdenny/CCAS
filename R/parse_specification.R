@@ -30,6 +30,12 @@ parse_specification <- function(formula,
 
     # if we are parsing the structural terms out of the formula
     if(terms_to_parse == "structural"){
+
+        # record the length of the parsed RHS and see if it changes. If it does
+        # not, this will indicate that there are no network/covariate terms
+        # included in the specification
+        spec_len <- length(rhs_term_names)
+
         # remove all node level covariate terms
         remove <- which(rhs_term_names %in% possible_covariate_terms)
         if (length(remove) > 0){
@@ -54,9 +60,16 @@ parse_specification <- function(formula,
             stop( "You must specify one and only one of 'euclidean' or 'bilinear' terms.")
         }
 
+        # now determine whether there are other terms
+        using_covariates <- FALSE
+        if (length(rhs_term_names) != spec_len) {
+            using_covariates <- TRUE
+        }
+
         return(list(type = parsed_rhs[[1]]$term,
                     d = parsed_rhs[[1]]$d,
-                    ComNet = ComNet))
+                    ComNet = ComNet,
+                    using_covariates = using_covariates))
     }
 
     # get all of the covariate terms
