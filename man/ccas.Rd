@@ -6,15 +6,18 @@
 \usage{
 ccas(formula, interaction_patterns = 4, topics = 40, alpha = 1,
   beta = 0.01, iterations = 1000, metropolis_hastings_iterations = 500,
-  target_accept_rate = 0.25, tollerance = 0.05)
+  target_accept_rate = 0.25, tollerance = 0.05,
+  LSM_intercept_prior_variance = 5, LSM_intercept_prior_mean = 0,
+  LSM_position_prior_variance = 5, LSM_position_prior_mean = 0,
+  LSM_coefficient_prior_variance = 5, LSM_coefficient_prior_mean = 0)
 }
 \arguments{
 \item{formula}{A formula object of the form 'ComNet ~
 euclidean(d = 2)' where d is the number of dimensions in the latent space
 that the user would like to include, and Comnet is a ComNet object generated
 by the prepare_data() function. May also include optional terms
-'sender("covariate_name")',
-'receiver("covariate_name")' and 'nodemix("covariate_name", base = value)'
+'sender("covariate_name")', receiver("covariate_name")',
+'nodemix("covariate_name", base = value)' and netcov("network_covariate"),
 which are defined analogously to the arguments in the latentnet package.}
 
 \item{interaction_patterns}{Defaults to 4.}
@@ -32,6 +35,18 @@ which are defined analogously to the arguments in the latentnet package.}
 \item{target_accept_rate}{Defaults to 0.25.}
 
 \item{tollerance}{Defaults to 0.05.}
+
+\item{LSM_intercept_prior_variance}{Defaults to 5.}
+
+\item{LSM_intercept_prior_mean}{Defaults to 0.}
+
+\item{LSM_position_prior_variance}{Defaults to 5.}
+
+\item{LSM_position_prior_mean}{Defaults to 0.}
+
+\item{LSM_coefficient_prior_variance}{Defaults to 5.}
+
+\item{LSM_coefficient_prior_mean}{Defaults to 0.}
 }
 \value{
 An object of class CCAS containing estimation results.
