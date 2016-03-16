@@ -18,14 +18,18 @@ test_that("prepare data function works, and that it returns a ComNet object", {
     author_indexes <- floor(runif(n = num_documents, min = 0, max = num_actors - 0.00001))
 
     covariate_data <- data.frame(id = LETTERS[1:10],
-                                 gender = c(rep("male",5),rep("female",5)))
+                                 gender = c(rep("male",5),rep("female",5)),
+                                 age = rpois(10,10) + 10)
 
-
-    result <- prepare_data(document_authors = author_indexes,
+    # create a comnet object
+    ComNet_data <- prepare_data(document_authors = author_indexes,
                              document_edge_matrix = document_edge_matrix,
                              document_term_matrix = document_term_matrix,
                              covariate_data = covariate_data,
                              vocabulary = paste0("word_",1:num_terms))
 
+    # devtools::use_data(ComNet_data, overwrite = TRUE)
 
+    expect_equal(ComNet_data@num_tokens, sum(document_term_matrix))
+    expect_equal(ComNet_data@num_edges, sum(document_edge_matrix))
 })
