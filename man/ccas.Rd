@@ -7,10 +7,11 @@
 ccas(formula, interaction_patterns = 4, topics = 40, alpha = 1,
   beta = 0.01, iterations = 1000, metropolis_hastings_iterations = 500,
   metropolis_hastings_burnin = 500, target_accept_rate = 0.25,
-  tollerance = 0.05, LSM_intercept_prior_variance = 5,
-  LSM_intercept_prior_mean = 0, LSM_position_prior_variance = 5,
-  LSM_position_prior_mean = 0, LSM_coefficient_prior_variance = 5,
-  LSM_coefficient_prior_mean = 0)
+  tollerance = 0.05, LSM_intercept_proposal_variance = 2,
+  LSM_intercept_prior_variance = 5, LSM_intercept_prior_mean = 0,
+  LSM_position_proposal_variance = 2, LSM_position_prior_variance = 5,
+  LSM_position_prior_mean = 0, LSM_coefficient_proposal_variance = 2,
+  LSM_coefficient_prior_variance = 5, LSM_coefficient_prior_mean = 0)
 }
 \arguments{
 \item{formula}{A formula object of the form 'ComNet ~
@@ -39,13 +40,19 @@ which are defined analogously to the arguments in the latentnet package.}
 
 \item{tollerance}{Defaults to 0.05.}
 
+\item{LSM_intercept_proposal_variance}{Defaults to 2.}
+
 \item{LSM_intercept_prior_variance}{Defaults to 5.}
 
 \item{LSM_intercept_prior_mean}{Defaults to 0.}
 
+\item{LSM_position_proposal_variance}{Defaults to 2.}
+
 \item{LSM_position_prior_variance}{Defaults to 5.}
 
 \item{LSM_position_prior_mean}{Defaults to 0.}
+
+\item{LSM_coefficient_proposal_variance}{Defaults to 2.}
 
 \item{LSM_coefficient_prior_variance}{Defaults to 5.}
 

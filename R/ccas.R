@@ -18,10 +18,13 @@
 #' @param metropolis_hastings_burnin Defaults to 500.
 #' @param target_accept_rate Defaults to 0.25.
 #' @param tollerance Defaults to 0.05.
+#' @param LSM_intercept_proposal_variance Defaults to 2.
 #' @param LSM_intercept_prior_variance Defaults to 5.
 #' @param LSM_intercept_prior_mean Defaults to 0.
+#' @param LSM_position_proposal_variance Defaults to 2.
 #' @param LSM_position_prior_variance Defaults to 5.
 #' @param LSM_position_prior_mean Defaults to 0.
+#' @param LSM_coefficient_proposal_variance Defaults to 2.
 #' @param LSM_coefficient_prior_variance Defaults to 5.
 #' @param LSM_coefficient_prior_mean Defaults to 0.
 #' @return An object of class CCAS containing estimation results.
@@ -36,10 +39,13 @@ ccas <- function(formula,
                  metropolis_hastings_burnin = 500,
                  target_accept_rate = 0.25,
                  tollerance = 0.05,
+                 LSM_intercept_proposal_variance = 2,
                  LSM_intercept_prior_variance = 5,
                  LSM_intercept_prior_mean = 0,
+                 LSM_position_proposal_variance = 2,
                  LSM_position_prior_variance = 5,
                  LSM_position_prior_mean = 0,
+                 LSM_coefficient_proposal_variance = 2,
                  LSM_coefficient_prior_variance = 5,
                  LSM_coefficient_prior_mean = 0) {
 
@@ -66,6 +72,7 @@ ccas <- function(formula,
     using_covariates <- parsed_specifcation$using_covariates
 
     # if we are using covariates, then generate the covariate array:
+    number_of_covariates <- 0
     if (using_covariates) {
         temp <- generate_covariate_array(formula,
                                          possible_structural_terms,
@@ -85,21 +92,41 @@ ccas <- function(formula,
        interaction_patterns = interaction_patterns,
        number_of_topics = topics,
        latent_space_dimensions = parsed_specifcation$d,
+       target_accept_rate = target_accept_rate,
+       tollerance = tollerance,
        formula = formula,
        alpha = alpha,
        beta = beta,
        iterations = iterations,
        burnin = metropolis_hastings_burnin,
-       LSM_intercept_prior_variance = LSM_intercept_prior_variance,
-       LSM_intercept_prior_mean = LSM_intercept_prior_mean,
-       LSM_position_prior_variance = LSM_position_prior_variance,
-       LSM_position_prior_mean = LSM_position_prior_mean ,
-       LSM_coefficient_prior_variance = LSM_coefficient_prior_variance,
-       LSM_coefficient_prior_mean = LSM_coefficient_prior_mean)
+       number_of_covariates = number_of_covariates)
+
+    # initialie vectors of prior variances
+    CCAS_Object <- initialize_LSM_priors(CCAS_Object,
+                                      LSM_intercept_prior_variance,
+                                      LSM_intercept_prior_mean,
+                                      LSM_position_prior_variance,
+                                      LSM_position_prior_mean,
+                                      LSM_coefficient_prior_variance,
+                                      LSM_coefficient_prior_mean)
+
+    # initialize vectors of proposal variances
+    CCAS_Object@LSM_intercept_proposal_variance <- rep(
+        LSM_intercept_proposal_variance,
+        interaction_patterns
+    )
+    CCAS_Object@LSM_position_proposal_variance <- rep(
+        LSM_position_proposal_variance,
+        interaction_patterns
+    )
+    CCAS_Object@LSM_coefficient_proposal_variance <- rep(
+        LSM_coefficient_proposal_variance,
+        interaction_patterns
+    )
 
 
     # initialize all latent variable values
-    # latent_variables <- initialize_latent_variables(CCAS_Object)
+    CCAS_Object@latent_variables <- initialize_latent_variables(CCAS_Object)
 
     # run inference
 
