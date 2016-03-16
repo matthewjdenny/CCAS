@@ -6,10 +6,11 @@
 \usage{
 ccas(formula, interaction_patterns = 4, topics = 40, alpha = 1,
   beta = 0.01, iterations = 1000, metropolis_hastings_iterations = 500,
-  target_accept_rate = 0.25, tollerance = 0.05,
-  LSM_intercept_prior_variance = 5, LSM_intercept_prior_mean = 0,
-  LSM_position_prior_variance = 5, LSM_position_prior_mean = 0,
-  LSM_coefficient_prior_variance = 5, LSM_coefficient_prior_mean = 0)
+  metropolis_hastings_burnin = 500, target_accept_rate = 0.25,
+  tollerance = 0.05, LSM_intercept_prior_variance = 5,
+  LSM_intercept_prior_mean = 0, LSM_position_prior_variance = 5,
+  LSM_position_prior_mean = 0, LSM_coefficient_prior_variance = 5,
+  LSM_coefficient_prior_mean = 0)
 }
 \arguments{
 \item{formula}{A formula object of the form 'ComNet ~
@@ -31,6 +32,8 @@ which are defined analogously to the arguments in the latentnet package.}
 \item{iterations}{Defaults to 1000.}
 
 \item{metropolis_hastings_iterations}{Defaults to 500.}
+
+\item{metropolis_hastings_burnin}{Defaults to 500.}
 
 \item{target_accept_rate}{Defaults to 0.25.}
 

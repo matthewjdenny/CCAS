@@ -15,6 +15,7 @@
 #' @param beta Defaults to 0.01.
 #' @param iterations Defaults to 1000.
 #' @param metropolis_hastings_iterations Defaults to 500.
+#' @param metropolis_hastings_burnin Defaults to 500.
 #' @param target_accept_rate Defaults to 0.25.
 #' @param tollerance Defaults to 0.05.
 #' @param LSM_intercept_prior_variance Defaults to 5.
@@ -32,6 +33,7 @@ ccas <- function(formula,
                  beta = 0.01,
                  iterations = 1000,
                  metropolis_hastings_iterations = 500,
+                 metropolis_hastings_burnin = 500,
                  target_accept_rate = 0.25,
                  tollerance = 0.05,
                  LSM_intercept_prior_variance = 5,
@@ -78,7 +80,22 @@ ccas <- function(formula,
     # initialize an object of class CCAS to store everything. This will include
     # initializing all latent variables and organizing data in a format that is
     # appropriate for the main inference function
-
+    CCAS_Object <- new("CCAS",
+       ComNet_Object = ComNet_Object,
+       interaction_patterns = interaction_patterns,
+       number_of_topics = topics,
+       latent_space_dimensions = parsed_specifcation$d,
+       formula = formula,
+       alpha = alpha,
+       beta = beta,
+       iterations = iterations,
+       burnin = metropolis_hastings_burnin,
+       LSM_intercept_prior_variance = LSM_intercept_prior_variance,
+       LSM_intercept_prior_mean = LSM_intercept_prior_mean,
+       LSM_position_prior_variance = LSM_position_prior_variance,
+       LSM_position_prior_mean = LSM_position_prior_mean ,
+       LSM_coefficient_prior_variance = LSM_coefficient_prior_variance,
+       LSM_coefficient_prior_mean = LSM_coefficient_prior_mean)
 
 
     # initialize all latent variable values
@@ -91,5 +108,5 @@ ccas <- function(formula,
     # generate diagnostics
 
     # retrun the CCAS object
-    return(NULL)
+    return(CCAS_Object)
 }
