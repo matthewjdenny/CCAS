@@ -53,12 +53,24 @@ ccas <- function(formula,
 
     # if we are using covariates, then generate the covariate array:
     if (using_covariates) {
-
+        temp <- generate_covariate_array(formula,
+                                         possible_structural_terms,
+                                         possible_covariate_terms,
+                                         possible_network_terms,
+                                         ComNet_Object)
+        covariate_array <- temp$covariate_array
+        number_of_covariates <- temp$number_of_covariates
     }
+
 
     # initialize an object of class CCAS to store everything. This will include
     # initializing all latent variables and organizing data in a format that is
     # appropriate for the main inference function
+
+
+
+    # initialize all latent variable values
+    # latent_variables <- initialize_latent_variables(CCAS_Object)
 
     # run inference
 
