@@ -13,4 +13,22 @@ test_that("main function works", {
                              nodemix("gender", base = "male") +
                              netcov("net_covariate")
 
+
+    result <- ccas(formula,
+                     interaction_patterns = 4,
+                     topics = 40,
+                     alpha = 1,
+                     beta = 0.01,
+                     iterations = 1000,
+                     metropolis_hastings_iterations = 500,
+                     metropolis_hastings_burnin = 500,
+                     target_accept_rate = 0.25,
+                     tollerance = 0.05,
+                     LSM_intercept_prior_variance = 5,
+                     LSM_intercept_prior_mean = 0,
+                     LSM_position_prior_variance = 5,
+                     LSM_position_prior_mean = 0,
+                     LSM_coefficient_prior_variance = 5,
+                     LSM_coefficient_prior_mean = 0)
+
 })
