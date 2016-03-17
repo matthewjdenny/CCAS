@@ -41,8 +41,13 @@ initialize_latent_variables <- function(CCAS_Object){
     LSM_Params <- list(intercepts = params1[[1]],
                        coefficients = params1[[2]],
                        positions = params1[[3]])
-    # now initialize token topic assignments
 
+    # now initialize topic interaction patterns (subtract one to be zero indexed)
+    topic_interaction_patterns <- sample(1:CCAS_Object@interaction_patterns,
+                                         size = CCAS_Object@number_of_topics,
+                                         replace = TRUE) - 1
+
+    # now initialize token topic assignments
     params <- sttgp(
         CCAS_Object@ComNet_Object@token_topic_assignment_list_zero_indexed,
         CCAS_Object@ComNet_Object@token_word_type_list_zero_indexed,
@@ -58,7 +63,8 @@ initialize_latent_variables <- function(CCAS_Object){
                       topic_token_counts = params[[4]],
                       word_type_topic_counts = params[[5]],
                       document_topic_distributions = params[[6]],
-                      topic_word_type_distributions = params[[7]])
+                      topic_word_type_distributions = params[[7]],
+                      topic_interaction_patterns_zero_indexed = topic_interaction_patterns)
 
     return(list(LSM_Params = LSM_Params,
                 LDA_Params = LDA_Params))

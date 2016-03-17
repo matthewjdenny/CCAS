@@ -14,7 +14,7 @@ test_that("main function works", {
                              netcov("net_covariate")
 
 
-    result <- ccas(formula,
+    CCAS_Object <- ccas(formula,
                      interaction_patterns = 4,
                      topics = 40,
                      alpha = 1,
