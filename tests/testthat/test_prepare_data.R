@@ -15,7 +15,7 @@ test_that("prepare data function works, and that it returns a ComNet object", {
                                    nrow = num_documents,
                                    ncol = num_terms)
 
-    author_indexes <- floor(runif(n = num_documents, min = 0, max = num_actors - 0.00001))
+    author_indexes <- round(runif(n = num_documents, min = 1, max = num_actors))
 
     covariate_data <- data.frame(id = LETTERS[1:10],
                                  gender = c(rep("male",5),rep("female",5)),
