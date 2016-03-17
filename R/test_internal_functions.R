@@ -76,6 +76,9 @@
 #' iterations_before_t_i_p_updates, update_t_i_p_every_x_iterations,
 #' perform_adaptive_metropolis must be provided.
 #' @param Test_RDirichlet If TRUE, then alpha_m must be provided.
+#' @param Test_Sample_Token_Topics_From_Generative_Process If TRUE, then optional
+#' arguments author_indexes, token_topic_assignments, token_word_types, alpha_m,
+#' beta_n, random_numbers, and resample_word_types must be provided.
 #' @param seed An integerg.
 #' @param distribution A log-space vector
 #' @param intercepts A vector.
@@ -128,6 +131,7 @@
 #' @param iterations_before_t_i_p_updates An integer.
 #' @param update_t_i_p_every_x_iterations An integer.
 #' @param perform_adaptive_metropolis A boolean.
+#' @param resample_word_types A boolean.
 #' @return Whatever is returned by the internal function being tested
 #' @export
 test_internal_functions <- function(
@@ -145,6 +149,7 @@ test_internal_functions <- function(
     Test_Adaptive_Metropolis = FALSE,
     Test_Inference = FALSE,
     Test_RDirichlet = FALSE,
+    Test_Sample_Token_Topics_From_Generative_Process = FALSE,
     seed = NULL,
     distribution = NULL,
     intercepts = NULL,
@@ -196,7 +201,8 @@ test_internal_functions <- function(
     total_number_of_tokens = NULL,
     iterations_before_t_i_p_updates = NULL,
     update_t_i_p_every_x_iterations = NULL,
-    perform_adaptive_metropolis = NULL){
+    perform_adaptive_metropolis = NULL,
+    resample_word_types = NULL){
 
     return_object <- NULL
 
@@ -402,6 +408,17 @@ test_internal_functions <- function(
 
     if (Test_RDirichlet){
         return_object <- mjd_rdirichlet(alpha_m)
+    }
+
+    if (Test_Sample_Token_Topics_From_Generative_Process) {
+        return_object <- sttgp(
+            token_topic_assignments,
+            token_word_types,
+            alpha_m,
+            beta_n,
+            length(token_topic_assignments),
+            resample_word_types,
+            random_numbers)
     }
 
     # return whatever needs to be returned

@@ -1932,5 +1932,30 @@ arma::vec mjd_rdirichlet(arma::vec alpha_m) {
     return(to_return);
 }
 
+// [[Rcpp::export]]
+Rcpp::List sttgp(
+        Rcpp::List token_topic_assignments,
+        Rcpp::List token_word_types,
+        arma::vec alpha_m,
+        arma::vec beta_n,
+        int number_of_documents,
+        bool resample_word_types,
+        arma::vec random_numbers) {
+
+    List ret_list = mjd::sample_token_topics_generative_process(
+            token_topic_assignments,
+            token_word_types,
+            alpha_m,
+            beta_n,
+            number_of_documents,
+            resample_word_types,
+            random_numbers);
+
+    return ret_list;
+}
+
+
+
+
 
 

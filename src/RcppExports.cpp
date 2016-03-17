@@ -302,3 +302,20 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
+// sttgp
+Rcpp::List sttgp(Rcpp::List token_topic_assignments, Rcpp::List token_word_types, arma::vec alpha_m, arma::vec beta_n, int number_of_documents, bool resample_word_types, arma::vec random_numbers);
+RcppExport SEXP CCAS_sttgp(SEXP token_topic_assignmentsSEXP, SEXP token_word_typesSEXP, SEXP alpha_mSEXP, SEXP beta_nSEXP, SEXP number_of_documentsSEXP, SEXP resample_word_typesSEXP, SEXP random_numbersSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< Rcpp::List >::type token_topic_assignments(token_topic_assignmentsSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type token_word_types(token_word_typesSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type alpha_m(alpha_mSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type beta_n(beta_nSEXP);
+    Rcpp::traits::input_parameter< int >::type number_of_documents(number_of_documentsSEXP);
+    Rcpp::traits::input_parameter< bool >::type resample_word_types(resample_word_typesSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type random_numbers(random_numbersSEXP);
+    __result = Rcpp::wrap(sttgp(token_topic_assignments, token_word_types, alpha_m, beta_n, number_of_documents, resample_word_types, random_numbers));
+    return __result;
+END_RCPP
+}

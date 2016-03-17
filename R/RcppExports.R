@@ -57,3 +57,7 @@ mjd_rdirichlet <- function(alpha_m) {
     .Call('CCAS_mjd_rdirichlet', PACKAGE = 'CCAS', alpha_m)
 }
 
+sttgp <- function(token_topic_assignments, token_word_types, alpha_m, beta_n, number_of_documents, resample_word_types, random_numbers) {
+    .Call('CCAS_sttgp', PACKAGE = 'CCAS', token_topic_assignments, token_word_types, alpha_m, beta_n, number_of_documents, resample_word_types, random_numbers)
+}
+

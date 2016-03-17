@@ -13,7 +13,9 @@ test_internal_functions(Test_Log_Space_Multinomial_Sampler = FALSE,
   Test_Update_All_Token_Topic_Assignments = FALSE,
   Test_Update_Interaction_Pattern_Parameters = FALSE,
   Test_Update_Topic_Interaction_Pattern_Assignments = FALSE,
-  Test_Adaptive_Metropolis = FALSE, Test_Inference = FALSE, seed = NULL,
+  Test_Adaptive_Metropolis = FALSE, Test_Inference = FALSE,
+  Test_RDirichlet = FALSE,
+  Test_Sample_Token_Topics_From_Generative_Process = FALSE, seed = NULL,
   distribution = NULL, intercepts = NULL, coefficients = NULL,
   latent_positions = NULL, document_sender = NULL,
   document_recipient = NULL, current_covariates = NULL,
@@ -37,7 +39,7 @@ test_internal_functions(Test_Log_Space_Multinomial_Sampler = FALSE,
   iterations = NULL, metropolis_iterations = NULL,
   total_number_of_tokens = NULL, iterations_before_t_i_p_updates = NULL,
   update_t_i_p_every_x_iterations = NULL,
-  perform_adaptive_metropolis = NULL)
+  perform_adaptive_metropolis = NULL, resample_word_types = NULL)
 }
 \arguments{
 \item{Test_Log_Space_Multinomial_Sampler}{Defualts to FALSE. If TRUE, then
@@ -126,6 +128,12 @@ latent_position_proposal_variances, target_accept_rate, tollerance,
 update_size, seed, iterations, metropolis_iterations, total_number_of_tokens,
 iterations_before_t_i_p_updates, update_t_i_p_every_x_iterations,
 perform_adaptive_metropolis must be provided.}
+
+\item{Test_RDirichlet}{If TRUE, then alpha_m must be provided.}
+
+\item{Test_Sample_Token_Topics_From_Generative_Process}{If TRUE, then optional
+arguments author_indexes, token_topic_assignments, token_word_types, alpha_m,
+beta_n, random_numbers, and resample_word_types must be provided.}
 
 \item{seed}{An integerg.}
 
@@ -230,6 +238,8 @@ perform_adaptive_metropolis must be provided.}
 \item{update_t_i_p_every_x_iterations}{An integer.}
 
 \item{perform_adaptive_metropolis}{A boolean.}
+
+\item{resample_word_types}{A boolean.}
 }
 \value{
 Whatever is returned by the internal function being tested
