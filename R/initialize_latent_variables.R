@@ -41,7 +41,27 @@ initialize_latent_variables <- function(CCAS_Object){
 
     # now initialize token topic assignments
 
+    alpha_m <- rep(CCAS_Object@alpha/CCAS_Object@number_of_topics,
+                   CCAS_Object@number_of_topics)
+    beta_n <- rep(CCAS_Object@beta/CCAS_Object@ComNet_Object@vocabulary_size,
+                  CCAS_Object@ComNet_Object@vocabulary_size)
+    params <- sttgp(
+        CCAS_Object@ComNet_Object@token_topic_assignment_list_zero_indexed,
+        CCAS_Object@ComNet_Object@token_word_type_list_zero_indexed,
+        alpha_m,
+        beta_n,
+        CCAS_Object@ComNet_Object@num_documents,
+        FALSE,
+        runif(n = 5*CCAS_Object@ComNet_Object@num_tokens))
+
+    LDA_Params <- list(token_topic_assignments = params[[1]],
+                      token_word_types = params[[2]],
+                      document_topic_counts = params[[3]],
+                      topic_token_counts = params[[4]],
+                      word_type_topic_counts = params[[5]],
+                      document_topic_distributions = params[[6]],
+                      topic_word_type_distributions = params[[7]])
 
     return(list(LSM_Params = LSM_Params,
-                LDA_Params = NULL))
+                LDA_Params = LDA_Params))
 }

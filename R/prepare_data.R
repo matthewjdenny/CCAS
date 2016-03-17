@@ -60,9 +60,16 @@ prepare_data <- function(document_authors,
     # over the document_edge_matrix
 
     # first allocated blank data objects
-    token_word_type_list <- vector(mode = "list", length = num_documents)
-    token_topic_assignment_list <- vector(mode = "list", length = num_documents)
-    aggregate_network <- matrix(0, nrow = num_documents, ncol = num_documents)
+    token_word_type_list <- vector(mode = "list",
+                                   length = num_documents)
+    token_topic_assignment_list <- vector(mode = "list",
+                                          length = num_documents)
+    token_word_type_list_zero_indexed <- vector(mode = "list",
+                                                length = num_documents)
+    token_topic_assignment_list_zero_indexed <- vector(mode = "list",
+                                                       length = num_documents)
+    aggregate_network <- matrix(0, nrow = num_documents,
+                                ncol = num_documents)
     blank_documents <- rep(0 , num_documents)
     for (i in 1:num_documents) {
         # deal with token_word_type_list, token_topic_assignment_list
@@ -95,6 +102,9 @@ prepare_data <- function(document_authors,
             # assign the vectors to a list
             token_word_type_list[[i]] <- cur_types
             token_topic_assignment_list[[i]] <- cur_topics
+            token_word_type_list_zero_indexed[[i]]  <- cur_types - 1
+            # dont need to subtract one because they are all zero to begin with
+            token_topic_assignment_list_zero_indexed[[i]] <- cur_topics
 
         } else {
             # if there were no words in the current document, record this.
@@ -126,7 +136,9 @@ prepare_data <- function(document_authors,
         token_topic_assignment_list = token_topic_assignment_list,
         aggregate_network = aggregate_network,
         blank_documents = blank_documents,
-        using_covariates = using_covariates)
+        using_covariates = using_covariates,
+        token_word_type_list_zero_indexed = token_word_type_list_zero_indexed,
+        token_topic_assignment_list_zero_indexed = token_topic_assignment_list_zero_indexed)
 
     # only assign if covariate_data is not NULL in order to aviod error
     if (using_covariates) {
