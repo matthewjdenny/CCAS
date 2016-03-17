@@ -53,3 +53,7 @@ model_inference <- function(author_indexes, document_edge_matrix, document_topic
     .Call('CCAS_model_inference', PACKAGE = 'CCAS', author_indexes, document_edge_matrix, document_topic_counts, topic_interaction_patterns, word_type_topic_counts, topic_token_counts, token_topic_assignments, token_word_types, intercepts, coefficients, latent_positions, covariates, alpha_m, beta_n, using_coefficients, intercept_prior_mean, intercept_prior_variance, intercept_proposal_variances, coefficient_prior_mean, coefficient_prior_variance, coefficient_proposal_variances, latent_position_prior_mean, latent_position_prior_variance, latent_position_proposal_variances, target_accept_rate, tollerance, update_size, seed, iterations, metropolis_iterations, total_number_of_tokens, iterations_before_t_i_p_updates, update_t_i_p_every_x_iterations, perform_adaptive_metropolis)
 }
 
+mjd_rdirichlet <- function(alpha_m) {
+    .Call('CCAS_mjd_rdirichlet', PACKAGE = 'CCAS', alpha_m)
+}
+

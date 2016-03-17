@@ -1320,6 +1320,92 @@ namespace mjd {
         // return everything
         return ret_list;
     }
+
+    // ***********************************************************************//
+    //             Single Draw from a Dirichlet Distribution                  //
+    // ***********************************************************************//
+
+    arma::vec rdirichlet(arma::vec alpha_m) {
+        // this example is drawn from:
+        // https://en.wikipedia.org/wiki/Dirichlet_distribution#Random_number_generation
+
+        int distribution_size = alpha_m.n_elem;
+        arma::vec distribution = arma::zeros(distribution_size);
+
+        // loop through the distribution and draw Gamma variables
+        for (int i = 0; i < distribution_size; ++i) {
+            double cur = R::rgamma(alpha_m[i],1.0);
+            distribution[i] = cur;
+        }
+
+        double gamma_sum = arma::sum(distribution);
+
+        for (int i = 0; i < distribution_size; ++i) {
+            double temp = distribution[i];
+            distribution[i] = temp/gamma_sum;
+        }
+
+        return(distribution);
+    }
+
+    // ***********************************************************************//
+    //             Multiple Draws from a Dirichlet Distribution               //
+    // ***********************************************************************//
+
+    arma::mat rdirichlet_matrix(int num_samples,
+                             arma::vec alpha_m) {
+        int distribution_size = alpha_m.n_elem;
+        // each row will be a draw from a Dirichlet
+        arma::mat distribution = arma::zeros(num_samples, distribution_size);
+
+        for (int i = 0; i < num_samples; ++i) {
+            double sum_term = 0;
+            // loop through the distribution and draw Gamma variables
+            for (int j = 0; j < distribution_size; ++j) {
+                double cur = R::rgamma(alpha_m[j],1.0);
+                distribution(i,j) = cur;
+                sum_term += cur;
+            }
+            // now normalize
+            for (int j = 0; j < distribution_size; ++j) {
+                distribution(i,j) = distribution(i,j)/sum_term;
+            }
+        }
+        return(distribution);
+    }
+
+    // ***********************************************************************//
+    //        Sample Token Topic Assignments From Generative Process          //
+    // ***********************************************************************//
+
+    Rcpp::List sample_token_topics_generative_process(
+            Rcpp::List token_topic_assignments,
+            Rcpp::List token_word_types,
+            arma::vec alpha_m,
+            arma::vec beta_n,
+            int num_documents,
+            bool resample_word_types) {
+
+        // get some global variables
+        int num_topics = alpha_m.n_elem;
+        int num_word_types = beta_n.n_elem;
+
+        // first we draw topic-word type distributions regardless of whether we
+        // are going to use them
+        arma::mat topic_word_type_distributions = mjd::rdirichlet_matrix(
+            num_topics,
+            beta_n);
+
+        // now we draw the documen-topic distributions
+        arma::mat document_topic_distributions = mjd::rdirichlet_matrix(
+            num_documents,
+            alpha_m);
+
+
+
+    }
+
+
 } // end of MJD namespace
 
 
@@ -1767,6 +1853,12 @@ List model_inference(arma::vec author_indexes,
 
     return ret_list;
 
+}
+
+// [[Rcpp::export]]
+arma::vec mjd_rdirichlet(arma::vec alpha_m) {
+    arma::vec to_return = mjd::rdirichlet(alpha_m);
+    return(to_return);
 }
 
 

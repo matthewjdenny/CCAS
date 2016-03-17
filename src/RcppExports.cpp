@@ -291,3 +291,14 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
+// mjd_rdirichlet
+arma::vec mjd_rdirichlet(arma::vec alpha_m);
+RcppExport SEXP CCAS_mjd_rdirichlet(SEXP alpha_mSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< arma::vec >::type alpha_m(alpha_mSEXP);
+    __result = Rcpp::wrap(mjd_rdirichlet(alpha_m));
+    return __result;
+END_RCPP
+}

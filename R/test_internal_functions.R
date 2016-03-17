@@ -75,6 +75,7 @@
 #' update_size, seed, iterations, metropolis_iterations, total_number_of_tokens,
 #' iterations_before_t_i_p_updates, update_t_i_p_every_x_iterations,
 #' perform_adaptive_metropolis must be provided.
+#' @param Test_RDirichlet If TRUE, then alpha_m must be provided.
 #' @param seed An integerg.
 #' @param distribution A log-space vector
 #' @param intercepts A vector.
@@ -143,6 +144,7 @@ test_internal_functions <- function(
     Test_Update_Topic_Interaction_Pattern_Assignments = FALSE,
     Test_Adaptive_Metropolis = FALSE,
     Test_Inference = FALSE,
+    Test_RDirichlet = FALSE,
     seed = NULL,
     distribution = NULL,
     intercepts = NULL,
@@ -397,6 +399,11 @@ test_internal_functions <- function(
             update_t_i_p_every_x_iterations,
             perform_adaptive_metropolis)
     }
+
+    if (Test_RDirichlet){
+        return_object <- mjd_rdirichlet(alpha_m)
+    }
+
     # return whatever needs to be returned
     return(return_object)
 }
