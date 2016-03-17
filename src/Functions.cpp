@@ -999,6 +999,9 @@ namespace mjd {
             double tollerance,
             double update_size) {
 
+        Rcpp::Rcout << "Metropolis Hastings Accept Rates: " << std::endl <<
+            accept_rates.t() << std::endl;
+
         // get number of interaction patterns
         int number_of_interaction_patterns = intercept_proposal_variances.n_elem;
 
@@ -1015,6 +1018,10 @@ namespace mjd {
                 latent_position_proposal_variances[i] += update_size;
             }
         }
+
+        Rcpp::Rcout << "New Proposal Variances: " << std::endl <<
+            intercept_proposal_variances.t() << std::endl;
+
         Rcpp::List ret_list(3);
         ret_list[0] = intercept_proposal_variances;
         ret_list[1] = coefficient_proposal_variances;
@@ -1181,6 +1188,9 @@ namespace mjd {
                         edge_probabilities);
                     //reset counter
                     t_i_p_update_counter = 0;
+                    Rcpp::Rcout << "Topic Interaction Pattern Assignments: " <<
+                        std::endl << arma::round(topic_interaction_patterns.t())
+                        << std::endl;
                 }
                 //increment counter
                 t_i_p_update_counter += 1;
