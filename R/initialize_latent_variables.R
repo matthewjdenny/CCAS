@@ -1,6 +1,5 @@
 initialize_latent_variables <- function(CCAS_Object){
 
-
     # first initialize instances of LSM variables centered at the prior
     # mean and variance
     using_coefficients <- CCAS_Object@ComNet_Object@using_covariates
@@ -30,7 +29,7 @@ initialize_latent_variables <- function(CCAS_Object){
                CCAS_Object@interaction_patterns)
 
     # sample the new parameter values for these values
-    LSM_Params <- snipp(
+    params1 <- snipp(
         intercepts,
         coefficients,
         latent_positions,
@@ -39,17 +38,16 @@ initialize_latent_variables <- function(CCAS_Object){
         latent_position_proposal_variances = ppv,
         using_coefficients)
 
+    LSM_Params <- list(intercepts = params1[[1]],
+                       coefficients = params1[[2]],
+                       positions = params1[[3]])
     # now initialize token topic assignments
 
-    alpha_m <- rep(CCAS_Object@alpha/CCAS_Object@number_of_topics,
-                   CCAS_Object@number_of_topics)
-    beta_n <- rep(CCAS_Object@beta/CCAS_Object@ComNet_Object@vocabulary_size,
-                  CCAS_Object@ComNet_Object@vocabulary_size)
     params <- sttgp(
         CCAS_Object@ComNet_Object@token_topic_assignment_list_zero_indexed,
         CCAS_Object@ComNet_Object@token_word_type_list_zero_indexed,
-        alpha_m,
-        beta_n,
+        CCAS_Object@alpha_m,
+        CCAS_Object@beta_n,
         CCAS_Object@ComNet_Object@num_documents,
         FALSE,
         runif(n = 5*CCAS_Object@ComNet_Object@num_tokens))
