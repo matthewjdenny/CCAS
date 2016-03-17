@@ -156,7 +156,7 @@ ccas <- function(formula,
     CCAS_Object@latent_variables <- initialize_latent_variables(CCAS_Object)
 
     # run inference
-    MCMC_Results <- model_inference(
+    Inference_Results <- model_inference(
         CCAS_Object@ComNet_Object@document_authors_zero_indexed,
         CCAS_Object@ComNet_Object@document_edge_matrix,
         CCAS_Object@latent_variables$LDA_Params$document_topic_counts,
@@ -192,7 +192,21 @@ ccas <- function(formula,
         CCAS_Object@update_t_i_p_every_x_iterations,
         CCAS_Object@perform_adaptive_metropolis)
 
+    # make sure all of the output
+    MCMC_Results <- list(intercepts = Inference_Results[[2]],
+                         coefficients = Inference_Results[[3]],
+                         latent_positions = Inference_Results[[4]])
+
+    Topic_Model_Results <- list(topic_interaction_patterns = Inference_Results[[1]],
+                         document_topic_counts = Inference_Results[[5]],
+                         word_type_topic_counts = Inference_Results[[6]],
+                         topic_token_counts = Inference_Results[[7]],
+                         token_topic_assignments = Inference_Results[[8]])
+
+    # assign them to the slot in our CCAS Object
     CCAS_Object@MCMC_output <- MCMC_Results
+    CCAS_Object@topic_model_results <- Topic_Model_Results
+
     # run MH to convergence
 
     # generate diagnostics
