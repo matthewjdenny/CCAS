@@ -18,7 +18,8 @@ setClass(Class = "ComNet",
              blank_documents = "numeric",
              using_covariates = "logical",
              token_word_type_list_zero_indexed = "list",
-             token_topic_assignment_list_zero_indexed = "list"
+             token_topic_assignment_list_zero_indexed = "list",
+             document_authors_zero_indexed = "numeric"
          ),
          validity = function(object) {
              #              if (!"matrix" %in% class(object@network) & is.null(object@network)
@@ -44,8 +45,11 @@ setClass(Class = "CCAS",
              formula = "formula",
              alpha = "numeric",
              beta = "numeric",
+             alpha_m = "numeric",
+             beta_n = "numeric",
              iterations = "numeric",
-             burnin = "numeric",
+             metropolis_hastings_iterations = "numeric",
+             metropolis_hastings_burnin = "numeric",
              LSM_intercept_proposal_variance = "numeric",
              LSM_intercept_prior_variance = "numeric",
              LSM_intercept_prior_mean = "numeric",
@@ -56,7 +60,13 @@ setClass(Class = "CCAS",
              LSM_coefficient_prior_variance = "numeric",
              LSM_coefficient_prior_mean = "numeric",
              number_of_covariates = "numeric",
-             latent_variables = "list"
+             latent_variables = "list",
+             covariate_array = "array",
+             iterations_before_t_i_p_updates = "numeric",
+             update_t_i_p_every_x_iterations = "numeric",
+             perform_adaptive_metropolis = "logical",
+             adaptive_metropolis_update_size = "numeric",
+             seed = "numeric"
          ),
          validity = function(object) {
              #              if (!"matrix" %in% class(object@network) & is.null(object@network)
