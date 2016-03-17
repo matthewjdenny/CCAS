@@ -1345,7 +1345,7 @@ namespace mjd {
             distribution[i] = temp/gamma_sum;
         }
 
-        return(distribution);
+        return distribution;
     }
 
     // ***********************************************************************//
@@ -1371,7 +1371,7 @@ namespace mjd {
                 distribution(i,j) = distribution(i,j)/sum_term;
             }
         }
-        return(distribution);
+        return distribution;
     }
 
     // ***********************************************************************//
@@ -1383,12 +1383,22 @@ namespace mjd {
             Rcpp::List token_word_types,
             arma::vec alpha_m,
             arma::vec beta_n,
-            int num_documents,
-            bool resample_word_types) {
+            int number_of_documents,
+            bool resample_word_types,
+            arma::vec random_numbers) {
 
         // get some global variables
         int num_topics = alpha_m.n_elem;
         int num_word_types = beta_n.n_elem;
+        int rand_num_counter = 0;
+
+        arma::mat document_topic_counts = arma::zeros(number_of_documents,
+                                                      num_topics);
+
+        arma::vec topic_token_counts = arma::zeros(num_topics);
+
+        arma::mat word_type_topic_counts = arma::zeros(num_word_types,
+                                                       num_topics);
 
         // first we draw topic-word type distributions regardless of whether we
         // are going to use them
@@ -1398,11 +1408,72 @@ namespace mjd {
 
         // now we draw the documen-topic distributions
         arma::mat document_topic_distributions = mjd::rdirichlet_matrix(
-            num_documents,
+            number_of_documents,
             alpha_m);
 
+        for (int i = 0; i < number_of_documents; ++i) {
+            // get the current token topic assignments as a vector
+            arma::vec current_token_topic_assignments = token_topic_assignments[i];
+            // get the current token word types as a vector
+            arma::vec current_token_word_types = token_word_types[i];
+            // get the current number of tokens
+            int tokens_in_document = current_token_topic_assignments.n_elem;
 
+            // we need to allocate row vectors from a matrix before we can
+            // convert to arma::vec as desired (typeing issue)
+            arma::rowvec temp = document_topic_distributions.row(i);
+            // now we convert to an arma::vec (ugly but it works)
+            arma::vec current_doc_topic_dist = arma::conv_to<arma::vec>::from(temp);
+            // need to take log so we can use our log space multinomial sampler
+            current_doc_topic_dist = arma::log(current_doc_topic_dist);
 
+            // loop over tokens
+            for (int j = 0; j < tokens_in_document; ++j) {
+                double rand_num = random_numbers[rand_num_counter];
+                rand_num_counter += 1;
+                int current_word_type = current_token_word_types[j];
+
+                // now get the new assignment
+                int new_topic_assignment = mjd::log_space_multinomial_sampler(
+                    current_doc_topic_dist,
+                    rand_num);
+
+                if (resample_word_types) {
+                    arma::rowvec temp2 = topic_word_type_distributions.row(new_topic_assignment);
+                    // now we convert to an arma::vec (ugly but it works)
+                    arma::vec current_topic_word_type_dist = arma::conv_to<arma::vec>::from(temp2);
+                    // need to take log so we can use our log space multinomial sampler
+                    current_topic_word_type_dist = arma::log(current_topic_word_type_dist);
+                    double rand_num2 = random_numbers[rand_num_counter];
+                    rand_num_counter += 1;
+                    current_word_type = mjd::log_space_multinomial_sampler(
+                        current_topic_word_type_dist,
+                        rand_num2);
+                }
+                document_topic_counts(i,new_topic_assignment) += 1;
+                current_token_topic_assignments[j] = new_topic_assignment;
+                topic_token_counts[new_topic_assignment] += 1;
+                word_type_topic_counts(current_word_type,
+                                       new_topic_assignment) += 1;
+                current_token_word_types[j] = current_word_type;
+
+            }
+            // put the vector back in the list
+            token_topic_assignments[i] = current_token_topic_assignments;
+            token_word_types[i] = current_token_word_types;
+        } // end of loop over documents
+
+        //return everything
+        Rcpp::List to_return(7);
+        to_return[0] = token_topic_assignments;
+        to_return[1] = token_word_types;
+        to_return[2] = document_topic_counts;
+        to_return[3] = topic_token_counts;
+        to_return[4] = word_type_topic_counts;
+        to_return[5] = document_topic_distributions;
+        to_return[6] = topic_word_type_distributions;
+
+        return to_return;
     }
 
 
