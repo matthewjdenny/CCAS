@@ -19,7 +19,7 @@ test_that("main function works", {
                      topics = 40,
                      alpha = 1,
                      beta = 0.01,
-                     iterations = 1000,
+                     iterations = 100,
                      metropolis_hastings_iterations = 500,
                      metropolis_hastings_burnin = 500,
                      target_accept_rate = 0.25,
