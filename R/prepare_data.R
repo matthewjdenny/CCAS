@@ -138,7 +138,8 @@ prepare_data <- function(document_authors,
         blank_documents = blank_documents,
         using_covariates = using_covariates,
         token_word_type_list_zero_indexed = token_word_type_list_zero_indexed,
-        token_topic_assignment_list_zero_indexed = token_topic_assignment_list_zero_indexed)
+        token_topic_assignment_list_zero_indexed = token_topic_assignment_list_zero_indexed,
+        document_authors_zero_indexed = document_authors - 1)
 
     # only assign if covariate_data is not NULL in order to aviod error
     if (using_covariates) {
