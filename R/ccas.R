@@ -27,6 +27,11 @@
 #' @param LSM_coefficient_proposal_variance Defaults to 2.
 #' @param LSM_coefficient_prior_variance Defaults to 5.
 #' @param LSM_coefficient_prior_mean Defaults to 0.
+#' @param iterations_before_t_i_p_updates Defaults to 5.
+#' @param update_t_i_p_every_x_iterations Defaults to 5.
+#' @param adaptive_metropolis Defaults to TRUE.
+#' @param adaptive_metropolis_update_size Defaults to 0.05.
+#' @param seed Defaults to 12345.
 #' @return An object of class CCAS containing estimation results.
 #' @export
 ccas <- function(formula,
@@ -47,7 +52,15 @@ ccas <- function(formula,
                  LSM_position_prior_mean = 0,
                  LSM_coefficient_proposal_variance = 2,
                  LSM_coefficient_prior_variance = 5,
-                 LSM_coefficient_prior_mean = 0) {
+                 LSM_coefficient_prior_mean = 0,
+                 iterations_before_t_i_p_updates = 5,
+                 update_t_i_p_every_x_iterations = 5,
+                 adaptive_metropolis = TRUE,
+                 adaptive_metropolis_update_size = 0.05,
+                 seed = 12345) {
+
+    # set the seed
+    set.seed(seed)
 
     # possible terms for inclusion in model specification.
     possible_structural_terms <- c("euclidean")
@@ -73,6 +86,7 @@ ccas <- function(formula,
 
     # if we are using covariates, then generate the covariate array:
     number_of_covariates <- 0
+    covariate_array <- array(0,dim = c(10,10,10))
     if (using_covariates) {
         temp <- generate_covariate_array(formula,
                                          possible_structural_terms,
@@ -98,8 +112,16 @@ ccas <- function(formula,
        alpha = alpha,
        beta = beta,
        iterations = iterations,
-       burnin = metropolis_hastings_burnin,
-       number_of_covariates = number_of_covariates)
+       metropolis_hastings_iterations = metropolis_hastings_iterations,
+       metropolis_hastings_burnin = metropolis_hastings_burnin,
+       number_of_covariates = number_of_covariates,
+       iterations_before_t_i_p_updates = iterations_before_t_i_p_updates,
+       update_t_i_p_every_x_iterations = update_t_i_p_every_x_iterations,
+       perform_adaptive_metropolis = adaptive_metropolis,
+       adaptive_metropolis_update_size = adaptive_metropolis_update_size,
+       seed = seed)
+
+    CCAS_Object@covariate_array <- covariate_array
 
     # initialie vectors of prior variances
     CCAS_Object <- initialize_LSM_priors(CCAS_Object,
@@ -124,12 +146,53 @@ ccas <- function(formula,
         interaction_patterns
     )
 
+    CCAS_Object@alpha_m <- rep(CCAS_Object@alpha/CCAS_Object@number_of_topics,
+                   CCAS_Object@number_of_topics)
+    CCAS_Object@beta_n <- rep(CCAS_Object@beta/CCAS_Object@ComNet_Object@vocabulary_size,
+                  CCAS_Object@ComNet_Object@vocabulary_size)
+
 
     # initialize all latent variable values
     CCAS_Object@latent_variables <- initialize_latent_variables(CCAS_Object)
 
     # run inference
+    MCMC_Results <- model_inference(
+        CCAS_Object@ComNet_Object@document_authors_zero_indexed,
+        CCAS_Object@ComNet_Object@document_edge_matrix,
+        CCAS_Object@latent_variables$LDA_Params$document_topic_counts,
+        CCAS_Object@latent_variables$LDA_Params$topic_interaction_patterns,
+        CCAS_Object@latent_variables$LDA_Params$word_type_topic_counts,
+        CCAS_Object@latent_variables$LDA_Params$topic_token_counts,
+        CCAS_Object@latent_variables$LDA_Params$token_topic_assignments,
+        CCAS_Object@latent_variables$LDA_Params$token_word_types,
+        CCAS_Object@latent_variables$LSM_Params$intercepts,
+        CCAS_Object@latent_variables$LSM_Params$coefficients,
+        CCAS_Object@latent_variables$LSM_Params$positions,
+        CCAS_Object@covariate_array,
+        CCAS_Object@alpha_m,
+        CCAS_Object@beta_n,
+        CCAS_Object@ComNet_Object@using_covariates,
+        CCAS_Object@LSM_intercept_prior_mean,
+        CCAS_Object@LSM_intercept_prior_variance,
+        CCAS_Object@LSM_intercept_proposal_variance,
+        CCAS_Object@LSM_coefficient_prior_mean,
+        CCAS_Object@LSM_coefficient_prior_variance,
+        CCAS_Object@LSM_coefficient_proposal_variance,
+        CCAS_Object@LSM_position_prior_mean,
+        CCAS_Object@LSM_position_prior_variance,
+        CCAS_Object@LSM_position_proposal_variance,
+        CCAS_Object@target_accept_rate,
+        CCAS_Object@tollerance,
+        CCAS_Object@adaptive_metropolis_update_size,
+        CCAS_Object@seed,
+        CCAS_Object@iterations,
+        CCAS_Object@metropolis_hastings_iterations,
+        CCAS_Object@ComNet_Object@num_tokens,
+        CCAS_Object@iterations_before_t_i_p_updates,
+        CCAS_Object@update_t_i_p_every_x_iterations,
+        CCAS_Object@perform_adaptive_metropolis)
 
+    CCAS_Object@MCMC_output <- MCMC_Results
     # run MH to convergence
 
     # generate diagnostics

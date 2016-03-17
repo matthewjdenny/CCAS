@@ -11,7 +11,10 @@ ccas(formula, interaction_patterns = 4, topics = 40, alpha = 1,
   LSM_intercept_prior_variance = 5, LSM_intercept_prior_mean = 0,
   LSM_position_proposal_variance = 2, LSM_position_prior_variance = 5,
   LSM_position_prior_mean = 0, LSM_coefficient_proposal_variance = 2,
-  LSM_coefficient_prior_variance = 5, LSM_coefficient_prior_mean = 0)
+  LSM_coefficient_prior_variance = 5, LSM_coefficient_prior_mean = 0,
+  iterations_before_t_i_p_updates = 5, update_t_i_p_every_x_iterations = 5,
+  adaptive_metropolis = TRUE, adaptive_metropolis_update_size = 0.05,
+  seed = 12345)
 }
 \arguments{
 \item{formula}{A formula object of the form 'ComNet ~
@@ -57,6 +60,16 @@ which are defined analogously to the arguments in the latentnet package.}
 \item{LSM_coefficient_prior_variance}{Defaults to 5.}
 
 \item{LSM_coefficient_prior_mean}{Defaults to 0.}
+
+\item{iterations_before_t_i_p_updates}{Defaults to 5.}
+
+\item{update_t_i_p_every_x_iterations}{Defaults to 5.}
+
+\item{adaptive_metropolis}{Defaults to TRUE.}
+
+\item{adaptive_metropolis_update_size}{Defaults to 0.05.}
+
+\item{seed}{Defaults to 12345.}
 }
 \value{
 An object of class CCAS containing estimation results.
