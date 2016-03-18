@@ -20,15 +20,9 @@
 #' @param thin Defaults to 1/100.
 #' @param target_accept_rate Defaults to 0.25.
 #' @param tolerance Defaults to 0.05.
-#' @param LSM_intercept_proposal_variance Defaults to 2.
-#' @param LSM_intercept_prior_variance Defaults to 5.
-#' @param LSM_intercept_prior_mean Defaults to 0.
-#' @param LSM_position_proposal_variance Defaults to 2.
-#' @param LSM_position_prior_variance Defaults to 5.
-#' @param LSM_position_prior_mean Defaults to 0.
-#' @param LSM_coefficient_proposal_variance Defaults to 2.
-#' @param LSM_coefficient_prior_variance Defaults to 5.
-#' @param LSM_coefficient_prior_mean Defaults to 0.
+#' @param LSM_proposal_variance Defaults to .5.
+#' @param LSM_prior_variance Defaults to 1.
+#' @param LSM_prior_mean Defaults to 0.
 #' @param iterations_before_t_i_p_updates Defaults to 5.
 #' @param update_t_i_p_every_x_iterations Defaults to 5.
 #' @param adaptive_metropolis Defaults to TRUE.
@@ -50,15 +44,9 @@ ccas <- function(formula,
                  thin = 1/100,
                  target_accept_rate = 0.25,
                  tolerance = 0.05,
-                 LSM_intercept_proposal_variance = 2,
-                 LSM_intercept_prior_variance = 5,
-                 LSM_intercept_prior_mean = 0,
-                 LSM_position_proposal_variance = 2,
-                 LSM_position_prior_variance = 5,
-                 LSM_position_prior_mean = 0,
-                 LSM_coefficient_proposal_variance = 2,
-                 LSM_coefficient_prior_variance = 5,
-                 LSM_coefficient_prior_mean = 0,
+                 LSM_proposal_variance = .5,
+                 LSM_prior_variance = 1,
+                 LSM_prior_mean = 0,
                  iterations_before_t_i_p_updates = 5,
                  update_t_i_p_every_x_iterations = 5,
                  adaptive_metropolis = TRUE,
@@ -66,6 +54,19 @@ ccas <- function(formula,
                  seed = 12345,
                  adaptive_metropolis_every_x_iterations = 1000,
                  stop_adaptive_metropolis_after_x_updates = 50) {
+
+    # for now, we only allow a common proposal variance, prior mean, and prior
+    # variance. In the future, these could be different for each cluster and
+    # parameter type.
+    LSM_intercept_proposal_variance = LSM_proposal_variance
+    LSM_intercept_prior_variance = LSM_prior_variance
+    LSM_intercept_prior_mean = LSM_prior_mean
+    LSM_position_proposal_variance = LSM_proposal_variance
+    LSM_position_prior_variance = LSM_prior_variance
+    LSM_position_prior_mean = LSM_prior_mean
+    LSM_coefficient_proposal_variance = LSM_proposal_variance
+    LSM_coefficient_prior_variance = LSM_prior_variance
+    LSM_coefficient_prior_mean = LSM_prior_mean
 
     # set the seed
     set.seed(seed)

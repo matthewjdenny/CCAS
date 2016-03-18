@@ -9,14 +9,10 @@ ccas(formula, interaction_patterns = 4, topics = 40, alpha = 1,
   final_metropolis_hastings_burnin = 500,
   final_metropolis_hastings_iterations = 1e+05, thin = 1/100,
   target_accept_rate = 0.25, tolerance = 0.05,
-  LSM_intercept_proposal_variance = 2, LSM_intercept_prior_variance = 5,
-  LSM_intercept_prior_mean = 0, LSM_position_proposal_variance = 2,
-  LSM_position_prior_variance = 5, LSM_position_prior_mean = 0,
-  LSM_coefficient_proposal_variance = 2, LSM_coefficient_prior_variance = 5,
-  LSM_coefficient_prior_mean = 0, iterations_before_t_i_p_updates = 5,
-  update_t_i_p_every_x_iterations = 5, adaptive_metropolis = TRUE,
-  adaptive_metropolis_update_size = 0.05, seed = 12345,
-  adaptive_metropolis_every_x_iterations = 1000,
+  LSM_proposal_variance = 0.5, LSM_prior_variance = 1, LSM_prior_mean = 0,
+  iterations_before_t_i_p_updates = 5, update_t_i_p_every_x_iterations = 5,
+  adaptive_metropolis = TRUE, adaptive_metropolis_update_size = 0.05,
+  seed = 12345, adaptive_metropolis_every_x_iterations = 1000,
   stop_adaptive_metropolis_after_x_updates = 50)
 }
 \arguments{
@@ -50,23 +46,11 @@ which are defined analogously to the arguments in the latentnet package.}
 
 \item{tolerance}{Defaults to 0.05.}
 
-\item{LSM_intercept_proposal_variance}{Defaults to 2.}
+\item{LSM_proposal_variance}{Defaults to .5.}
 
-\item{LSM_intercept_prior_variance}{Defaults to 5.}
+\item{LSM_prior_variance}{Defaults to 1.}
 
-\item{LSM_intercept_prior_mean}{Defaults to 0.}
-
-\item{LSM_position_proposal_variance}{Defaults to 2.}
-
-\item{LSM_position_prior_variance}{Defaults to 5.}
-
-\item{LSM_position_prior_mean}{Defaults to 0.}
-
-\item{LSM_coefficient_proposal_variance}{Defaults to 2.}
-
-\item{LSM_coefficient_prior_variance}{Defaults to 5.}
-
-\item{LSM_coefficient_prior_mean}{Defaults to 0.}
+\item{LSM_prior_mean}{Defaults to 0.}
 
 \item{iterations_before_t_i_p_updates}{Defaults to 5.}
 

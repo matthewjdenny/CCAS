@@ -27,9 +27,9 @@ test_that("main function works", {
                      target_accept_rate = 0.25,
                      tollerance = 0.05,
                      adaptive_metropolis_update_size = 0.05,
-                     LSM_intercept_proposal_variance = .2,
-                     LSM_position_proposal_variance = .2,
-                     LSM_coefficient_proposal_variance = .2)
+                     LSM_proposal_variance = .5,
+                     LSM_prior_variance = 1,
+                     LSM_prior_mean = 0,)
 
     expect_equal(nrow(CCAS_Object@MCMC_output$intercepts),1000)
 
