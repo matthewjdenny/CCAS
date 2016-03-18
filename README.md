@@ -26,5 +26,5 @@ Now we can install from Github using the following line:
 
     devtools::install_github("matthewjdenny/CCAS")
 
-I have  had success installing with R 3.3.0+ installed but please email me if you hit any issues.
+I have  had success installing with R 3.2.3+ installed but please email me if you hit any issues.
 
