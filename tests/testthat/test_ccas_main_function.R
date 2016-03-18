@@ -13,7 +13,6 @@ test_that("main function works", {
                              nodemix("gender", base = "male") +
                              netcov("net_covariate")
 
-
     CCAS_Object <- ccas(formula,
                      interaction_patterns = 4,
                      topics = 40,
