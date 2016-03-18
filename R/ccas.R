@@ -32,6 +32,9 @@
 #' @param adaptive_metropolis Defaults to TRUE.
 #' @param adaptive_metropolis_update_size Defaults to 0.05.
 #' @param seed Defaults to 12345.
+#' @param final_metropolis_hastings_iterations Defaults to 100000.
+#' @param adaptive_metropolis_every_x_iterations Defaults to 1000.
+#' @param stop_adaptive_metropolis_after_x_updates Defualts to 50.
 #' @return An object of class CCAS containing estimation results.
 #' @export
 ccas <- function(formula,
@@ -57,7 +60,10 @@ ccas <- function(formula,
                  update_t_i_p_every_x_iterations = 5,
                  adaptive_metropolis = TRUE,
                  adaptive_metropolis_update_size = 0.05,
-                 seed = 12345) {
+                 seed = 12345,
+                 final_metropolis_hastings_iterations = 100000,
+                 adaptive_metropolis_every_x_iterations = 1000,
+                 stop_adaptive_metropolis_after_x_updates = 50) {
 
     # set the seed
     set.seed(seed)
@@ -119,7 +125,8 @@ ccas <- function(formula,
        update_t_i_p_every_x_iterations = update_t_i_p_every_x_iterations,
        perform_adaptive_metropolis = adaptive_metropolis,
        adaptive_metropolis_update_size = adaptive_metropolis_update_size,
-       seed = seed)
+       seed = seed,
+       final_metropolis_hastings_iterations = final_metropolis_hastings_iterations)
 
     CCAS_Object@covariate_array <- covariate_array
 
@@ -209,7 +216,56 @@ ccas <- function(formula,
     CCAS_Object@MCMC_output <- MCMC_Results
     CCAS_Object@topic_model_results <- Topic_Model_Results
 
+    cat("\n\n###################################################\n\n")
+    cat("Main Inference Complete: Running MH to Convergence...\n\n")
+    cat("###################################################\n\n")
+
+    # select the last iteraction of output from MH from the main inference
+    # to seed MH to convergence
+    ints <- CCAS_Object@MCMC_output$intercepts[
+        nrow(CCAS_Object@MCMC_output$intercepts),]
+
+    coefs <- CCAS_Object@MCMC_output$coefficients[,,
+        dim(CCAS_Object@MCMC_output$coefficients)[3]]
+
+    ld <- CCAS_Object@latent_space_dimensions
+    ind <- dim(CCAS_Object@MCMC_output$latent_positions)[3] - ld
+
+    lat_pos <- CCAS_Object@MCMC_output$latent_positions[,,ind:(ind + ld)]
+
     # run MH to convergence
+    final_mh_results <- mh_to_convergence(
+        CCAS_Object@ComNet_Object@document_authors_zero_indexed,
+        CCAS_Object@ComNet_Object@document_edge_matrix,
+        CCAS_Object@topic_model_results$document_topic_counts,
+        CCAS_Object@topic_model_results$topic_interaction_patterns,
+        ints,
+        coefs,
+        lat_pos,
+        CCAS_Object@covariate_array,
+        CCAS_Object@ComNet_Object@using_covariates,
+        CCAS_Object@LSM_intercept_prior_mean,
+        CCAS_Object@LSM_intercept_prior_variance,
+        CCAS_Object@MCMC_output$final_proposal_variances,
+        CCAS_Object@LSM_coefficient_prior_mean,
+        CCAS_Object@LSM_coefficient_prior_variance,
+        CCAS_Object@MCMC_output$final_proposal_variances,
+        CCAS_Object@LSM_position_prior_mean,
+        CCAS_Object@LSM_position_prior_variance,
+        CCAS_Object@MCMC_output$final_proposal_variances,
+        CCAS_Object@target_accept_rate,
+        CCAS_Object@tollerance,
+        CCAS_Object@adaptive_metropolis_update_size,
+        CCAS_Object@seed,
+        CCAS_Object@final_metropolis_hastings_iterations,
+        adaptive_metropolis_every_x_iterations,
+        stop_adaptive_metropolis_after_x_updates)
+
+    # now slot in last updates
+    CCAS_Object@MCMC_output$intercepts = final_mh_results[[1]]
+    CCAS_Object@MCMC_output$coefficients = final_mh_results[[2]]
+    CCAS_Object@MCMC_output$latent_positions = final_mh_results[[3]]
+    CCAS_Object@MCMC_output$final_proposal_variances = final_mh_results[[4]]
 
     # generate diagnostics
 
