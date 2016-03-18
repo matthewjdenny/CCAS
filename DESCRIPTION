@@ -1,7 +1,7 @@
 Package: CCAS
 Type: Package
 Title: Communication Content and Network Structure
-Version: 0.1
+Version: 0.2.1
 Date: 2016-01-13
 Author: Matthew J. Denny <mdenny@psu.edu>
 Maintainer: Matthew J. Denny <mdenny@psu.edu>
