@@ -33,7 +33,6 @@ setClass(Class = "ComNet",
 # an S4 class for ccas objects
 setClass(Class = "CCAS",
          representation = representation(
-             ComNet_Object = "ComNet",
              parameter_estimates = "data.frame",
              interaction_patterns = "numeric",
              number_of_topics = "numeric",
@@ -63,7 +62,9 @@ setClass(Class = "CCAS",
              perform_adaptive_metropolis = "logical",
              adaptive_metropolis_update_size = "numeric",
              seed = "numeric",
+             final_metropolis_hastings_iterations = "numeric",
              covariate_array = "array",
+             ComNet_Object = "ComNet",
              MCMC_output = "list",
              topic_model_results = "list",
              latent_variables = "list"
