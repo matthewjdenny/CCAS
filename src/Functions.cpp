@@ -1526,7 +1526,10 @@ namespace mjd {
             int seed,
             int metropolis_iterations,
             int adaptive_metropolis_every_x_iterations,
-            int stop_adaptive_metropolis_after_x_updates) {
+            int stop_adaptive_metropolis_after_x_updates,
+            int samples_to_store,
+            int sample_every,
+            int burnin) {
 
         // Set RNG and define uniform distribution
         boost::mt19937 generator(seed);
@@ -1542,6 +1545,9 @@ namespace mjd {
         int adaptive_MH_counter = 0;
         int total_adaptive_MH_updates = 0;
         int latent_position_storage_counter = 0;
+        int storage_counter = 0;
+        int burnin_counter = 0;
+        int storage_check = 1;
         //get the number of if we are using them, set this eqaul to two since we
         //need to allocate the matrix even if we are not using it.
         int num_coefficients = 2;
@@ -1553,9 +1559,9 @@ namespace mjd {
         arma::vec accept_or_reject = arma::zeros(adaptive_metropolis_every_x_iterations);
 
         // allocate data structures to store samples in.
-        arma::mat store_intercepts = arma::zeros(metropolis_iterations,
+        arma::mat store_intercepts = arma::zeros(samples_to_store,
                                                  num_interaction_patterns);
-        arma::cube store_coefficients = arma::zeros(num_interaction_patterns,
+        arma::cube store_coefficients = arma::zeros(samples_to_store,
                                                     num_coefficients,
                                                     metropolis_iterations);
         //we are going to have to stack cubes here, hence the multiplication
@@ -1563,10 +1569,7 @@ namespace mjd {
         arma::cube store_latent_positions = arma::zeros(
             num_interaction_patterns,
             num_actors,
-            metropolis_iterations * num_latent_dimensions);
-
-        arma::mat store_accept_rates = arma::zeros(metropolis_iterations,
-                                                   num_interaction_patterns);
+            samples_to_store * num_latent_dimensions);
 
         // generate edge probabilities to pass in
         arma::cube edge_probabilities = arma::zeros(num_actors,
@@ -1636,7 +1639,7 @@ namespace mjd {
             store_accept_or_reject[j] = temp5;
 
             // do adaptive metropolis
-            if (adaptive_MH_counter > adaptive_metropolis_every_x_iterations) {
+            if (adaptive_MH_counter >= adaptive_metropolis_every_x_iterations) {
                 // print out the current iteration every x updates so we can
                 // keep track of progress.
                 Rcpp::Rcout << "Iteration: " << j << std::endl;
@@ -1676,39 +1679,55 @@ namespace mjd {
                     total_adaptive_MH_updates += 1;
 
                 }// end of conditional for whether we perform adaptive MH
-                adaptive_MH_counter = -1;
+                adaptive_MH_counter = 0;
             }
 
-            // save everything
-            for (int k = 0; k < num_interaction_patterns; ++k) {
-                //save intercepts
-                double temp = intercepts[k];
-                store_intercepts(j,k) = temp;
+            // only save stuff if we are past the burnin
+            if (burnin_counter > burnin) {
 
-                if (using_coefficients) {
-                    for (int l = 0; l < num_coefficients; ++l) {
-                        double temp2 = coefficients(k,l);
-                        store_coefficients(k,l,j) = temp2;
+                // only save once every sample_every iterations
+                if (storage_check == sample_every) {
+                    // save everything
+                    for (int k = 0; k < num_interaction_patterns; ++k) {
+                        //save intercepts
+                        double temp = intercepts[k];
+                        store_intercepts(storage_counter,k) = temp;
+
+                        if (using_coefficients) {
+                            for (int l = 0; l < num_coefficients; ++l) {
+                                double temp2 = coefficients(k,l);
+                                store_coefficients(k,l,storage_counter) = temp2;
+                            }
+                        }
                     }
+                    // store latent positions -- we need the latent dimensions
+                    // to be the outter loop so that we can increment the counter
+                    // of which slice we insert into.
+                    for (int m = 0; m < num_latent_dimensions; ++m) {
+                        for (int k = 0; k < num_interaction_patterns; ++k) {
+                            for (int l = 0; l < num_actors; ++l) {
+                                double temp3 = latent_positions(k,l,m);
+                                store_latent_positions(k,l,
+                                                       latent_position_storage_counter) = temp3;
+                            }
+                        }
+                        latent_position_storage_counter += 1;
+                    }// loop over latent dimensions has to be last as they are
+                    // stacked in the returned array
+
+                    // this is the counter for where we stick stuff in
+                    storage_counter += 1;
+                    storage_check = 0;
                 }
-            }
-            // store latent positions -- we need the latent dimensions
-            // to be the outter loop so that we can increment the counter
-            // of which slice we insert into.
-            for (int m = 0; m < num_latent_dimensions; ++m) {
-                for (int k = 0; k < num_interaction_patterns; ++k) {
-                    for (int l = 0; l < num_actors; ++l) {
-                        double temp3 = latent_positions(k,l,m);
-                        store_latent_positions(k,l,
-                            latent_position_storage_counter) = temp3;
-                    }
-                }
-                latent_position_storage_counter += 1;
-            }// loop over latent dimensions has to be last as they are
-            // stacked in the returned array
+
+                // only increment the storage check if we have hit the burnin
+                storage_check += 1;
+            }// burnin conditional
 
             // increment the counter outside of the conditional
             adaptive_MH_counter += 1;
+            burnin_counter += 1;
+
 
         }// end of metropolis hastings loop
 
@@ -2227,7 +2246,10 @@ Rcpp::List mh_to_convergence(
         int seed,
         int metropolis_iterations,
         int adaptive_metropolis_every_x_iterations,
-        int stop_adaptive_metropolis_after_x_updates) {
+        int stop_adaptive_metropolis_after_x_updates,
+        int samples_to_store,
+        int sample_every,
+        int burnin) {
 
     List ret_list = mjd::run_metropolis_hastings_to_convergence(
         author_indexes,
@@ -2254,7 +2276,10 @@ Rcpp::List mh_to_convergence(
         seed,
         metropolis_iterations,
         adaptive_metropolis_every_x_iterations,
-        stop_adaptive_metropolis_after_x_updates);
+        stop_adaptive_metropolis_after_x_updates,
+        samples_to_store,
+        sample_every,
+        burnin);
 
     return ret_list;
 }

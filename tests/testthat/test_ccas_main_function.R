@@ -22,12 +22,15 @@ test_that("main function works", {
                      iterations = 20,
                      metropolis_hastings_iterations = 500,
                      final_metropolis_hastings_iterations = 10000,
-                     final_metropolis_hastings_burnin = 500,
+                     final_metropolis_hastings_burnin = 5000,
+                     thin = 1/10,
                      target_accept_rate = 0.25,
                      tollerance = 0.05,
                      adaptive_metropolis_update_size = 0.05,
                      LSM_intercept_proposal_variance = .2,
                      LSM_position_proposal_variance = .2,
                      LSM_coefficient_proposal_variance = .2)
+
+    expect_equal(nrow(CCAS_Object@MCMC_output$intercepts),1000)
 
 })
