@@ -121,14 +121,15 @@ ccas <- function(formula,
        beta = beta,
        iterations = iterations,
        metropolis_hastings_iterations = metropolis_hastings_iterations,
-       metropolis_hastings_burnin = final_metropolis_hastings_burnin,
+       final_metropolis_hastings_burnin = final_metropolis_hastings_burnin,
+       final_metropolis_hastings_iterations = final_metropolis_hastings_iterations,
+       thin = thin,
        number_of_covariates = number_of_covariates,
        iterations_before_t_i_p_updates = iterations_before_t_i_p_updates,
        update_t_i_p_every_x_iterations = update_t_i_p_every_x_iterations,
        perform_adaptive_metropolis = adaptive_metropolis,
        adaptive_metropolis_update_size = adaptive_metropolis_update_size,
-       seed = seed,
-       final_metropolis_hastings_iterations = final_metropolis_hastings_iterations)
+       seed = seed)
 
     CCAS_Object@covariate_array <- covariate_array
 
