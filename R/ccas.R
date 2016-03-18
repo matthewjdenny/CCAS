@@ -19,7 +19,7 @@
 #' @param final_metropolis_hastings_iterations Defaults to 100000.
 #' @param thin Defaults to 1/100.
 #' @param target_accept_rate Defaults to 0.25.
-#' @param tollerance Defaults to 0.05.
+#' @param tolerance Defaults to 0.05.
 #' @param LSM_intercept_proposal_variance Defaults to 2.
 #' @param LSM_intercept_prior_variance Defaults to 5.
 #' @param LSM_intercept_prior_mean Defaults to 0.
@@ -49,7 +49,7 @@ ccas <- function(formula,
                  final_metropolis_hastings_iterations = 100000,
                  thin = 1/100,
                  target_accept_rate = 0.25,
-                 tollerance = 0.05,
+                 tolerance = 0.05,
                  LSM_intercept_proposal_variance = 2,
                  LSM_intercept_prior_variance = 5,
                  LSM_intercept_prior_mean = 0,
@@ -115,7 +115,7 @@ ccas <- function(formula,
        number_of_topics = topics,
        latent_space_dimensions = parsed_specifcation$d,
        target_accept_rate = target_accept_rate,
-       tollerance = tollerance,
+       tolerance = tolerance,
        formula = formula,
        alpha = alpha,
        beta = beta,
@@ -196,7 +196,7 @@ ccas <- function(formula,
         CCAS_Object@LSM_position_prior_variance,
         CCAS_Object@LSM_position_proposal_variance,
         CCAS_Object@target_accept_rate,
-        CCAS_Object@tollerance,
+        CCAS_Object@tolerance,
         CCAS_Object@adaptive_metropolis_update_size,
         CCAS_Object@seed,
         CCAS_Object@iterations,
@@ -278,7 +278,7 @@ ccas <- function(formula,
         CCAS_Object@LSM_position_prior_variance,
         CCAS_Object@MCMC_output$final_proposal_variances,
         CCAS_Object@target_accept_rate,
-        CCAS_Object@tollerance,
+        CCAS_Object@tolerance,
         CCAS_Object@adaptive_metropolis_update_size,
         CCAS_Object@seed,
         iters,
