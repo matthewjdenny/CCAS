@@ -1270,7 +1270,8 @@ namespace mjd {
                 latent_positions = temp3;
                 arma::cube temp4 = MH_List[3];
                 edge_probabilities = temp4;
-                double temp5 = MH_List[4];
+                Rcpp::NumericVector temp5a = MH_List[4];
+                double temp5 = temp5a[0];
                 accept_or_reject[j] = temp5;
 
                 // if we are on the last iteration of gibbs sampling, then we
@@ -1629,8 +1630,10 @@ namespace mjd {
             latent_positions = temp3;
             arma::cube temp4 = MH_List[3];
             edge_probabilities = temp4;
-            accept_or_reject[adaptive_MH_counter] = MH_List[4];
-            store_accept_or_reject[j] = MH_List[4];
+            Rcpp::NumericVector temp5a = MH_List[4];
+            double temp5 = temp5a[0];
+            accept_or_reject[adaptive_MH_counter] = temp5;
+            store_accept_or_reject[j] = temp5;
 
             // do adaptive metropolis
             if (adaptive_MH_counter > adaptive_metropolis_every_x_iterations) {

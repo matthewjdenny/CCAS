@@ -20,6 +20,7 @@ test_that("main function works", {
                      beta = 0.01,
                      iterations = 20,
                      metropolis_hastings_iterations = 500,
+                     final_metropolis_hastings_iterations = 10000,
                      final_metropolis_hastings_burnin = 500,
                      target_accept_rate = 0.25,
                      tollerance = 0.05,
