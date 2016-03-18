@@ -1,5 +1,5 @@
 # CCAS [![Travis-CI Build Status](https://travis-ci.org/matthewjdenny/CCAS.svg?branch=master)](https://travis-ci.org/matthewjdenny/CCAS)
-An R package that provides functions to facilitate high performance text processing in R.
+A statistical model for communication network data (R package)
 
 ## Overview
 This package will eventually provide a number of functions to model communication networks
