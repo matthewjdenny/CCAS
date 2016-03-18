@@ -18,6 +18,8 @@ prepare_data <- function(document_authors,
                          covariate_data = NULL,
                          vocabulary = NULL){
 
+    document_edge_matrix <- as.matrix(document_edge_matrix)
+    document_term_matrix <- as.matrix(document_term_matrix)
     # initialize boolean indicating whether covariate data was provided
     using_covariates <- FALSE
     if (!is.null(covariate_data)) {
@@ -68,8 +70,7 @@ prepare_data <- function(document_authors,
                                                 length = num_documents)
     token_topic_assignment_list_zero_indexed <- vector(mode = "list",
                                                        length = num_documents)
-    aggregate_network <- matrix(0, nrow = num_actors,
-                                ncol = num_actors)
+    aggregate_network <- matrix(0, nrow = num_actors,ncol = num_actors)
     blank_documents <- rep(0 , num_documents)
     for (i in 1:num_documents) {
         # deal with token_word_type_list, token_topic_assignment_list
@@ -112,7 +113,7 @@ prepare_data <- function(document_authors,
         }
 
         # now deal with edge matrix
-        cur_edges <- document_edge_matrix[i,]
+        cur_edges <- as.numeric(document_edge_matrix[i,])
         if (sum(cur_edges) > 0) {
             aggregate_network[document_authors[i],] <-
                 aggregate_network[document_authors[i],] + cur_edges
