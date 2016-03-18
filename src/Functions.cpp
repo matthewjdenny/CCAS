@@ -1328,6 +1328,7 @@ namespace mjd {
         ret_list[6] = topic_token_counts;
         ret_list[7] = token_topic_assignments;
         ret_list[8] = store_accept_rates;
+        ret_list[9] = intercept_proposal_variances;
         // return everything
         return ret_list;
     }

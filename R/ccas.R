@@ -195,7 +195,9 @@ ccas <- function(formula,
     # make sure all of the output
     MCMC_Results <- list(intercepts = Inference_Results[[2]],
                          coefficients = Inference_Results[[3]],
-                         latent_positions = Inference_Results[[4]])
+                         latent_positions = Inference_Results[[4]],
+                         accept_rates = Inference_Results[[9]],
+                         final_proposal_variances = Inference_Results[[10]])
 
     Topic_Model_Results <- list(topic_interaction_patterns = Inference_Results[[1]],
                          document_topic_counts = Inference_Results[[5]],
