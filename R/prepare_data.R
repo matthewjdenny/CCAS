@@ -112,6 +112,7 @@ prepare_data <- function(document_authors,
         }
 
         # now deal with edge matrix
+        cur_edges <- document_edge_matrix[i,]
         if (sum(cur_edges) > 0) {
             aggregate_network[document_authors[i],] <-
                 aggregate_network[document_authors[i],] + cur_edges
