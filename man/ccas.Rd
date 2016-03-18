@@ -6,15 +6,16 @@
 \usage{
 ccas(formula, interaction_patterns = 4, topics = 40, alpha = 1,
   beta = 0.01, iterations = 1000, metropolis_hastings_iterations = 500,
-  metropolis_hastings_burnin = 500, target_accept_rate = 0.25,
-  tollerance = 0.05, LSM_intercept_proposal_variance = 2,
-  LSM_intercept_prior_variance = 5, LSM_intercept_prior_mean = 0,
-  LSM_position_proposal_variance = 2, LSM_position_prior_variance = 5,
-  LSM_position_prior_mean = 0, LSM_coefficient_proposal_variance = 2,
-  LSM_coefficient_prior_variance = 5, LSM_coefficient_prior_mean = 0,
-  iterations_before_t_i_p_updates = 5, update_t_i_p_every_x_iterations = 5,
-  adaptive_metropolis = TRUE, adaptive_metropolis_update_size = 0.05,
-  seed = 12345, final_metropolis_hastings_iterations = 1e+05,
+  final_metropolis_hastings_burnin = 500,
+  final_metropolis_hastings_iterations = 1e+05, thin = 1/100,
+  target_accept_rate = 0.25, tollerance = 0.05,
+  LSM_intercept_proposal_variance = 2, LSM_intercept_prior_variance = 5,
+  LSM_intercept_prior_mean = 0, LSM_position_proposal_variance = 2,
+  LSM_position_prior_variance = 5, LSM_position_prior_mean = 0,
+  LSM_coefficient_proposal_variance = 2, LSM_coefficient_prior_variance = 5,
+  LSM_coefficient_prior_mean = 0, iterations_before_t_i_p_updates = 5,
+  update_t_i_p_every_x_iterations = 5, adaptive_metropolis = TRUE,
+  adaptive_metropolis_update_size = 0.05, seed = 12345,
   adaptive_metropolis_every_x_iterations = 1000,
   stop_adaptive_metropolis_after_x_updates = 50)
 }
@@ -39,7 +40,11 @@ which are defined analogously to the arguments in the latentnet package.}
 
 \item{metropolis_hastings_iterations}{Defaults to 500.}
 
-\item{metropolis_hastings_burnin}{Defaults to 500.}
+\item{final_metropolis_hastings_burnin}{Defaults to 500.}
+
+\item{final_metropolis_hastings_iterations}{Defaults to 100000.}
+
+\item{thin}{Defaults to 1/100.}
 
 \item{target_accept_rate}{Defaults to 0.25.}
 
@@ -72,8 +77,6 @@ which are defined analogously to the arguments in the latentnet package.}
 \item{adaptive_metropolis_update_size}{Defaults to 0.05.}
 
 \item{seed}{Defaults to 12345.}
-
-\item{final_metropolis_hastings_iterations}{Defaults to 100000.}
 
 \item{adaptive_metropolis_every_x_iterations}{Defaults to 1000.}
 

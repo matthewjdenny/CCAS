@@ -15,7 +15,9 @@
 #' @param beta Defaults to 0.01.
 #' @param iterations Defaults to 1000.
 #' @param metropolis_hastings_iterations Defaults to 500.
-#' @param metropolis_hastings_burnin Defaults to 500.
+#' @param final_metropolis_hastings_burnin Defaults to 500.
+#' @param final_metropolis_hastings_iterations Defaults to 100000.
+#' @param thin Defaults to 1/100.
 #' @param target_accept_rate Defaults to 0.25.
 #' @param tollerance Defaults to 0.05.
 #' @param LSM_intercept_proposal_variance Defaults to 2.
@@ -32,7 +34,6 @@
 #' @param adaptive_metropolis Defaults to TRUE.
 #' @param adaptive_metropolis_update_size Defaults to 0.05.
 #' @param seed Defaults to 12345.
-#' @param final_metropolis_hastings_iterations Defaults to 100000.
 #' @param adaptive_metropolis_every_x_iterations Defaults to 1000.
 #' @param stop_adaptive_metropolis_after_x_updates Defualts to 50.
 #' @return An object of class CCAS containing estimation results.
@@ -44,7 +45,9 @@ ccas <- function(formula,
                  beta = 0.01,
                  iterations = 1000,
                  metropolis_hastings_iterations = 500,
-                 metropolis_hastings_burnin = 500,
+                 final_metropolis_hastings_burnin = 500,
+                 final_metropolis_hastings_iterations = 100000,
+                 thin = 1/100,
                  target_accept_rate = 0.25,
                  tollerance = 0.05,
                  LSM_intercept_proposal_variance = 2,
@@ -61,7 +64,6 @@ ccas <- function(formula,
                  adaptive_metropolis = TRUE,
                  adaptive_metropolis_update_size = 0.05,
                  seed = 12345,
-                 final_metropolis_hastings_iterations = 100000,
                  adaptive_metropolis_every_x_iterations = 1000,
                  stop_adaptive_metropolis_after_x_updates = 50) {
 
@@ -119,7 +121,7 @@ ccas <- function(formula,
        beta = beta,
        iterations = iterations,
        metropolis_hastings_iterations = metropolis_hastings_iterations,
-       metropolis_hastings_burnin = metropolis_hastings_burnin,
+       metropolis_hastings_burnin = final_metropolis_hastings_burnin,
        number_of_covariates = number_of_covariates,
        iterations_before_t_i_p_updates = iterations_before_t_i_p_updates,
        update_t_i_p_every_x_iterations = update_t_i_p_every_x_iterations,
@@ -161,6 +163,10 @@ ccas <- function(formula,
 
     # initialize all latent variable values
     CCAS_Object@latent_variables <- initialize_latent_variables(CCAS_Object)
+
+    cat("\n#############################################n\n")
+    cat("Initialization Complete: Running Inference...\n\n")
+    cat("#############################################\n\n")
 
     # run inference
     Inference_Results <- model_inference(
@@ -216,9 +222,9 @@ ccas <- function(formula,
     CCAS_Object@MCMC_output <- MCMC_Results
     CCAS_Object@topic_model_results <- Topic_Model_Results
 
-    cat("\n\n###################################################\n\n")
+    cat("\n####################################################\n\n")
     cat("Main Inference Complete: Running MH to Convergence...\n\n")
-    cat("###################################################\n\n")
+    cat("####################################################\n\n")
 
     # select the last iteraction of output from MH from the main inference
     # to seed MH to convergence
@@ -267,7 +273,12 @@ ccas <- function(formula,
     CCAS_Object@MCMC_output$latent_positions = final_mh_results[[3]]
     CCAS_Object@MCMC_output$final_proposal_variances = final_mh_results[[4]]
 
+    cat("\n##############################\n\n")
+    cat("Generating Diagnostic Plots...\n\n")
+    cat("##############################\n\n")
+
     # generate diagnostics
+
 
     # retrun the CCAS object
     return(CCAS_Object)
