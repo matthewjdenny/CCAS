@@ -1489,6 +1489,231 @@ namespace mjd {
     }
 
 
+    // ***********************************************************************//
+    //                           Run MH to Convergence                        //
+    // ***********************************************************************//
+
+    Rcpp::List run_metropolis_hastings_to_convergence(
+            arma::vec author_indexes,
+            arma::mat document_edge_matrix,
+            arma::mat document_topic_counts,
+            arma::vec topic_interaction_patterns,
+            arma::vec intercepts,
+            arma::mat coefficients,
+            arma::cube latent_positions,
+            arma::cube covariates,
+            bool using_coefficients,
+            double intercept_prior_mean,
+            double intercept_prior_variance,
+            arma::vec intercept_proposal_variances,
+            double coefficient_prior_mean,
+            double coefficient_prior_variance,
+            arma::vec coefficient_proposal_variances,
+            double latent_position_prior_mean,
+            double latent_position_prior_variance,
+            arma::vec latent_position_proposal_variances,
+            double target_accept_rate,
+            double tollerance,
+            double update_size,
+            int seed,
+            int metropolis_iterations,
+            int adaptive_metropolis_every_x_iterations,
+            int stop_adaptive_metropolis_after_x_updates) {
+
+        // Set RNG and define uniform distribution
+        boost::mt19937 generator(seed);
+        boost::uniform_01<double> uniform_distribution;
+
+        // example get the random uniform draw
+        // double rand_num = uniform_distribution(generator);
+
+        // allocated global variables
+        int num_interaction_patterns = intercept_proposal_variances.n_elem;
+        int num_actors = document_edge_matrix.n_cols;
+        int num_latent_dimensions = latent_positions.n_slices;
+        int adaptive_MH_counter = 0;
+        int total_adaptive_MH_updates = 0;
+        int latent_position_storage_counter = 0;
+        //get the number of if we are using them, set this eqaul to two since we
+        //need to allocate the matrix even if we are not using it.
+        int num_coefficients = 2;
+        if(using_coefficients){
+            num_coefficients = coefficients.n_cols;
+        }
+        arma::vec accept_rates = arma::zeros(num_interaction_patterns);
+        arma::vec store_accept_or_reject = arma::zeros(metropolis_iterations);
+        arma::vec accept_or_reject = arma::zeros(adaptive_metropolis_every_x_iterations);
+
+        // allocate data structures to store samples in.
+        arma::mat store_intercepts = arma::zeros(metropolis_iterations,
+                                                 num_interaction_patterns);
+        arma::cube store_coefficients = arma::zeros(num_interaction_patterns,
+                                                    num_coefficients,
+                                                    metropolis_iterations);
+        //we are going to have to stack cubes here, hence the multiplication
+        //in the last dimension
+        arma::cube store_latent_positions = arma::zeros(
+            num_interaction_patterns,
+            num_actors,
+            metropolis_iterations * num_latent_dimensions);
+
+        arma::mat store_accept_rates = arma::zeros(metropolis_iterations,
+                                                   num_interaction_patterns);
+
+        // generate edge probabilities to pass in
+        arma::cube edge_probabilities = arma::zeros(num_actors,
+                                                    num_actors,
+                                                    num_interaction_patterns);
+
+        // loop over docs, actors, interaction patterns to fill edge_probabilities
+        for (int i = 0; i < num_actors; ++i) {
+            for (int j = 0; j < num_actors; ++j) {
+                // .tube gives us all slices
+                arma::vec current_covariates = covariates.tube(i,j);
+                if (i != j) {
+                    for (int k = 0; k < num_interaction_patterns; ++k) {
+                        edge_probabilities(i,j,k) = mjd::edge_probability(
+                            intercepts,
+                            coefficients,
+                            latent_positions,
+                            i,
+                            j,
+                            current_covariates,
+                            k,
+                            using_coefficients);
+                    }
+                }
+            }
+        }
+
+        // loop over metropolis hastings iterations
+        for (int j = 0; j < metropolis_iterations; ++j) {
+
+            double random_number =  uniform_distribution(generator);
+            Rcpp::List MH_List =  update_interaction_pattern_parameters(
+                author_indexes,
+                document_edge_matrix,
+                document_topic_counts,
+                topic_interaction_patterns,
+                intercepts,
+                coefficients,
+                latent_positions,
+                covariates,
+                using_coefficients,
+                intercept_prior_mean,
+                intercept_prior_variance,
+                intercept_proposal_variances,
+                coefficient_prior_mean,
+                coefficient_prior_variance,
+                coefficient_proposal_variances,
+                latent_position_prior_mean,
+                latent_position_prior_variance,
+                latent_position_proposal_variances,
+                random_number,
+                edge_probabilities);
+
+            // extract everything from the list returned by the MH parameter
+            // update function.
+            arma::vec temp = MH_List[0];
+            intercepts = temp;
+            arma::mat temp2 = MH_List[1];
+            coefficients = temp2;
+            arma::cube temp3 = MH_List[2];
+            latent_positions = temp3;
+            arma::cube temp4 = MH_List[3];
+            edge_probabilities = temp4;
+            accept_or_reject[adaptive_MH_counter] = MH_List[4];
+            store_accept_or_reject[j] = MH_List[4];
+
+            // do adaptive metropolis
+            if (adaptive_MH_counter > adaptive_metropolis_every_x_iterations) {
+                // print out the current iteration every x updates so we can
+                // keep track of progress.
+                Rcpp::Rcout << "Iteration: " << j << std::endl;
+                if (total_adaptive_MH_updates <
+                    stop_adaptive_metropolis_after_x_updates) {
+
+                    for (int k = 0; k < num_interaction_patterns; ++k) {
+                        // calculate the accept proportion
+                        double temp = arma::sum(accept_or_reject)/double(
+                            adaptive_metropolis_every_x_iterations);
+                        // in this case, we are constraining it to be the same across all
+                        // interaction patterns
+                        accept_rates[k] = temp;
+                    }
+
+                    Rcpp::List am_updates =  adaptive_metropolis(
+                        intercept_proposal_variances,
+                        coefficient_proposal_variances,
+                        latent_position_proposal_variances,
+                        accept_rates,
+                        target_accept_rate,
+                        tollerance,
+                        update_size);
+
+                    // deal with type ambiguity while extracting objects from an
+                    // Rcpp List, then assign everything to the appropriate
+                    // vectors.
+                    arma::vec temp = am_updates[0];
+                    intercept_proposal_variances = temp;
+                    arma::vec temp2 = am_updates[1];
+                    coefficient_proposal_variances = temp2;
+                    arma::vec temp3 = am_updates[2];
+                    latent_position_proposal_variances = temp3;
+
+                    // increment the total number of updates we do before
+                    // stopping
+                    total_adaptive_MH_updates += 1;
+
+                }// end of conditional for whether we perform adaptive MH
+                adaptive_MH_counter = -1;
+            }
+
+            // save everything
+            for (int k = 0; k < num_interaction_patterns; ++k) {
+                //save intercepts
+                double temp = intercepts[k];
+                store_intercepts(j,k) = temp;
+
+                if (using_coefficients) {
+                    for (int l = 0; l < num_coefficients; ++l) {
+                        double temp2 = coefficients(k,l);
+                        store_coefficients(k,l,j) = temp2;
+                    }
+                }
+            }
+            // store latent positions -- we need the latent dimensions
+            // to be the outter loop so that we can increment the counter
+            // of which slice we insert into.
+            for (int m = 0; m < num_latent_dimensions; ++m) {
+                for (int k = 0; k < num_interaction_patterns; ++k) {
+                    for (int l = 0; l < num_actors; ++l) {
+                        double temp3 = latent_positions(k,l,m);
+                        store_latent_positions(k,l,
+                            latent_position_storage_counter) = temp3;
+                    }
+                }
+                latent_position_storage_counter += 1;
+            }// loop over latent dimensions has to be last as they are
+            // stacked in the returned array
+
+            // increment the counter outside of the conditional
+            adaptive_MH_counter += 1;
+
+        }// end of metropolis hastings loop
+
+        // allocate a list to store everything in.
+        Rcpp::List ret_list(5);
+        ret_list[0] = store_intercepts;
+        ret_list[1] = store_coefficients;
+        ret_list[2] = store_latent_positions;
+        ret_list[3] = store_accept_or_reject;
+        ret_list[4] = intercept_proposal_variances;
+        // return everything
+        return ret_list;
+    }
+
+
 } // end of MJD namespace
 
 
@@ -1966,8 +2191,63 @@ Rcpp::List sttgp(
     return ret_list;
 }
 
+// [[Rcpp::export]]
+Rcpp::List mh_to_convergence(
+        arma::vec author_indexes,
+        arma::mat document_edge_matrix,
+        arma::mat document_topic_counts,
+        arma::vec topic_interaction_patterns,
+        arma::vec intercepts,
+        arma::mat coefficients,
+        arma::cube latent_positions,
+        arma::cube covariates,
+        bool using_coefficients,
+        double intercept_prior_mean,
+        double intercept_prior_variance,
+        arma::vec intercept_proposal_variances,
+        double coefficient_prior_mean,
+        double coefficient_prior_variance,
+        arma::vec coefficient_proposal_variances,
+        double latent_position_prior_mean,
+        double latent_position_prior_variance,
+        arma::vec latent_position_proposal_variances,
+        double target_accept_rate,
+        double tollerance,
+        double update_size,
+        int seed,
+        int metropolis_iterations,
+        int adaptive_metropolis_every_x_iterations,
+        int stop_adaptive_metropolis_after_x_updates) {
 
+    List ret_list = mjd::run_metropolis_hastings_to_convergence(
+        author_indexes,
+        document_edge_matrix,
+        document_topic_counts,
+        topic_interaction_patterns,
+        intercepts,
+        coefficients,
+        latent_positions,
+        covariates,
+        using_coefficients,
+        intercept_prior_mean,
+        intercept_prior_variance,
+        intercept_proposal_variances,
+        coefficient_prior_mean,
+        coefficient_prior_variance,
+        coefficient_proposal_variances,
+        latent_position_prior_mean,
+        latent_position_prior_variance,
+        latent_position_proposal_variances,
+        target_accept_rate,
+        tollerance,
+        update_size,
+        seed,
+        metropolis_iterations,
+        adaptive_metropolis_every_x_iterations,
+        stop_adaptive_metropolis_after_x_updates);
 
+    return ret_list;
+}
 
 
 
