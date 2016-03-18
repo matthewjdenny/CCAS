@@ -20,14 +20,12 @@ test_that("main function works", {
                      beta = 0.01,
                      iterations = 20,
                      metropolis_hastings_iterations = 500,
-                     metropolis_hastings_burnin = 500,
+                     final_metropolis_hastings_burnin = 500,
                      target_accept_rate = 0.25,
                      tollerance = 0.05,
-                     LSM_intercept_prior_variance = 5,
-                     LSM_intercept_prior_mean = 0,
-                     LSM_position_prior_variance = 5,
-                     LSM_position_prior_mean = 0,
-                     LSM_coefficient_prior_variance = 5,
-                     LSM_coefficient_prior_mean = 0)
+                     adaptive_metropolis_update_size = 0.05,
+                     LSM_intercept_proposal_variance = .2,
+                     LSM_position_proposal_variance = .2,
+                     LSM_coefficient_proposal_variance = .2)
 
 })

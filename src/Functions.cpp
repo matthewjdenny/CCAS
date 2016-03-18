@@ -1008,9 +1008,15 @@ namespace mjd {
         // loop over interaction patterns
         for (int i = 0; i < number_of_interaction_patterns; ++i) {
             if (accept_rates[i] < (target_accept_rate - tollerance)) {
-                intercept_proposal_variances[i] -= update_size;
-                coefficient_proposal_variances[i] -= update_size;
-                latent_position_proposal_variances[i] -= update_size;
+                // for now, we just want to make sure we do not go below zero
+                double floor = intercept_proposal_variances[i] - update_size;
+
+                // only update if it will not make proposal variance negative
+                if (floor > 0) {
+                    intercept_proposal_variances[i] -= update_size;
+                    coefficient_proposal_variances[i] -= update_size;
+                    latent_position_proposal_variances[i] -= update_size;
+                }
             }
             if (accept_rates[i] > (target_accept_rate + tollerance)) {
                 intercept_proposal_variances[i] += update_size;
@@ -1264,7 +1270,8 @@ namespace mjd {
                 latent_positions = temp3;
                 arma::cube temp4 = MH_List[3];
                 edge_probabilities = temp4;
-                accept_or_reject[j] = MH_List[4];
+                double temp5 = MH_List[4];
+                accept_or_reject[j] = temp5;
 
                 // if we are on the last iteration of gibbs sampling, then we
                 // need to save everything
