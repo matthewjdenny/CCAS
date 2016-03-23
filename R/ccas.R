@@ -166,7 +166,7 @@ ccas <- function(formula,
     # initialize all latent variable values
     CCAS_Object@latent_variables <- initialize_latent_variables(CCAS_Object)
 
-    cat("\n#############################################n\n")
+    cat("\n#############################################\n\n")
     cat("Initialization Complete: Running Inference...\n\n")
     cat("#############################################\n\n")
 
@@ -218,7 +218,8 @@ ccas <- function(formula,
                          document_topic_counts = Inference_Results[[5]],
                          word_type_topic_counts = Inference_Results[[6]],
                          topic_token_counts = Inference_Results[[7]],
-                         token_topic_assignments = Inference_Results[[8]])
+                         token_topic_assignments = Inference_Results[[8]],
+                         unnoramlized_LDA_log_likelihood = Inference_Results[[11]])
 
     # assign them to the slot in our CCAS Object
     CCAS_Object@MCMC_output <- MCMC_Results

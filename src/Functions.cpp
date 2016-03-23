@@ -1036,8 +1036,64 @@ namespace mjd {
         return ret_list;
     }
 
+    // ***********************************************************************//
+    //           Calculate the unnormalized LDA log likelihood                //
+    // ***********************************************************************//
 
+    double calculate_unnormalized_LDA_log_likelihood(int number_of_documents,
+                                                     int number_of_topics,
+                                                     Rcpp::List token_topic_assignments,
+                                                     arma::vec log_alpha_m) {
 
+        //initialize variables that will be used across iterations
+        double Unnormalized_Corpus_Log_Likelihood = 0;
+
+        for(int d = 0; d < number_of_documents; ++d){
+            //set all document specific parameters
+            arma::vec current_token_topic_assignments = token_topic_assignments[d];
+            int number_of_tokens = current_token_topic_assignments.n_elem;
+            double current_document_contribution = 0;
+            double current_document_contribution2 = 0;
+
+            //loop over topics
+            for(int t = 0; t < number_of_topics; ++t){
+                int topic = t + 1;
+                // now we calculate the first and second terms in the likelihood of
+                // the token being from the current topic calculate the number of
+                // times a token in the current document has been assigned to the
+                // current topic.
+                int ntd = 0;
+                for(int b = 0; b < number_of_tokens; ++b){
+                    if(current_token_topic_assignments[b] == topic){
+                        ntd +=1;
+                    }
+                }
+                double first_term = double(ntd) + exp(log_alpha_m[t]);
+                current_document_contribution += lgamma(first_term);
+                double first_term2 = exp(log_alpha_m[t]);
+                current_document_contribution2 -= lgamma(first_term2);
+            }//loop over topics
+
+            double second_term = number_of_tokens +
+                exp(double(number_of_topics)*log_alpha_m[0]);
+            current_document_contribution -= lgamma(second_term);
+
+            double second_term2 = exp(double(number_of_topics)*log_alpha_m[0]);
+            current_document_contribution2 += second_term2;
+
+            Unnormalized_Corpus_Log_Likelihood += current_document_contribution +
+                current_document_contribution2;
+
+        }//end of document loop
+
+        //we have to add on an alpha at the end because we are doing the log transform
+        Unnormalized_Corpus_Log_Likelihood += (double(number_of_topics)*log_alpha_m[0]);
+
+        Rcpp::Rcout << "Corpus Log Likelihood: " <<
+            Unnormalized_Corpus_Log_Likelihood << std::endl;
+
+        return Unnormalized_Corpus_Log_Likelihood;
+    }
 
     // ***********************************************************************//
     //                             Inference                                  //
@@ -1092,6 +1148,7 @@ namespace mjd {
         int num_topics = topic_interaction_patterns.n_elem;
         int num_actors = document_edge_matrix.n_cols;
         int num_latent_dimensions = latent_positions.n_slices;
+        int number_of_documents = document_edge_matrix.n_rows;
         //get the number of if we are using them, set this eqaul to two since we
         //need to allocate the matrix even if we are not using it.
         int num_coefficients = 2;
@@ -1119,6 +1176,7 @@ namespace mjd {
 
         arma::mat store_accept_rates = arma::zeros(iterations,
                                                    num_interaction_patterns);
+        arma::vec store_LDA_ll = arma::zeros(iterations);
 
         // loop over interaction patterns
         for (int i = 0; i < iterations; ++i) {
@@ -1204,7 +1262,21 @@ namespace mjd {
             } // end of topic interaction pattern update loop
 
             Rcpp::Rcout << "Topic I. P. Assignment Updates Complete..." << std::endl;
+
             // eventually we will update LDA hyperparameters here
+
+            arma::vec log_alpha_m(num_topics);
+            for(int t = 0; t < num_topics; ++t){
+                log_alpha_m[t] = log(alpha_m[t]);
+            }
+
+            double LDA_ll = calculate_unnormalized_LDA_log_likelihood(
+                number_of_documents,
+                num_topics,
+                token_topic_assignments,
+                log_alpha_m);
+
+            store_LDA_ll[i] = LDA_ll;
 
             // perform adaptive metropolis updates if there has been atleast
             // one outer iteration
@@ -1328,7 +1400,7 @@ namespace mjd {
         }// end up gibbs/main sampling loop
 
         // allocate a list to store everything in.
-        Rcpp::List ret_list(10);
+        Rcpp::List ret_list(11);
         ret_list[0] = store_topic_interaction_patterns;
         ret_list[1] = store_intercepts;
         ret_list[2] = store_coefficients;
@@ -1339,6 +1411,7 @@ namespace mjd {
         ret_list[7] = token_topic_assignments;
         ret_list[8] = store_accept_rates;
         ret_list[9] = intercept_proposal_variances;
+        ret_list[10] = store_LDA_ll;
         // return everything
         return ret_list;
     }
