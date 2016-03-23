@@ -39,7 +39,8 @@ test_internal_functions(Test_Log_Space_Multinomial_Sampler = FALSE,
   iterations = NULL, metropolis_iterations = NULL,
   total_number_of_tokens = NULL, iterations_before_t_i_p_updates = NULL,
   update_t_i_p_every_x_iterations = NULL,
-  perform_adaptive_metropolis = NULL, resample_word_types = NULL)
+  perform_adaptive_metropolis = NULL, resample_word_types = NULL,
+  slice_sample_alpha_m = NULL, slice_sample_step_size = NULL)
 }
 \arguments{
 \item{Test_Log_Space_Multinomial_Sampler}{Defualts to FALSE. If TRUE, then
@@ -240,6 +241,11 @@ beta_n, random_numbers, and resample_word_types must be provided.}
 \item{perform_adaptive_metropolis}{A boolean.}
 
 \item{resample_word_types}{A boolean.}
+
+\item{slice_sample_alpha_m}{An integer (normally a boolean but you can set
+the value directly (normally 5, set to a negative number to turn off)),}
+
+\item{slice_sample_step_size}{An integer.}
 }
 \value{
 Whatever is returned by the internal function being tested

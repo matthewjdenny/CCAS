@@ -111,7 +111,9 @@ test_that("That Inference works", {
         total_number_of_tokens = total_word_count ,
         iterations_before_t_i_p_updates = 2,
         update_t_i_p_every_x_iterations = 2,
-        perform_adaptive_metropolis = TRUE)
+        perform_adaptive_metropolis = TRUE,
+        slice_sample_alpha_m = -2,
+        slice_sample_step_size = 1)
 
     # no errors!
 

@@ -132,6 +132,9 @@
 #' @param update_t_i_p_every_x_iterations An integer.
 #' @param perform_adaptive_metropolis A boolean.
 #' @param resample_word_types A boolean.
+#' @param slice_sample_alpha_m An integer (normally a boolean but you can set
+#' the value directly (normally 5, set to a negative number to turn off)),
+#' @param slice_sample_step_size An integer.
 #' @return Whatever is returned by the internal function being tested
 #' @export
 test_internal_functions <- function(
@@ -202,7 +205,9 @@ test_internal_functions <- function(
     iterations_before_t_i_p_updates = NULL,
     update_t_i_p_every_x_iterations = NULL,
     perform_adaptive_metropolis = NULL,
-    resample_word_types = NULL){
+    resample_word_types = NULL,
+    slice_sample_alpha_m = NULL,
+    slice_sample_step_size = NULL){
 
     return_object <- NULL
 
@@ -403,7 +408,9 @@ test_internal_functions <- function(
             total_number_of_tokens,
             iterations_before_t_i_p_updates,
             update_t_i_p_every_x_iterations,
-            perform_adaptive_metropolis)
+            perform_adaptive_metropolis,
+            slice_sample_alpha_m,
+            slice_sample_step_size)
     }
 
     if (Test_RDirichlet){
