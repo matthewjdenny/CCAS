@@ -13,7 +13,8 @@ ccas(formula, interaction_patterns = 4, topics = 40, alpha = 1,
   iterations_before_t_i_p_updates = 5, update_t_i_p_every_x_iterations = 5,
   adaptive_metropolis = TRUE, adaptive_metropolis_update_size = 0.05,
   seed = 12345, adaptive_metropolis_every_x_iterations = 1000,
-  stop_adaptive_metropolis_after_x_updates = 50)
+  stop_adaptive_metropolis_after_x_updates = 50,
+  slice_sample_alpha_m = FALSE, slice_sample_step_size = 1)
 }
 \arguments{
 \item{formula}{A formula object of the form 'ComNet ~
@@ -65,6 +66,10 @@ which are defined analogously to the arguments in the latentnet package.}
 \item{adaptive_metropolis_every_x_iterations}{Defaults to 1000.}
 
 \item{stop_adaptive_metropolis_after_x_updates}{Defualts to 50.}
+
+\item{slice_sample_alpha_m}{Defaults to FALSE.}
+
+\item{slice_sample_step_size}{Defaults to 1.}
 }
 \value{
 An object of class CCAS containing estimation results.

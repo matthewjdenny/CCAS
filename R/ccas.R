@@ -30,6 +30,8 @@
 #' @param seed Defaults to 12345.
 #' @param adaptive_metropolis_every_x_iterations Defaults to 1000.
 #' @param stop_adaptive_metropolis_after_x_updates Defualts to 50.
+#' @param slice_sample_alpha_m Defaults to FALSE.
+#' @param slice_sample_step_size Defaults to 1.
 #' @return An object of class CCAS containing estimation results.
 #' @export
 ccas <- function(formula,
@@ -53,7 +55,9 @@ ccas <- function(formula,
                  adaptive_metropolis_update_size = 0.05,
                  seed = 12345,
                  adaptive_metropolis_every_x_iterations = 1000,
-                 stop_adaptive_metropolis_after_x_updates = 50) {
+                 stop_adaptive_metropolis_after_x_updates = 50,
+                 slice_sample_alpha_m = FALSE,
+                 slice_sample_step_size = 1) {
 
     # for now, we only allow a common proposal variance, prior mean, and prior
     # variance. In the future, these could be different for each cluster and
@@ -78,6 +82,13 @@ ccas <- function(formula,
 
     # make sure that formula is a formula object
     formula <- as.formula(formula)
+
+    # if we are slice sampling, then set the inteval to 5, otherwise, it will
+    # be negative 2
+    slice_sample_alpha_m_every <- -2
+    if (slice_sample_alpha_m) {
+        slice_sample_alpha_m_every <- 5
+    }
 
     # parse the forumla and return a list object containing the ComNet object
     # and the latent space model spcification
@@ -205,7 +216,9 @@ ccas <- function(formula,
         CCAS_Object@ComNet_Object@num_tokens,
         CCAS_Object@iterations_before_t_i_p_updates,
         CCAS_Object@update_t_i_p_every_x_iterations,
-        CCAS_Object@perform_adaptive_metropolis)
+        CCAS_Object@perform_adaptive_metropolis,
+        slice_sample_alpha_m_every,
+        slice_sample_step_size)
 
     # make sure all of the output
     MCMC_Results <- list(intercepts = Inference_Results[[2]],

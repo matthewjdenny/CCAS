@@ -1203,7 +1203,9 @@ namespace mjd {
             int total_number_of_tokens,
             int iterations_before_t_i_p_updates,
             int update_t_i_p_every_x_iterations,
-            bool perform_adaptive_metropolis) {
+            bool perform_adaptive_metropolis,
+            int slice_sample_every_x_iterations,
+            double slice_sample_step_size) {
 
         // Set RNG and define uniform distribution
         boost::mt19937 generator(seed);
@@ -1214,6 +1216,7 @@ namespace mjd {
 
         // allocated global variables
         int t_i_p_update_counter = 0;
+        int slice_sample_counter = 0;
         int num_interaction_patterns = intercept_proposal_variances.n_elem;
         int num_topics = topic_interaction_patterns.n_elem;
         int num_actors = document_edge_matrix.n_cols;
@@ -1333,7 +1336,7 @@ namespace mjd {
 
             Rcpp::Rcout << "Topic I. P. Assignment Updates Complete..." << std::endl;
 
-            // eventually we will update LDA hyperparameters here
+            //U pdate LDA hyperparameters here
 
             arma::vec log_alpha_m(num_topics);
             for(int t = 0; t < num_topics; ++t){
@@ -1347,6 +1350,18 @@ namespace mjd {
                 log_alpha_m);
 
             store_LDA_ll[i] = LDA_ll;
+
+            if (slice_sample_every_x_iterations == slice_sample_counter) {
+                alpha_m = slice_sample_new_alpha_m(number_of_documents,
+                                                   num_topics,
+                                                   token_topic_assignments,
+                                                   log_alpha_m,
+                                                   LDA_ll,
+                                                   slice_sample_step_size);
+                slice_sample_counter = 0;
+                Rcpp::Rcout << "New Alpha value:" << alpha_m[0] << std::endl;
+            }
+            slice_sample_counter += 1;
 
             // perform adaptive metropolis updates if there has been atleast
             // one outer iteration
@@ -2295,7 +2310,9 @@ List model_inference(arma::vec author_indexes,
                      int total_number_of_tokens,
                      int iterations_before_t_i_p_updates,
                      int update_t_i_p_every_x_iterations,
-                     bool perform_adaptive_metropolis){
+                     bool perform_adaptive_metropolis,
+                     int slice_sample_every_x_iterations,
+                     double slice_sample_step_size){
 
     List ret_list =  mjd::inference(
         author_indexes,
@@ -2331,7 +2348,9 @@ List model_inference(arma::vec author_indexes,
         total_number_of_tokens,
         iterations_before_t_i_p_updates,
         update_t_i_p_every_x_iterations,
-        perform_adaptive_metropolis);
+        perform_adaptive_metropolis,
+        slice_sample_every_x_iterations,
+        slice_sample_step_size);
 
     return ret_list;
 
