@@ -1297,7 +1297,9 @@ namespace mjd {
             arma::cube temp4 = Topic_Updates[4];
             edge_probabilities = temp4;
 
-            Rcpp::Rcout << "Token Topic Assignment Updates Complete..." << std::endl;
+            //Rcpp::Rcout << "Token Topic Assignment Updates Complete..." <<
+            //std::endl;
+
             // only update topic interaction pattern assignments if we have
             // completed atleast x iterations.
             if (i >= iterations_before_t_i_p_updates) {
@@ -1334,7 +1336,8 @@ namespace mjd {
                 t_i_p_update_counter += 1;
             } // end of topic interaction pattern update loop
 
-            Rcpp::Rcout << "Topic I. P. Assignment Updates Complete..." << std::endl;
+            //Rcpp::Rcout << "Topic I. P. Assignment Updates Complete..." <<
+            //std::endl;
 
             //U pdate LDA hyperparameters here
 
