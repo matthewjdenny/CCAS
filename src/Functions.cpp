@@ -1096,6 +1096,76 @@ namespace mjd {
     }
 
     // ***********************************************************************//
+    //                  Slice sample new values for alpha_m                   //
+    // ***********************************************************************//
+
+    arma::vec slice_sample_new_alpha_m(int number_of_documents,
+                                    int number_of_topics,
+                                    Rcpp::List token_topic_assignments,
+                                    arma::vec log_alpha_m,
+                                    double current_LDA_ll,
+                                    double step_size) {
+
+        // use R::runif becasue we are using a while loop so we do not know how many
+        // numbers we will need to pass in. It is slower but safer.
+        double rand_num = R::runif(0,1);
+        double lud = log(rand_num);
+        double slice_probability_floor = current_LDA_ll + lud;
+
+        arma::vec proposed_alpha_m = arma::zeros(number_of_topics);
+        arma::vec left_proposed_alpha_m = arma::zeros(number_of_topics);
+        arma::vec right_proposed_alpha_m = arma::zeros(number_of_topics);
+        //get the left and right bounds on the slice
+        rand_num = R::runif(0,1);
+        for(int t = 0; t < number_of_topics; ++t){
+            left_proposed_alpha_m[t] = log_alpha_m[t] - rand_num*step_size;
+            right_proposed_alpha_m[t] = left_proposed_alpha_m[t] + step_size;
+        }
+
+        //set equal to one when new sample accepted
+        int in_slice = 0;
+
+        while(in_slice < 1){
+            //report(proposed_alpha_m[0]);
+            //get new values for the slice for alpha
+            rand_num = R::runif(0,1);
+            for(int t = 0; t < number_of_topics; ++t){
+                proposed_alpha_m[t] = left_proposed_alpha_m[t] +
+                    rand_num*(right_proposed_alpha_m[t] - left_proposed_alpha_m[t]);
+            }
+
+            double proposed_LDA_ll = calculate_unnormalized_LDA_log_likelihood(
+                number_of_documents,
+                number_of_topics,
+                token_topic_assignments,
+                proposed_alpha_m);
+
+            // ========== check to see if it is under the curve ======== //
+            if(proposed_LDA_ll > slice_probability_floor){
+                in_slice = 1;
+            }
+            else{
+                //if the positions we tried were outside of the slice, set them as the new boundary
+                //get the left and right bounds on the slice for alpha
+                for(int t = 0; t < number_of_topics; ++t){
+                    if(proposed_alpha_m[t] < log_alpha_m[t]){
+                        left_proposed_alpha_m[t] = proposed_alpha_m[t];
+                    }
+                    else{
+                        right_proposed_alpha_m[t] = proposed_alpha_m[t];
+                    }
+                }
+            }
+        }// end of while checking to see if we are in slice loop
+
+        arma::vec alpha_m = arma::zeros(number_of_topics);
+        for(int t = 0; t < number_of_topics; ++t){
+            alpha_m[t] = exp(proposed_alpha_m[t]);
+        }
+        return alpha_m;
+    }
+
+    // ***********************************************************************//
     //                             Inference                                  //
     // ***********************************************************************//
 
