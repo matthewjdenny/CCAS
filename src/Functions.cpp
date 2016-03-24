@@ -1,6 +1,8 @@
 // [[Rcpp::depends(RcppArmadillo)]]
 // [[Rcpp::depends(BH)]]
+// [[Rcpp::depends(RcppParallel)]]
 
+#include <RcppParallel.h>
 #include <RcppArmadillo.h>
 #include <boost/random.hpp>
 #include <boost/random/uniform_01.hpp>
@@ -454,6 +456,150 @@ namespace mjd {
         return contribution;
     }
 
+    // ***********************************************************************//
+    //     Constructor for Parallel Token Topic Distribution Generator        //
+    // ***********************************************************************//
+
+    struct Parallel_Token_Topic_Distribution : public RcppParallel::Worker {
+
+        // input matrix to read from
+        arma::cube edge_probabilities;
+        int tokens_in_document;
+        int current_token_topic_assignment;
+        arma::vec current_document_topic_counts;
+        arma::mat word_type_topic_counts;
+        arma::vec topic_token_counts;
+        int current_word_type;
+        arma::vec alpha_m;
+        arma::vec beta_n;
+        arma::vec document_edge_values;
+        arma::vec topic_interaction_patterns;
+        int document_sender;
+        double beta;
+
+        // output matrix to write to
+        RcppParallel::RVector<double> return_dist;
+
+        // initialize from Rcpp input and output matrixes (the RMatrix class
+        // can be automatically converted to from the Rcpp matrix type)
+        Parallel_Token_Topic_Distribution(arma::cube edge_probabilities,
+                    int tokens_in_document,
+                    int current_token_topic_assignment,
+                    arma::vec current_document_topic_counts,
+                    arma::mat word_type_topic_counts,
+                    arma::vec topic_token_counts,
+                    int current_word_type,
+                    arma::vec alpha_m,
+                    arma::vec beta_n,
+                    arma::vec document_edge_values,
+                    arma::vec topic_interaction_patterns,
+                    int document_sender,
+                    double beta,
+                    Rcpp::NumericVector return_dist)
+        : edge_probabilities(edge_probabilities),
+        tokens_in_document(tokens_in_document),
+        current_token_topic_assignment(current_token_topic_assignment),
+        current_document_topic_counts(current_document_topic_counts),
+        word_type_topic_counts(word_type_topic_counts),
+        topic_token_counts(topic_token_counts),
+        current_word_type(current_word_type),
+        alpha_m(alpha_m),
+        beta_n(beta_n),
+        document_edge_values(document_edge_values),
+        topic_interaction_patterns(topic_interaction_patterns),
+        document_sender(document_sender),
+        beta(beta),
+        return_dist(return_dist) {}
+
+        // function call operator that work for the specified range (begin/end)
+        void operator()(std::size_t begin, std::size_t end) {
+            for (std::size_t i = begin; i < end; i++) {
+                // write to output matrix
+                double lsm_contr = mjd::lsm_contribution (
+                    edge_probabilities,
+                    tokens_in_document,
+                    i,
+                    current_token_topic_assignment,
+                    current_document_topic_counts,
+                    document_edge_values,
+                    topic_interaction_patterns,
+                    document_sender);
+                // for testing.
+                // Rcpp::Rcout << "LSM Contribution: " << lsm_contr << std::endl;
+
+                double lda_contr = mjd::lda_contribution(
+                    tokens_in_document,
+                    current_token_topic_assignment,
+                    current_document_topic_counts,
+                    word_type_topic_counts,
+                    topic_token_counts,
+                    i,
+                    current_word_type,
+                    alpha_m,
+                    beta_n,
+                    beta);
+                // for testing.
+                // Rcpp::Rcout << "LDA Contribution: " << lda_contr << std::endl;
+
+                // add the values (since we are working in log space) and put them
+                // in the appropriate bin the in the distribution.
+                return_dist[i] = lsm_contr + lda_contr;
+            }
+        }
+    };
+
+    // ***********************************************************************//
+    //             Calculate token topic probabilities in parallel            //
+    // ***********************************************************************//
+    arma::vec parallel_token_topic_probabilities(
+            arma::cube edge_probabilities,
+            int tokens_in_document,
+            int current_token_topic_assignment,
+            arma::vec current_document_topic_counts,
+            arma::mat word_type_topic_counts,
+            arma::vec topic_token_counts,
+            int current_word_type,
+            arma::vec alpha_m,
+            arma::vec beta_n,
+            arma::vec document_edge_values,
+            arma::vec topic_interaction_patterns,
+            int document_sender,
+            double beta,
+            int number_of_topics) {
+
+        // allocate the matrix we will return
+        Rcpp::NumericVector output_vec(number_of_topics);
+        arma::vec return_vec = arma::zeros(number_of_topics);
+
+        // create the worker
+        Parallel_Token_Topic_Distribution Parallel_Token_Topic_Distribution(
+                edge_probabilities,
+                tokens_in_document,
+                current_token_topic_assignment,
+                current_document_topic_counts,
+                word_type_topic_counts,
+                topic_token_counts,
+                current_word_type,
+                alpha_m,
+                beta_n,
+                document_edge_values,
+                topic_interaction_patterns,
+                document_sender,
+                beta,
+                output_vec);
+
+        // call it with parallelFor
+        RcppParallel::parallelFor(0,
+                                  number_of_topics,
+                                  Parallel_Token_Topic_Distribution);
+
+        for (int i = 0; i < number_of_topics; i++) {
+            // write to output matrix
+            return_vec[i] = output_vec[i];
+        }
+
+        return return_vec;
+    }
 
     // ***********************************************************************//
     //                 Update Single Token Topic Assignment                   //
@@ -472,7 +618,8 @@ namespace mjd {
             arma::vec document_edge_values,
             arma::vec topic_interaction_patterns,
             int document_sender,
-            double rand_num) {
+            double rand_num,
+            bool parallel) {
 
         // calculate beta, the sum over beta_n
         double beta = arma::sum(beta_n);
@@ -483,37 +630,57 @@ namespace mjd {
         // generate a zero vector of length (number of topics)
         arma::vec unnormalized_log_distribution = arma::zeros(number_of_topics);
 
-        // loop over the topics to populate the unnormailized log distribution.
-        for (int i = 0; i < number_of_topics; ++i) {
-            double lsm_contr = mjd::lsm_contribution (
+        if (parallel) {
+            // use RcppParallel::parallelFor to loop over the distribution over
+            // topics.
+            unnormalized_log_distribution = parallel_token_topic_probabilities(
                 edge_probabilities,
-                tokens_in_document,
-                i,
-                current_token_topic_assignment,
-                current_document_topic_counts,
-                document_edge_values,
-                topic_interaction_patterns,
-                document_sender);
-            // for testing.
-            // Rcpp::Rcout << "LSM Contribution: " << lsm_contr << std::endl;
-
-            double lda_contr = mjd::lda_contribution(
                 tokens_in_document,
                 current_token_topic_assignment,
                 current_document_topic_counts,
                 word_type_topic_counts,
                 topic_token_counts,
-                i,
                 current_word_type,
                 alpha_m,
                 beta_n,
-                beta);
-            // for testing.
-            // Rcpp::Rcout << "LDA Contribution: " << lda_contr << std::endl;
+                document_edge_values,
+                topic_interaction_patterns,
+                document_sender,
+                beta,
+                number_of_topics);
+        } else {
+            // loop over the topics to populate the unnormailized log distribution.
+            for (int i = 0; i < number_of_topics; ++i) {
+                double lsm_contr = mjd::lsm_contribution (
+                    edge_probabilities,
+                    tokens_in_document,
+                    i,
+                    current_token_topic_assignment,
+                    current_document_topic_counts,
+                    document_edge_values,
+                    topic_interaction_patterns,
+                    document_sender);
+                // for testing.
+                // Rcpp::Rcout << "LSM Contribution: " << lsm_contr << std::endl;
 
-            // add the values (since we are working in log space) and put them
-            // in the appropriate bin the in the distribution.
-            unnormalized_log_distribution[i] = lsm_contr + lda_contr;
+                double lda_contr = mjd::lda_contribution(
+                    tokens_in_document,
+                    current_token_topic_assignment,
+                    current_document_topic_counts,
+                    word_type_topic_counts,
+                    topic_token_counts,
+                    i,
+                    current_word_type,
+                    alpha_m,
+                    beta_n,
+                    beta);
+                // for testing.
+                // Rcpp::Rcout << "LDA Contribution: " << lda_contr << std::endl;
+
+                // add the values (since we are working in log space) and put them
+                // in the appropriate bin the in the distribution.
+                unnormalized_log_distribution[i] = lsm_contr + lda_contr;
+            }
         }
 
         // now we need to sample from this distribution
@@ -545,7 +712,8 @@ namespace mjd {
             arma::vec alpha_m,
             arma::vec beta_n,
             arma::vec random_numbers,
-            bool using_coefficients) {
+            bool using_coefficients,
+            bool parallel) {
 
         // get important constants
         int number_of_documents = document_edge_matrix.n_rows;
@@ -621,7 +789,8 @@ namespace mjd {
                     document_edge_values,
                     topic_interaction_patterns,
                     document_sender,
-                    rand_num);
+                    rand_num,
+                    parallel);
 
                 // if the assignment changed, then we need to update everything.
                 if (new_topic_assignment != current_token_topic_assignment) {
@@ -1205,7 +1374,8 @@ namespace mjd {
             int update_t_i_p_every_x_iterations,
             bool perform_adaptive_metropolis,
             int slice_sample_every_x_iterations,
-            double slice_sample_step_size) {
+            double slice_sample_step_size,
+            bool parallel) {
 
         // Set RNG and define uniform distribution
         boost::mt19937 generator(seed);
@@ -1279,7 +1449,8 @@ namespace mjd {
                 alpha_m,
                 beta_n,
                 random_numbers,
-                using_coefficients);
+                using_coefficients,
+                parallel);
 
             // take everything out of the returned list and put it back in the
             // main objects. We have to do this silly double assignment because
@@ -2113,7 +2284,8 @@ int ustta(arma::cube edge_probabilities,
         arma::vec document_edge_values,
         arma::vec topic_interaction_patterns,
         int document_sender,
-        double rand_num){
+        double rand_num,
+        bool parallel){
 
     int assignment = mjd::update_single_token_topic_assignment(
             edge_probabilities,
@@ -2128,7 +2300,8 @@ int ustta(arma::cube edge_probabilities,
             document_edge_values,
             topic_interaction_patterns,
             document_sender,
-            rand_num);
+            rand_num,
+            parallel);
 
     return assignment;
 }
@@ -2149,7 +2322,8 @@ List utta(arma::vec author_indexes,
         arma::vec alpha_m,
         arma::vec beta_n,
         arma::vec random_numbers,
-        bool using_coefficients){
+        bool using_coefficients,
+        bool parallel){
 
     //random_numbers has length equal to the total number of tokens in the corpus.
     List ret_list = mjd::update_token_topic_assignments(
@@ -2168,7 +2342,8 @@ List utta(arma::vec author_indexes,
             alpha_m,
             beta_n,
             random_numbers,
-            using_coefficients);
+            using_coefficients,
+            parallel);
 
     return ret_list;
 
@@ -2315,7 +2490,8 @@ List model_inference(arma::vec author_indexes,
                      int update_t_i_p_every_x_iterations,
                      bool perform_adaptive_metropolis,
                      int slice_sample_every_x_iterations,
-                     double slice_sample_step_size){
+                     double slice_sample_step_size,
+                     bool parallel){
 
     List ret_list =  mjd::inference(
         author_indexes,
@@ -2353,7 +2529,8 @@ List model_inference(arma::vec author_indexes,
         update_t_i_p_every_x_iterations,
         perform_adaptive_metropolis,
         slice_sample_every_x_iterations,
-        slice_sample_step_size);
+        slice_sample_step_size,
+        parallel);
 
     return ret_list;
 
