@@ -32,6 +32,7 @@
 #' @param stop_adaptive_metropolis_after_x_updates Defualts to 50.
 #' @param slice_sample_alpha_m Defaults to FALSE.
 #' @param slice_sample_step_size Defaults to 1.
+#' @param parallel Defaults to FALSE.
 #' @return An object of class CCAS containing estimation results.
 #' @export
 ccas <- function(formula,
@@ -57,7 +58,8 @@ ccas <- function(formula,
                  adaptive_metropolis_every_x_iterations = 1000,
                  stop_adaptive_metropolis_after_x_updates = 50,
                  slice_sample_alpha_m = FALSE,
-                 slice_sample_step_size = 1) {
+                 slice_sample_step_size = 1,
+                 parallel = FALSE) {
 
     # for now, we only allow a common proposal variance, prior mean, and prior
     # variance. In the future, these could be different for each cluster and
@@ -218,7 +220,8 @@ ccas <- function(formula,
         CCAS_Object@update_t_i_p_every_x_iterations,
         CCAS_Object@perform_adaptive_metropolis,
         slice_sample_alpha_m_every,
-        slice_sample_step_size)
+        slice_sample_step_size,
+        parallel)
 
     # make sure all of the output
     MCMC_Results <- list(intercepts = Inference_Results[[2]],

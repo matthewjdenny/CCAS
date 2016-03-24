@@ -135,6 +135,7 @@
 #' @param slice_sample_alpha_m An integer (normally a boolean but you can set
 #' the value directly (normally 5, set to a negative number to turn off)),
 #' @param slice_sample_step_size An integer.
+#' @param parallel A boolean.
 #' @return Whatever is returned by the internal function being tested
 #' @export
 test_internal_functions <- function(
@@ -207,7 +208,8 @@ test_internal_functions <- function(
     perform_adaptive_metropolis = NULL,
     resample_word_types = NULL,
     slice_sample_alpha_m = NULL,
-    slice_sample_step_size = NULL){
+    slice_sample_step_size = NULL,
+    parallel = NULL){
 
     return_object <- NULL
 
@@ -303,7 +305,8 @@ test_internal_functions <- function(
               document_edge_values,
               topic_interaction_patterns,
               document_sender,
-              rand_num)
+              rand_num,
+              parallel)
     }
 
     if (Test_Update_All_Token_Topic_Assignments) {
@@ -322,7 +325,8 @@ test_internal_functions <- function(
             alpha_m,
             beta_n,
             random_numbers,
-            using_coefficients)
+            using_coefficients,
+            parallel)
     }
 
     if (Test_Update_Interaction_Pattern_Parameters) {
@@ -410,7 +414,8 @@ test_internal_functions <- function(
             update_t_i_p_every_x_iterations,
             perform_adaptive_metropolis,
             slice_sample_alpha_m,
-            slice_sample_step_size)
+            slice_sample_step_size,
+            parallel)
     }
 
     if (Test_RDirichlet){
