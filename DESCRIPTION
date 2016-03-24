@@ -11,14 +11,17 @@ License: GPL-3
 Imports:
     Rcpp,
     methods,
-	stringr
+	stringr,
+	RcppParallel	
 Depends:
     R (>= 3.2.1)
 LinkingTo: 
     BH,
     Rcpp,
-    RcppArmadillo
+    RcppArmadillo,
+	RcppParallel
 LazyData: TRUE
 Suggests:
     testthat
 RoxygenNote: 5.0.1
+SystemRequirements: GNU make

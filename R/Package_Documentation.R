@@ -14,5 +14,6 @@ NULL
 
 #' @useDynLib CCAS
 #' @importFrom Rcpp sourceCpp
+#' @importFrom RcppParallel RcppParallelLibs
 NULL
 #> NULL
