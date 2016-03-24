@@ -92,7 +92,8 @@ test_that("That Update_Token_Topic_Assignments works", {
         alpha_m = alpha_m,
         beta_n = beta_n,
         random_numbers = runif(total_word_count),
-        using_coefficients = FALSE)
+        using_coefficients = FALSE,
+        parallel = FALSE)
 
     # check to see if anything changed
     # THe strange thing about Rcpp shallow data structures is that they

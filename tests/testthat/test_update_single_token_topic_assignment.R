@@ -39,7 +39,8 @@ test_that("That Update_Single_Token_Topic_Assignment works", {
         document_edge_values = c(0,0,1,1),
         topic_interaction_patterns = c(0,1,1,2,3),
         document_sender = 0 ,
-        rand_num = runif(1))
+        rand_num = runif(1),
+        parallel = FALSE)
 
     # no errors, will write an analytical test
 

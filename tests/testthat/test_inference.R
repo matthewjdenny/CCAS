@@ -113,7 +113,8 @@ test_that("That Inference works", {
         update_t_i_p_every_x_iterations = 2,
         perform_adaptive_metropolis = TRUE,
         slice_sample_alpha_m = -2,
-        slice_sample_step_size = 1)
+        slice_sample_step_size = 1,
+        parallel = FALSE)
 
     # no errors!
 
