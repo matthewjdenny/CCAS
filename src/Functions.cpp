@@ -1174,8 +1174,10 @@ namespace mjd {
         // get number of interaction patterns
         int number_of_interaction_patterns = intercept_proposal_standard_deviations.n_elem;
 
-        // loop over interaction patterns
+        // loop over interaction patterns (in the future, we could have different
+        // accept rates for different interaction patterns).
         for (int i = 0; i < number_of_interaction_patterns; ++i) {
+            // if our accept rate is too low, bump down proposal sd
             if (accept_rates[i] < (target_accept_rate - tollerance)) {
                 // for now, we just want to make sure we do not go below zero
                 double floor = intercept_proposal_standard_deviations[i] - update_size;
@@ -1187,6 +1189,7 @@ namespace mjd {
                     latent_position_proposal_standard_deviations[i] -= update_size;
                 }
             }
+            // if the accept rate is too high, bump up the proposal sd
             if (accept_rates[i] > (target_accept_rate + tollerance)) {
                 intercept_proposal_standard_deviations[i] += update_size;
                 coefficient_proposal_standard_deviations[i] += update_size;
@@ -1194,9 +1197,12 @@ namespace mjd {
             }
         }
 
-        Rcpp::Rcout << "New Proposal standard_deviations: " << std::endl <<
+        // print out the new proposal sd's so the user can keep track of what
+        // is going on.
+        Rcpp::Rcout << "New Proposal Standard Deviations: " << std::endl <<
             intercept_proposal_standard_deviations.t() << std::endl;
 
+        // put everything in a return list
         Rcpp::List ret_list(3);
         ret_list[0] = intercept_proposal_standard_deviations;
         ret_list[1] = coefficient_proposal_standard_deviations;
@@ -1209,6 +1215,7 @@ namespace mjd {
     //           Calculate the unnormalized LDA log likelihood                //
     // ***********************************************************************//
 
+    // this code is adapted from from Hanna's Github -- need to get exact source
     double calculate_unnormalized_LDA_log_likelihood(int number_of_documents,
                                                      int number_of_topics,
                                                      Rcpp::List token_topic_assignments,
@@ -1255,8 +1262,10 @@ namespace mjd {
 
         }//end of document loop
 
-        //we have to add on an alpha at the end because we are doing the log transform
-        Unnormalized_Corpus_Log_Likelihood += (double(number_of_topics)*log_alpha_m[0]);
+        // we have to add on an alpha at the end because we are doing the log
+        // transform
+        Unnormalized_Corpus_Log_Likelihood += (double(number_of_topics) *
+            log_alpha_m[0]);
 
         Rcpp::Rcout << "Corpus Log Likelihood: " <<
             Unnormalized_Corpus_Log_Likelihood << std::endl;
