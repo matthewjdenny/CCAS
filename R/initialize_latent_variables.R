@@ -19,8 +19,8 @@ initialize_latent_variables <- function(CCAS_Object){
                                       CCAS_Object@ComNet_Object@num_actors,
                                       CCAS_Object@latent_space_dimensions))
 
-    # need to make these into vectors since they are only a single value
-    # when they are used elsewhere
+    # need to make these into vectors since they are only a single value so far.
+    # eventually could end up being different for each interaction pattern
     ipv <- rep(CCAS_Object@LSM_intercept_prior_standard_deviation,
                CCAS_Object@interaction_patterns)
     cpv <- rep(CCAS_Object@LSM_coefficient_prior_standard_deviation,
@@ -28,7 +28,9 @@ initialize_latent_variables <- function(CCAS_Object){
     ppv <- rep(CCAS_Object@LSM_position_prior_standard_deviation,
                CCAS_Object@interaction_patterns)
 
-    # sample the new parameter values for these values
+    # sample the new parameter values for these values centered at the prior
+    # mean. We are using the mjd::sample_new_interaction_pattern_parameters
+    # function here, which exposed to R through the snipp() wrapper.
     params1 <- snipp(
         intercepts,
         coefficients,
@@ -38,16 +40,21 @@ initialize_latent_variables <- function(CCAS_Object){
         latent_position_proposal_standard_deviations = ppv,
         using_coefficients)
 
+    # extract the initialized interaction pattern parameters from the returned
+    # list and put them in a named list
     LSM_Params <- list(intercepts = params1[[1]],
                        coefficients = params1[[2]],
                        positions = params1[[3]])
 
-    # now initialize topic interaction patterns (subtract one to be zero indexed)
+    # now initialize topic interaction patterns (subtract one to be zero
+    # indexed) as everything is zero indexed in c++
     topic_interaction_patterns <- sample(1:CCAS_Object@interaction_patterns,
                                          size = CCAS_Object@number_of_topics,
                                          replace = TRUE) - 1
 
-    # now initialize token topic assignments
+    # now initialize token topic assignments using the
+    # mjd::sample_token_topics_from_generative_process c++ function to
+    # initialize then according to the generative process
     params <- sttgp(
         CCAS_Object@ComNet_Object@token_topic_assignment_list_zero_indexed,
         CCAS_Object@ComNet_Object@token_word_type_list_zero_indexed,
@@ -56,7 +63,10 @@ initialize_latent_variables <- function(CCAS_Object){
         CCAS_Object@ComNet_Object@num_documents,
         FALSE,
         runif(n = 5*CCAS_Object@ComNet_Object@num_tokens))
+    # for the last argument, just pass in lots of random numbers to be safe.
 
+    # stick everything in a list object with the right names so it can be
+    # returned
     LDA_Params <- list(token_topic_assignments = params[[1]],
                       token_word_types = params[[2]],
                       document_topic_counts = params[[3]],

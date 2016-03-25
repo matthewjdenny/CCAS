@@ -112,6 +112,9 @@ ccas <- function(formula,
     LSM_coefficient_proposal_variance = LSM_proposal_variance
     LSM_coefficient_prior_variance = LSM_prior_variance
     LSM_coefficient_prior_mean = LSM_prior_mean
+    # note that after this point, we will be working with standard deviations,
+    # since they are what will actually be used in the inference algorithm and
+    # we want to be precise with what exactly we are passing in.
 
     # set the seed
     set.seed(seed)
@@ -130,7 +133,8 @@ ccas <- function(formula,
     formula <- as.formula(formula)
 
     # if we are slice sampling, then set the inteval to 5, otherwise, it will
-    # be negative 2
+    # be negative 2, in which case it will never trigger the conditional in our
+    # main inference algorithm, and thus we will never slice sample alpha_m
     slice_sample_alpha_m_every <- -2
     if (slice_sample_alpha_m) {
         slice_sample_alpha_m_every <- 5
@@ -150,9 +154,12 @@ ccas <- function(formula,
     # now extract indicator of whether we are using covariates
     using_covariates <- parsed_specifcation$using_covariates
 
-    # if we are using covariates, then generate the covariate array:
+    # if we are not using covariates, we still need to initialize objects of the
+    # right type to pass in to C++ or the main inference function will throw
+    # an error.
     number_of_covariates <- 0
     covariate_array <- array(0,dim = c(10,10,10))
+    # if we are using covariates, then generate the covariate array:
     if (using_covariates) {
         temp <- generate_covariate_array(formula,
                                          possible_structural_terms,
@@ -189,9 +196,11 @@ ccas <- function(formula,
        adaptive_metropolis_update_size = adaptive_metropolis_update_size,
        seed = seed)
 
+    # now add in the covariate array (whether or not we are actually including
+    # them in our model)
     CCAS_Object@covariate_array <- covariate_array
 
-    # initialie vectors of prior variances
+    # initialie vectors of prior means and standard deviations.
     CCAS_Object <- initialize_LSM_priors(CCAS_Object,
                                       LSM_intercept_prior_variance,
                                       LSM_intercept_prior_mean,
@@ -200,7 +209,9 @@ ccas <- function(formula,
                                       LSM_coefficient_prior_variance,
                                       LSM_coefficient_prior_mean)
 
-    # initialize vectors of proposal variances
+    # initialize vectors of proposal standard deviations from our given
+    # proposal variance. We switch to standard deviations since those are what
+    # the c++ functions will operate on.
     CCAS_Object@LSM_intercept_proposal_standard_deviation <- rep(
         sqrt(LSM_intercept_proposal_variance),
         interaction_patterns
@@ -214,6 +225,9 @@ ccas <- function(formula,
         interaction_patterns
     )
 
+    # as of now, we are using uniform base measures m and n. In the future, these
+    # could be power law, or some other distribution, but for now we just make
+    # sure that they sum to alpha/beta.
     CCAS_Object@alpha_m <- rep(CCAS_Object@alpha/CCAS_Object@number_of_topics,
                    CCAS_Object@number_of_topics)
     CCAS_Object@beta_n <- rep(CCAS_Object@beta/CCAS_Object@ComNet_Object@vocabulary_size,
@@ -227,7 +241,7 @@ ccas <- function(formula,
     cat("Initialization Complete: Running Inference...\n\n")
     cat("#############################################\n\n")
 
-    # run inference
+    # run inference (Metropolis within Gibbs)
     Inference_Results <- model_inference(
         CCAS_Object@ComNet_Object@document_authors_zero_indexed,
         CCAS_Object@ComNet_Object@document_edge_matrix,
@@ -267,7 +281,7 @@ ccas <- function(formula,
         slice_sample_step_size,
         parallel)
 
-    # make sure all of the output
+    # make sure all of the output is put into the appropriate named list objects
     MCMC_Results <- list(intercepts = Inference_Results[[2]],
                          coefficients = Inference_Results[[3]],
                          latent_positions = Inference_Results[[4]],
@@ -281,7 +295,7 @@ ccas <- function(formula,
                          token_topic_assignments = Inference_Results[[8]],
                          unnoramlized_LDA_log_likelihood = Inference_Results[[11]])
 
-    # assign them to the slot in our CCAS Object
+    # assign them to the slots in our CCAS Object
     CCAS_Object@MCMC_output <- MCMC_Results
     CCAS_Object@topic_model_results <- Topic_Model_Results
 
@@ -290,7 +304,7 @@ ccas <- function(formula,
     cat("####################################################\n\n")
 
     # select the last iteraction of output from MH from the main inference
-    # to seed MH to convergence
+    # to seed our run of MH to convergence
     ints <- CCAS_Object@MCMC_output$intercepts[
         nrow(CCAS_Object@MCMC_output$intercepts),]
     coefs <- CCAS_Object@MCMC_output$coefficients[,,
@@ -315,7 +329,7 @@ ccas <- function(formula,
         cat("You specified a value for thin > 1. You must select a value for thin < 1. All iterations will be kept...\n")
     }
 
-    # the total iterations is the burning plus the iterations
+    # the total iterations is the burnin plus the iterations
     iters <- CCAS_Object@final_metropolis_hastings_iterations +
         CCAS_Object@final_metropolis_hastings_burnin
 
@@ -351,7 +365,7 @@ ccas <- function(formula,
         CCAS_Object@final_metropolis_hastings_burnin - 1
         )
 
-    # now slot in last updates
+    # now update the MCMC_output with the samples from our final run of MH
     CCAS_Object@MCMC_output$intercepts = final_mh_results[[1]]
     CCAS_Object@MCMC_output$coefficients = final_mh_results[[2]]
     CCAS_Object@MCMC_output$latent_positions = final_mh_results[[3]]
