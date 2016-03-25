@@ -7,6 +7,7 @@ generate_output <- function(CCAS_Object,
     plot_topic_model_log_likelihood(CCAS_Object)
 
     # generate LSM trace plots and print out Geweke diagnostics
+    plot_interaction_pattern_log_likelihood(CCAS_Object)
 
     # generate
 

@@ -377,7 +377,9 @@ ccas <- function(formula,
     CCAS_Object@MCMC_output$intercepts = final_mh_results[[1]]
     CCAS_Object@MCMC_output$coefficients = final_mh_results[[2]]
     CCAS_Object@MCMC_output$latent_positions = final_mh_results[[3]]
-    CCAS_Object@MCMC_output$final_proposal_standard_deviations = final_mh_results[[4]]
+    CCAS_Object@MCMC_output$final_accept_or_reject = final_mh_results[[4]]
+    CCAS_Object@MCMC_output$final_proposal_standard_deviations = final_mh_results[[5]]
+    CCAS_Object@MCMC_output$LSM_log_likelihood = final_mh_results[[6]]
 
     cat("\n####################################\n\n")
     cat("Generating Output and Diagnostics...\n\n")

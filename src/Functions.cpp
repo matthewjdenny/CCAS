@@ -1021,7 +1021,7 @@ namespace mjd {
         double accept_log_prob = log_proposed_probability + log_proposed_prior -
              log_current_probability - log_current_prior;
         double log_random_number = log(random_number);
-        Rcpp::List to_return(5);
+        Rcpp::List to_return(6);
 
         if (accept_log_prob > log_random_number) {
             to_return[0] = proposed_intercepts;
@@ -1029,12 +1029,14 @@ namespace mjd {
             to_return[2] = proposed_latent_positions;
             to_return[3] = proposed_edge_probabilities;
             to_return[4] = 1; //tells us whether we accepted
+            to_return[5] = log_current_probability;
         } else {
             to_return[0] = intercepts;
             to_return[1] = coefficients;
             to_return[2] = latent_positions;
             to_return[3] = edge_probabilities;
             to_return[4] = 0; //tells us whether we accepted
+            to_return[5] = log_current_probability;
         }
 
         return to_return;
@@ -1919,6 +1921,7 @@ namespace mjd {
         }
         arma::vec accept_rates = arma::zeros(num_interaction_patterns);
         arma::vec store_accept_or_reject = arma::zeros(metropolis_iterations);
+        arma::vec LSM_log_likelihood = arma::zeros(samples_to_store);
         arma::vec accept_or_reject = arma::zeros(adaptive_metropolis_every_x_iterations);
 
         // allocate data structures to store samples in.
@@ -2000,6 +2003,8 @@ namespace mjd {
             double temp5 = temp5a[0];
             accept_or_reject[adaptive_MH_counter] = temp5;
             store_accept_or_reject[j] = temp5;
+            Rcpp::NumericVector temp6a = MH_List[5];
+            double temp6 = temp6a[0];
 
             // do adaptive metropolis
             if (adaptive_MH_counter >= adaptive_metropolis_every_x_iterations) {
@@ -2047,10 +2052,10 @@ namespace mjd {
 
             // only save stuff if we are past the burnin
             if (burnin_counter > burnin) {
-
                 // only save once every sample_every iterations
                 if (storage_check == sample_every) {
                     // save everything
+                    LSM_log_likelihood[storage_counter] = temp6;
                     for (int k = 0; k < num_interaction_patterns; ++k) {
                         //save intercepts
                         double temp = intercepts[k];
@@ -2095,12 +2100,13 @@ namespace mjd {
         }// end of metropolis hastings loop
 
         // allocate a list to store everything in.
-        Rcpp::List ret_list(5);
+        Rcpp::List ret_list(6);
         ret_list[0] = store_intercepts;
         ret_list[1] = store_coefficients;
         ret_list[2] = store_latent_positions;
         ret_list[3] = store_accept_or_reject;
         ret_list[4] = intercept_proposal_standard_deviations;
+        ret_list[5] = LSM_log_likelihood;
         // return everything
         return ret_list;
     }
