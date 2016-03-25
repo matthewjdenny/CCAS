@@ -33,6 +33,7 @@ setClass(Class = "ComNet",
 # an S4 class for ccas objects
 setClass(Class = "CCAS",
          representation = representation(
+             model_output = "list",
              parameter_estimates = "data.frame",
              interaction_patterns = "numeric",
              number_of_topics = "numeric",

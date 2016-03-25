@@ -296,7 +296,8 @@ ccas <- function(formula,
                          accept_rates = Inference_Results[[9]],
                          final_proposal_standard_deviations = Inference_Results[[10]])
 
-    Topic_Model_Results <- list(topic_interaction_patterns = Inference_Results[[1]],
+    # make sure to increment where necessary to get back to 1 indexing
+    Topic_Model_Results <- list(topic_interaction_patterns = Inference_Results[[1]] + 1,
                          document_topic_counts = Inference_Results[[5]],
                          word_type_topic_counts = Inference_Results[[6]],
                          topic_token_counts = Inference_Results[[7]],
@@ -306,6 +307,12 @@ ccas <- function(formula,
     # assign them to the slots in our CCAS Object
     CCAS_Object@MCMC_output <- MCMC_Results
     CCAS_Object@topic_model_results <- Topic_Model_Results
+
+    # increment token topic assignments
+    for (i in 1:CCAS_Object@ComNet_Object@num_documents) {
+        CCAS_Object@topic_model_results$token_topic_assignments[[i]] <-
+            CCAS_Object@topic_model_results$token_topic_assignments[[i]] + 1
+    }
 
     cat("\n####################################################\n\n")
     cat("Main Inference Complete: Running MH to Convergence...\n\n")
@@ -386,9 +393,10 @@ ccas <- function(formula,
     cat("####################################\n\n")
 
     # generate output
-    generate_output(CCAS_Object,
-                    output_directory,
-                    output_name_stem)
+    CCAS_Object <- generate_output(
+        CCAS_Object,
+        output_directory,
+        output_name_stem)
 
     # retrun the CCAS object
     return(CCAS_Object)
