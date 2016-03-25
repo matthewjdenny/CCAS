@@ -14,15 +14,16 @@
 #' leave_out_topic must be provided.
 #' @param Test_Prior_Pobability_Of_I_P_Params Defaults to FALSE. If TRUE, then
 #' optional arguments intercepts, coefficients, latent_pos, intercept_prior_mean,
-#' intercept_prior_variance, coefficient_prior_mean, coefficient_prior_variance,
-#' latent_position_prior_mean, latent_position_prior_variance,
-#' using_coefficients must be provided.
+#' intercept_prior_standard_deviation, coefficient_prior_mean,
+#' coefficient_prior_standard_deviation, latent_position_prior_mean,
+#' latent_position_prior_standard_deviation, using_coefficients must be
+#' provided.
 #' @param Test_Sample_New_I_P_Parameters Defaults to FALSE. If TRUE, then
 #' optional  arguments intercepts, coefficients, latent_pos,
-#' intercept_proposal_variances, coefficient_proposal_variances,
-#' latent_position_proposal_variances, (all of which must be of length = number
-#' of interaction patterns, and should all be equal) using_coefficients must be
-#' provided.
+#' intercept_proposal_standard_deviations, coefficient_proposal_standard_deviations,
+#' latent_position_proposal_standard_deviations, (all of which must be of
+#' length = number of interaction patterns, and should all be equal)
+#' using_coefficients must be provided.
 #' @param Test_LSM_Contribution Defaults to FALSE. If TRUE, then optional
 #' arguments edge_probs, tokens_in_document, topic,
 #' current_token_topic_assignment, current_document_topic_counts,
@@ -49,29 +50,34 @@
 #' then optional arguments author_indexes, document_edge_matrix,
 #' document_topic_counts, topic_interaction_patterns, intercepts, coefficients,
 #' latent_pos, covars, using_coefficients, intercept_prior_mean,
-#' intercept_prior_variance, intercept_proposal_variances,
-#' coefficient_prior_mean, coefficient_prior_variance,
-#' coefficient_proposal_variances, latent_position_prior_mean,
-#' latent_position_prior_variance, latent_position_proposal_variances, rand_num,
-#' edge_probs must be provided.
+#' intercept_prior_standard_deviation, intercept_proposal_standard_deviations,
+#' coefficient_prior_mean, coefficient_prior_standard_deviation,
+#' coefficient_proposal_standard_deviations, latent_position_prior_mean,
+#' latent_position_prior_standard_deviation,
+#' latent_position_proposal_standard_deviations, rand_num, edge_probs must be
+#' provided.
 #' @param Test_Update_Topic_Interaction_Pattern_Assignments Defaults to FALSE.
 #' If TRUE, then optional arguments author_indexes, document_edge_matrix,
 #' document_topic_counts, topic_interaction_patterns, intercepts, coefficients,
 #' latent_pos, covars, using_coefficients, random_numbers, edge_probs must be
 #' provided.
 #' @param Test_Adaptive_Metropolis Defaults to FALSE. If TRUE, then optional
-#' arguments intercept_proposal_variances, coefficient_proposal_variances,
-#' latent_position_proposal_variances, accept_rates, target_accept_rate,
+#' arguments intercept_proposal_standard_deviations,
+#' coefficient_proposal_standard_deviations,
+#' latent_position_proposal_standard_deviations,
+#' accept_rates, target_accept_rate,
 #' tollerance, update_size must be provided.
 #' @param Test_Inference If TRUE, then optional arguments author_indexes,
 #' document_edge_matrix, document_topic_counts, topic_interaction_patterns,
 #' word_type_topic_counts, topic_token_counts, token_topic_assignments,
 #' token_word_types, intercepts, coefficients, latent_pos, covars, alpha_m,
-#' beta_n, using_coefficients, intercept_prior_mean, intercept_prior_variance,
-#' intercept_proposal_variances, coefficient_prior_mean,
-#' coefficient_prior_variance, coefficient_proposal_variances,
-#' latent_position_prior_mean, latent_position_prior_variance,
-#' latent_position_proposal_variances, target_accept_rate, tollerance,
+#' beta_n, using_coefficients, intercept_prior_mean,
+#' intercept_prior_standard_deviation,
+#' intercept_proposal_standard_deviations, coefficient_prior_mean,
+#' coefficient_prior_standard_deviation,
+#' coefficient_proposal_standard_deviations,
+#' latent_position_prior_mean, latent_position_prior_standard_deviation,
+#' latent_position_proposal_standard_deviations, target_accept_rate, tollerance,
 #' update_size, seed, iterations, metropolis_iterations, total_number_of_tokens,
 #' iterations_before_t_i_p_updates, update_t_i_p_every_x_iterations,
 #' perform_adaptive_metropolis must be provided.
@@ -97,14 +103,14 @@
 #' @param topic_interaction_patterns a vector
 #' @param leave_out_topic An integer.
 #' @param intercept_prior_mean A double.
-#' @param intercept_prior_variance A double.
-#' @param intercept_proposal_variances A vector.
+#' @param intercept_prior_standard_deviation A double.
+#' @param intercept_proposal_standard_deviations A vector.
 #' @param coefficient_prior_mean A double.
-#' @param coefficient_prior_variance A double.
-#' @param coefficient_proposal_variances A vector.
+#' @param coefficient_prior_standard_deviation A double.
+#' @param coefficient_proposal_standard_deviations A vector.
 #' @param latent_position_prior_mean A double.
-#' @param latent_position_prior_variance A double.
-#' @param latent_position_proposal_variances A vector.
+#' @param latent_position_prior_standard_deviation A double.
+#' @param latent_position_proposal_standard_deviations A vector.
 #' @param topic An integer.
 #' @param document_edge_values A vector.
 #' @param word_type_topic_counts A matrix
@@ -172,14 +178,14 @@ test_internal_functions <- function(
     topic_interaction_patterns = NULL,
     leave_out_topic = NULL,
     intercept_prior_mean = NULL,
-    intercept_prior_variance = NULL,
-    intercept_proposal_variances = NULL,
+    intercept_prior_standard_deviation = NULL,
+    intercept_proposal_standard_deviations = NULL,
     coefficient_prior_mean = NULL,
-    coefficient_prior_variance = NULL,
-    coefficient_proposal_variances = NULL,
+    coefficient_prior_standard_deviation = NULL,
+    coefficient_proposal_standard_deviations = NULL,
     latent_position_prior_mean = NULL,
-    latent_position_prior_variance = NULL,
-    latent_position_proposal_variances = NULL,
+    latent_position_prior_standard_deviation = NULL,
+    latent_position_proposal_standard_deviations = NULL,
     topic = NULL,
     document_edge_values = NULL,
     word_type_topic_counts = NULL,
@@ -248,11 +254,11 @@ test_internal_functions <- function(
               coefficients,
               latent_positions,
               intercept_prior_mean,
-              intercept_prior_variance,
+              intercept_prior_standard_deviation,
               coefficient_prior_mean,
-              coefficient_prior_variance,
+              coefficient_prior_standard_deviation,
               latent_position_prior_mean,
-              latent_position_prior_variance,
+              latent_position_prior_standard_deviation,
               using_coefficients)
     }
 
@@ -260,9 +266,9 @@ test_internal_functions <- function(
         return_object <- snipp(intercepts,
               coefficients,
               latent_positions,
-              intercept_proposal_variances,
-              coefficient_proposal_variances,
-              latent_position_proposal_variances,
+              intercept_proposal_standard_deviations,
+              coefficient_proposal_standard_deviations,
+              latent_position_proposal_standard_deviations,
               using_coefficients)
     }
 
@@ -341,14 +347,14 @@ test_internal_functions <- function(
             covariates,
             using_coefficients,
             intercept_prior_mean,
-            intercept_prior_variance,
-            intercept_proposal_variances,
+            intercept_prior_standard_deviation,
+            intercept_proposal_standard_deviations,
             coefficient_prior_mean,
-            coefficient_prior_variance,
-            coefficient_proposal_variances,
+            coefficient_prior_standard_deviation,
+            coefficient_proposal_standard_deviations,
             latent_position_prior_mean,
-            latent_position_prior_variance,
-            latent_position_proposal_variances,
+            latent_position_prior_standard_deviation,
+            latent_position_proposal_standard_deviations,
             rand_num,
             edge_probabilities)
     }
@@ -368,9 +374,9 @@ test_internal_functions <- function(
     }
 
     if (Test_Adaptive_Metropolis) {
-        return_object <- am(intercept_proposal_variances,
-                            coefficient_proposal_variances,
-                            latent_position_proposal_variances,
+        return_object <- am(intercept_proposal_standard_deviations,
+                            coefficient_proposal_standard_deviations,
+                            latent_position_proposal_standard_deviations,
                             accept_rates,
                             target_accept_rate,
                             tollerance,
@@ -395,14 +401,14 @@ test_internal_functions <- function(
             beta_n,
             using_coefficients,
             intercept_prior_mean,
-            intercept_prior_variance,
-            intercept_proposal_variances,
+            intercept_prior_standard_deviation,
+            intercept_proposal_standard_deviations,
             coefficient_prior_mean,
-            coefficient_prior_variance,
-            coefficient_proposal_variances,
+            coefficient_prior_standard_deviation,
+            coefficient_proposal_standard_deviations,
             latent_position_prior_mean,
-            latent_position_prior_variance,
-            latent_position_proposal_variances,
+            latent_position_prior_standard_deviation,
+            latent_position_proposal_standard_deviations,
             target_accept_rate,
             tollerance,
             update_size,

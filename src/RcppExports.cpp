@@ -56,8 +56,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // ppipp
-double ppipp(arma::vec intercepts, arma::mat coefficients, arma::cube latent_positions, double intercept_prior_mean, double intercept_prior_variance, double coefficient_prior_mean, double coefficient_prior_variance, double latent_position_prior_mean, double latent_position_prior_variance, bool using_coefficients);
-RcppExport SEXP CCAS_ppipp(SEXP interceptsSEXP, SEXP coefficientsSEXP, SEXP latent_positionsSEXP, SEXP intercept_prior_meanSEXP, SEXP intercept_prior_varianceSEXP, SEXP coefficient_prior_meanSEXP, SEXP coefficient_prior_varianceSEXP, SEXP latent_position_prior_meanSEXP, SEXP latent_position_prior_varianceSEXP, SEXP using_coefficientsSEXP) {
+double ppipp(arma::vec intercepts, arma::mat coefficients, arma::cube latent_positions, double intercept_prior_mean, double intercept_prior_standard_deviation, double coefficient_prior_mean, double coefficient_prior_standard_deviation, double latent_position_prior_mean, double latent_position_prior_standard_deviation, bool using_coefficients);
+RcppExport SEXP CCAS_ppipp(SEXP interceptsSEXP, SEXP coefficientsSEXP, SEXP latent_positionsSEXP, SEXP intercept_prior_meanSEXP, SEXP intercept_prior_standard_deviationSEXP, SEXP coefficient_prior_meanSEXP, SEXP coefficient_prior_standard_deviationSEXP, SEXP latent_position_prior_meanSEXP, SEXP latent_position_prior_standard_deviationSEXP, SEXP using_coefficientsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
@@ -65,30 +65,30 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::mat >::type coefficients(coefficientsSEXP);
     Rcpp::traits::input_parameter< arma::cube >::type latent_positions(latent_positionsSEXP);
     Rcpp::traits::input_parameter< double >::type intercept_prior_mean(intercept_prior_meanSEXP);
-    Rcpp::traits::input_parameter< double >::type intercept_prior_variance(intercept_prior_varianceSEXP);
+    Rcpp::traits::input_parameter< double >::type intercept_prior_standard_deviation(intercept_prior_standard_deviationSEXP);
     Rcpp::traits::input_parameter< double >::type coefficient_prior_mean(coefficient_prior_meanSEXP);
-    Rcpp::traits::input_parameter< double >::type coefficient_prior_variance(coefficient_prior_varianceSEXP);
+    Rcpp::traits::input_parameter< double >::type coefficient_prior_standard_deviation(coefficient_prior_standard_deviationSEXP);
     Rcpp::traits::input_parameter< double >::type latent_position_prior_mean(latent_position_prior_meanSEXP);
-    Rcpp::traits::input_parameter< double >::type latent_position_prior_variance(latent_position_prior_varianceSEXP);
+    Rcpp::traits::input_parameter< double >::type latent_position_prior_standard_deviation(latent_position_prior_standard_deviationSEXP);
     Rcpp::traits::input_parameter< bool >::type using_coefficients(using_coefficientsSEXP);
-    __result = Rcpp::wrap(ppipp(intercepts, coefficients, latent_positions, intercept_prior_mean, intercept_prior_variance, coefficient_prior_mean, coefficient_prior_variance, latent_position_prior_mean, latent_position_prior_variance, using_coefficients));
+    __result = Rcpp::wrap(ppipp(intercepts, coefficients, latent_positions, intercept_prior_mean, intercept_prior_standard_deviation, coefficient_prior_mean, coefficient_prior_standard_deviation, latent_position_prior_mean, latent_position_prior_standard_deviation, using_coefficients));
     return __result;
 END_RCPP
 }
 // snipp
-List snipp(arma::vec intercepts, arma::mat coefficients, arma::cube latent_positions, arma::vec intercept_proposal_variances, arma::vec coefficient_proposal_variances, arma::vec latent_position_proposal_variances, bool using_coefficients);
-RcppExport SEXP CCAS_snipp(SEXP interceptsSEXP, SEXP coefficientsSEXP, SEXP latent_positionsSEXP, SEXP intercept_proposal_variancesSEXP, SEXP coefficient_proposal_variancesSEXP, SEXP latent_position_proposal_variancesSEXP, SEXP using_coefficientsSEXP) {
+List snipp(arma::vec intercepts, arma::mat coefficients, arma::cube latent_positions, arma::vec intercept_proposal_standard_deviations, arma::vec coefficient_proposal_standard_deviations, arma::vec latent_position_proposal_standard_deviations, bool using_coefficients);
+RcppExport SEXP CCAS_snipp(SEXP interceptsSEXP, SEXP coefficientsSEXP, SEXP latent_positionsSEXP, SEXP intercept_proposal_standard_deviationsSEXP, SEXP coefficient_proposal_standard_deviationsSEXP, SEXP latent_position_proposal_standard_deviationsSEXP, SEXP using_coefficientsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
     Rcpp::traits::input_parameter< arma::vec >::type intercepts(interceptsSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type coefficients(coefficientsSEXP);
     Rcpp::traits::input_parameter< arma::cube >::type latent_positions(latent_positionsSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type intercept_proposal_variances(intercept_proposal_variancesSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type coefficient_proposal_variances(coefficient_proposal_variancesSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type latent_position_proposal_variances(latent_position_proposal_variancesSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type intercept_proposal_standard_deviations(intercept_proposal_standard_deviationsSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type coefficient_proposal_standard_deviations(coefficient_proposal_standard_deviationsSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type latent_position_proposal_standard_deviations(latent_position_proposal_standard_deviationsSEXP);
     Rcpp::traits::input_parameter< bool >::type using_coefficients(using_coefficientsSEXP);
-    __result = Rcpp::wrap(snipp(intercepts, coefficients, latent_positions, intercept_proposal_variances, coefficient_proposal_variances, latent_position_proposal_variances, using_coefficients));
+    __result = Rcpp::wrap(snipp(intercepts, coefficients, latent_positions, intercept_proposal_standard_deviations, coefficient_proposal_standard_deviations, latent_position_proposal_standard_deviations, using_coefficients));
     return __result;
 END_RCPP
 }
@@ -182,8 +182,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // uipp
-List uipp(arma::vec author_indexes, arma::mat document_edge_matrix, arma::mat document_topic_counts, arma::vec topic_interaction_patterns, arma::vec intercepts, arma::mat coefficients, arma::cube latent_positions, arma::cube covariates, bool using_coefficients, double intercept_prior_mean, double intercept_prior_variance, arma::vec intercept_proposal_variances, double coefficient_prior_mean, double coefficient_prior_variance, arma::vec coefficient_proposal_variances, double latent_position_prior_mean, double latent_position_prior_variance, arma::vec latent_position_proposal_variances, double random_number, arma::cube edge_probabilities);
-RcppExport SEXP CCAS_uipp(SEXP author_indexesSEXP, SEXP document_edge_matrixSEXP, SEXP document_topic_countsSEXP, SEXP topic_interaction_patternsSEXP, SEXP interceptsSEXP, SEXP coefficientsSEXP, SEXP latent_positionsSEXP, SEXP covariatesSEXP, SEXP using_coefficientsSEXP, SEXP intercept_prior_meanSEXP, SEXP intercept_prior_varianceSEXP, SEXP intercept_proposal_variancesSEXP, SEXP coefficient_prior_meanSEXP, SEXP coefficient_prior_varianceSEXP, SEXP coefficient_proposal_variancesSEXP, SEXP latent_position_prior_meanSEXP, SEXP latent_position_prior_varianceSEXP, SEXP latent_position_proposal_variancesSEXP, SEXP random_numberSEXP, SEXP edge_probabilitiesSEXP) {
+List uipp(arma::vec author_indexes, arma::mat document_edge_matrix, arma::mat document_topic_counts, arma::vec topic_interaction_patterns, arma::vec intercepts, arma::mat coefficients, arma::cube latent_positions, arma::cube covariates, bool using_coefficients, double intercept_prior_mean, double intercept_prior_standard_deviation, arma::vec intercept_proposal_standard_deviations, double coefficient_prior_mean, double coefficient_prior_standard_deviation, arma::vec coefficient_proposal_standard_deviations, double latent_position_prior_mean, double latent_position_prior_standard_deviation, arma::vec latent_position_proposal_standard_deviations, double random_number, arma::cube edge_probabilities);
+RcppExport SEXP CCAS_uipp(SEXP author_indexesSEXP, SEXP document_edge_matrixSEXP, SEXP document_topic_countsSEXP, SEXP topic_interaction_patternsSEXP, SEXP interceptsSEXP, SEXP coefficientsSEXP, SEXP latent_positionsSEXP, SEXP covariatesSEXP, SEXP using_coefficientsSEXP, SEXP intercept_prior_meanSEXP, SEXP intercept_prior_standard_deviationSEXP, SEXP intercept_proposal_standard_deviationsSEXP, SEXP coefficient_prior_meanSEXP, SEXP coefficient_prior_standard_deviationSEXP, SEXP coefficient_proposal_standard_deviationsSEXP, SEXP latent_position_prior_meanSEXP, SEXP latent_position_prior_standard_deviationSEXP, SEXP latent_position_proposal_standard_deviationsSEXP, SEXP random_numberSEXP, SEXP edge_probabilitiesSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
@@ -197,17 +197,17 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::cube >::type covariates(covariatesSEXP);
     Rcpp::traits::input_parameter< bool >::type using_coefficients(using_coefficientsSEXP);
     Rcpp::traits::input_parameter< double >::type intercept_prior_mean(intercept_prior_meanSEXP);
-    Rcpp::traits::input_parameter< double >::type intercept_prior_variance(intercept_prior_varianceSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type intercept_proposal_variances(intercept_proposal_variancesSEXP);
+    Rcpp::traits::input_parameter< double >::type intercept_prior_standard_deviation(intercept_prior_standard_deviationSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type intercept_proposal_standard_deviations(intercept_proposal_standard_deviationsSEXP);
     Rcpp::traits::input_parameter< double >::type coefficient_prior_mean(coefficient_prior_meanSEXP);
-    Rcpp::traits::input_parameter< double >::type coefficient_prior_variance(coefficient_prior_varianceSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type coefficient_proposal_variances(coefficient_proposal_variancesSEXP);
+    Rcpp::traits::input_parameter< double >::type coefficient_prior_standard_deviation(coefficient_prior_standard_deviationSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type coefficient_proposal_standard_deviations(coefficient_proposal_standard_deviationsSEXP);
     Rcpp::traits::input_parameter< double >::type latent_position_prior_mean(latent_position_prior_meanSEXP);
-    Rcpp::traits::input_parameter< double >::type latent_position_prior_variance(latent_position_prior_varianceSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type latent_position_proposal_variances(latent_position_proposal_variancesSEXP);
+    Rcpp::traits::input_parameter< double >::type latent_position_prior_standard_deviation(latent_position_prior_standard_deviationSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type latent_position_proposal_standard_deviations(latent_position_proposal_standard_deviationsSEXP);
     Rcpp::traits::input_parameter< double >::type random_number(random_numberSEXP);
     Rcpp::traits::input_parameter< arma::cube >::type edge_probabilities(edge_probabilitiesSEXP);
-    __result = Rcpp::wrap(uipp(author_indexes, document_edge_matrix, document_topic_counts, topic_interaction_patterns, intercepts, coefficients, latent_positions, covariates, using_coefficients, intercept_prior_mean, intercept_prior_variance, intercept_proposal_variances, coefficient_prior_mean, coefficient_prior_variance, coefficient_proposal_variances, latent_position_prior_mean, latent_position_prior_variance, latent_position_proposal_variances, random_number, edge_probabilities));
+    __result = Rcpp::wrap(uipp(author_indexes, document_edge_matrix, document_topic_counts, topic_interaction_patterns, intercepts, coefficients, latent_positions, covariates, using_coefficients, intercept_prior_mean, intercept_prior_standard_deviation, intercept_proposal_standard_deviations, coefficient_prior_mean, coefficient_prior_standard_deviation, coefficient_proposal_standard_deviations, latent_position_prior_mean, latent_position_prior_standard_deviation, latent_position_proposal_standard_deviations, random_number, edge_probabilities));
     return __result;
 END_RCPP
 }
@@ -233,25 +233,25 @@ BEGIN_RCPP
 END_RCPP
 }
 // am
-List am(arma::vec intercept_proposal_variances, arma::vec coefficient_proposal_variances, arma::vec latent_position_proposal_variances, arma::vec accept_rates, double target_accept_rate, double tollerance, double update_size);
-RcppExport SEXP CCAS_am(SEXP intercept_proposal_variancesSEXP, SEXP coefficient_proposal_variancesSEXP, SEXP latent_position_proposal_variancesSEXP, SEXP accept_ratesSEXP, SEXP target_accept_rateSEXP, SEXP tolleranceSEXP, SEXP update_sizeSEXP) {
+List am(arma::vec intercept_proposal_standard_deviations, arma::vec coefficient_proposal_standard_deviations, arma::vec latent_position_proposal_standard_deviations, arma::vec accept_rates, double target_accept_rate, double tollerance, double update_size);
+RcppExport SEXP CCAS_am(SEXP intercept_proposal_standard_deviationsSEXP, SEXP coefficient_proposal_standard_deviationsSEXP, SEXP latent_position_proposal_standard_deviationsSEXP, SEXP accept_ratesSEXP, SEXP target_accept_rateSEXP, SEXP tolleranceSEXP, SEXP update_sizeSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< arma::vec >::type intercept_proposal_variances(intercept_proposal_variancesSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type coefficient_proposal_variances(coefficient_proposal_variancesSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type latent_position_proposal_variances(latent_position_proposal_variancesSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type intercept_proposal_standard_deviations(intercept_proposal_standard_deviationsSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type coefficient_proposal_standard_deviations(coefficient_proposal_standard_deviationsSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type latent_position_proposal_standard_deviations(latent_position_proposal_standard_deviationsSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type accept_rates(accept_ratesSEXP);
     Rcpp::traits::input_parameter< double >::type target_accept_rate(target_accept_rateSEXP);
     Rcpp::traits::input_parameter< double >::type tollerance(tolleranceSEXP);
     Rcpp::traits::input_parameter< double >::type update_size(update_sizeSEXP);
-    __result = Rcpp::wrap(am(intercept_proposal_variances, coefficient_proposal_variances, latent_position_proposal_variances, accept_rates, target_accept_rate, tollerance, update_size));
+    __result = Rcpp::wrap(am(intercept_proposal_standard_deviations, coefficient_proposal_standard_deviations, latent_position_proposal_standard_deviations, accept_rates, target_accept_rate, tollerance, update_size));
     return __result;
 END_RCPP
 }
 // model_inference
-List model_inference(arma::vec author_indexes, arma::mat document_edge_matrix, arma::mat document_topic_counts, arma::vec topic_interaction_patterns, arma::mat word_type_topic_counts, arma::vec topic_token_counts, Rcpp::List token_topic_assignments, Rcpp::List token_word_types, arma::vec intercepts, arma::mat coefficients, arma::cube latent_positions, arma::cube covariates, arma::vec alpha_m, arma::vec beta_n, bool using_coefficients, double intercept_prior_mean, double intercept_prior_variance, arma::vec intercept_proposal_variances, double coefficient_prior_mean, double coefficient_prior_variance, arma::vec coefficient_proposal_variances, double latent_position_prior_mean, double latent_position_prior_variance, arma::vec latent_position_proposal_variances, double target_accept_rate, double tollerance, double update_size, int seed, int iterations, int metropolis_iterations, int total_number_of_tokens, int iterations_before_t_i_p_updates, int update_t_i_p_every_x_iterations, bool perform_adaptive_metropolis, int slice_sample_every_x_iterations, double slice_sample_step_size, bool parallel);
-RcppExport SEXP CCAS_model_inference(SEXP author_indexesSEXP, SEXP document_edge_matrixSEXP, SEXP document_topic_countsSEXP, SEXP topic_interaction_patternsSEXP, SEXP word_type_topic_countsSEXP, SEXP topic_token_countsSEXP, SEXP token_topic_assignmentsSEXP, SEXP token_word_typesSEXP, SEXP interceptsSEXP, SEXP coefficientsSEXP, SEXP latent_positionsSEXP, SEXP covariatesSEXP, SEXP alpha_mSEXP, SEXP beta_nSEXP, SEXP using_coefficientsSEXP, SEXP intercept_prior_meanSEXP, SEXP intercept_prior_varianceSEXP, SEXP intercept_proposal_variancesSEXP, SEXP coefficient_prior_meanSEXP, SEXP coefficient_prior_varianceSEXP, SEXP coefficient_proposal_variancesSEXP, SEXP latent_position_prior_meanSEXP, SEXP latent_position_prior_varianceSEXP, SEXP latent_position_proposal_variancesSEXP, SEXP target_accept_rateSEXP, SEXP tolleranceSEXP, SEXP update_sizeSEXP, SEXP seedSEXP, SEXP iterationsSEXP, SEXP metropolis_iterationsSEXP, SEXP total_number_of_tokensSEXP, SEXP iterations_before_t_i_p_updatesSEXP, SEXP update_t_i_p_every_x_iterationsSEXP, SEXP perform_adaptive_metropolisSEXP, SEXP slice_sample_every_x_iterationsSEXP, SEXP slice_sample_step_sizeSEXP, SEXP parallelSEXP) {
+List model_inference(arma::vec author_indexes, arma::mat document_edge_matrix, arma::mat document_topic_counts, arma::vec topic_interaction_patterns, arma::mat word_type_topic_counts, arma::vec topic_token_counts, Rcpp::List token_topic_assignments, Rcpp::List token_word_types, arma::vec intercepts, arma::mat coefficients, arma::cube latent_positions, arma::cube covariates, arma::vec alpha_m, arma::vec beta_n, bool using_coefficients, double intercept_prior_mean, double intercept_prior_standard_deviation, arma::vec intercept_proposal_standard_deviations, double coefficient_prior_mean, double coefficient_prior_standard_deviation, arma::vec coefficient_proposal_standard_deviations, double latent_position_prior_mean, double latent_position_prior_standard_deviation, arma::vec latent_position_proposal_standard_deviations, double target_accept_rate, double tollerance, double update_size, int seed, int iterations, int metropolis_iterations, int total_number_of_tokens, int iterations_before_t_i_p_updates, int update_t_i_p_every_x_iterations, bool perform_adaptive_metropolis, int slice_sample_every_x_iterations, double slice_sample_step_size, bool parallel);
+RcppExport SEXP CCAS_model_inference(SEXP author_indexesSEXP, SEXP document_edge_matrixSEXP, SEXP document_topic_countsSEXP, SEXP topic_interaction_patternsSEXP, SEXP word_type_topic_countsSEXP, SEXP topic_token_countsSEXP, SEXP token_topic_assignmentsSEXP, SEXP token_word_typesSEXP, SEXP interceptsSEXP, SEXP coefficientsSEXP, SEXP latent_positionsSEXP, SEXP covariatesSEXP, SEXP alpha_mSEXP, SEXP beta_nSEXP, SEXP using_coefficientsSEXP, SEXP intercept_prior_meanSEXP, SEXP intercept_prior_standard_deviationSEXP, SEXP intercept_proposal_standard_deviationsSEXP, SEXP coefficient_prior_meanSEXP, SEXP coefficient_prior_standard_deviationSEXP, SEXP coefficient_proposal_standard_deviationsSEXP, SEXP latent_position_prior_meanSEXP, SEXP latent_position_prior_standard_deviationSEXP, SEXP latent_position_proposal_standard_deviationsSEXP, SEXP target_accept_rateSEXP, SEXP tolleranceSEXP, SEXP update_sizeSEXP, SEXP seedSEXP, SEXP iterationsSEXP, SEXP metropolis_iterationsSEXP, SEXP total_number_of_tokensSEXP, SEXP iterations_before_t_i_p_updatesSEXP, SEXP update_t_i_p_every_x_iterationsSEXP, SEXP perform_adaptive_metropolisSEXP, SEXP slice_sample_every_x_iterationsSEXP, SEXP slice_sample_step_sizeSEXP, SEXP parallelSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
@@ -271,14 +271,14 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::vec >::type beta_n(beta_nSEXP);
     Rcpp::traits::input_parameter< bool >::type using_coefficients(using_coefficientsSEXP);
     Rcpp::traits::input_parameter< double >::type intercept_prior_mean(intercept_prior_meanSEXP);
-    Rcpp::traits::input_parameter< double >::type intercept_prior_variance(intercept_prior_varianceSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type intercept_proposal_variances(intercept_proposal_variancesSEXP);
+    Rcpp::traits::input_parameter< double >::type intercept_prior_standard_deviation(intercept_prior_standard_deviationSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type intercept_proposal_standard_deviations(intercept_proposal_standard_deviationsSEXP);
     Rcpp::traits::input_parameter< double >::type coefficient_prior_mean(coefficient_prior_meanSEXP);
-    Rcpp::traits::input_parameter< double >::type coefficient_prior_variance(coefficient_prior_varianceSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type coefficient_proposal_variances(coefficient_proposal_variancesSEXP);
+    Rcpp::traits::input_parameter< double >::type coefficient_prior_standard_deviation(coefficient_prior_standard_deviationSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type coefficient_proposal_standard_deviations(coefficient_proposal_standard_deviationsSEXP);
     Rcpp::traits::input_parameter< double >::type latent_position_prior_mean(latent_position_prior_meanSEXP);
-    Rcpp::traits::input_parameter< double >::type latent_position_prior_variance(latent_position_prior_varianceSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type latent_position_proposal_variances(latent_position_proposal_variancesSEXP);
+    Rcpp::traits::input_parameter< double >::type latent_position_prior_standard_deviation(latent_position_prior_standard_deviationSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type latent_position_proposal_standard_deviations(latent_position_proposal_standard_deviationsSEXP);
     Rcpp::traits::input_parameter< double >::type target_accept_rate(target_accept_rateSEXP);
     Rcpp::traits::input_parameter< double >::type tollerance(tolleranceSEXP);
     Rcpp::traits::input_parameter< double >::type update_size(update_sizeSEXP);
@@ -292,7 +292,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type slice_sample_every_x_iterations(slice_sample_every_x_iterationsSEXP);
     Rcpp::traits::input_parameter< double >::type slice_sample_step_size(slice_sample_step_sizeSEXP);
     Rcpp::traits::input_parameter< bool >::type parallel(parallelSEXP);
-    __result = Rcpp::wrap(model_inference(author_indexes, document_edge_matrix, document_topic_counts, topic_interaction_patterns, word_type_topic_counts, topic_token_counts, token_topic_assignments, token_word_types, intercepts, coefficients, latent_positions, covariates, alpha_m, beta_n, using_coefficients, intercept_prior_mean, intercept_prior_variance, intercept_proposal_variances, coefficient_prior_mean, coefficient_prior_variance, coefficient_proposal_variances, latent_position_prior_mean, latent_position_prior_variance, latent_position_proposal_variances, target_accept_rate, tollerance, update_size, seed, iterations, metropolis_iterations, total_number_of_tokens, iterations_before_t_i_p_updates, update_t_i_p_every_x_iterations, perform_adaptive_metropolis, slice_sample_every_x_iterations, slice_sample_step_size, parallel));
+    __result = Rcpp::wrap(model_inference(author_indexes, document_edge_matrix, document_topic_counts, topic_interaction_patterns, word_type_topic_counts, topic_token_counts, token_topic_assignments, token_word_types, intercepts, coefficients, latent_positions, covariates, alpha_m, beta_n, using_coefficients, intercept_prior_mean, intercept_prior_standard_deviation, intercept_proposal_standard_deviations, coefficient_prior_mean, coefficient_prior_standard_deviation, coefficient_proposal_standard_deviations, latent_position_prior_mean, latent_position_prior_standard_deviation, latent_position_proposal_standard_deviations, target_accept_rate, tollerance, update_size, seed, iterations, metropolis_iterations, total_number_of_tokens, iterations_before_t_i_p_updates, update_t_i_p_every_x_iterations, perform_adaptive_metropolis, slice_sample_every_x_iterations, slice_sample_step_size, parallel));
     return __result;
 END_RCPP
 }
@@ -325,8 +325,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // mh_to_convergence
-Rcpp::List mh_to_convergence(arma::vec author_indexes, arma::mat document_edge_matrix, arma::mat document_topic_counts, arma::vec topic_interaction_patterns, arma::vec intercepts, arma::mat coefficients, arma::cube latent_positions, arma::cube covariates, bool using_coefficients, double intercept_prior_mean, double intercept_prior_variance, arma::vec intercept_proposal_variances, double coefficient_prior_mean, double coefficient_prior_variance, arma::vec coefficient_proposal_variances, double latent_position_prior_mean, double latent_position_prior_variance, arma::vec latent_position_proposal_variances, double target_accept_rate, double tollerance, double update_size, int seed, int metropolis_iterations, int adaptive_metropolis_every_x_iterations, int stop_adaptive_metropolis_after_x_updates, int samples_to_store, int sample_every, int burnin);
-RcppExport SEXP CCAS_mh_to_convergence(SEXP author_indexesSEXP, SEXP document_edge_matrixSEXP, SEXP document_topic_countsSEXP, SEXP topic_interaction_patternsSEXP, SEXP interceptsSEXP, SEXP coefficientsSEXP, SEXP latent_positionsSEXP, SEXP covariatesSEXP, SEXP using_coefficientsSEXP, SEXP intercept_prior_meanSEXP, SEXP intercept_prior_varianceSEXP, SEXP intercept_proposal_variancesSEXP, SEXP coefficient_prior_meanSEXP, SEXP coefficient_prior_varianceSEXP, SEXP coefficient_proposal_variancesSEXP, SEXP latent_position_prior_meanSEXP, SEXP latent_position_prior_varianceSEXP, SEXP latent_position_proposal_variancesSEXP, SEXP target_accept_rateSEXP, SEXP tolleranceSEXP, SEXP update_sizeSEXP, SEXP seedSEXP, SEXP metropolis_iterationsSEXP, SEXP adaptive_metropolis_every_x_iterationsSEXP, SEXP stop_adaptive_metropolis_after_x_updatesSEXP, SEXP samples_to_storeSEXP, SEXP sample_everySEXP, SEXP burninSEXP) {
+Rcpp::List mh_to_convergence(arma::vec author_indexes, arma::mat document_edge_matrix, arma::mat document_topic_counts, arma::vec topic_interaction_patterns, arma::vec intercepts, arma::mat coefficients, arma::cube latent_positions, arma::cube covariates, bool using_coefficients, double intercept_prior_mean, double intercept_prior_standard_deviation, arma::vec intercept_proposal_standard_deviations, double coefficient_prior_mean, double coefficient_prior_standard_deviation, arma::vec coefficient_proposal_standard_deviations, double latent_position_prior_mean, double latent_position_prior_standard_deviation, arma::vec latent_position_proposal_standard_deviations, double target_accept_rate, double tollerance, double update_size, int seed, int metropolis_iterations, int adaptive_metropolis_every_x_iterations, int stop_adaptive_metropolis_after_x_updates, int samples_to_store, int sample_every, int burnin);
+RcppExport SEXP CCAS_mh_to_convergence(SEXP author_indexesSEXP, SEXP document_edge_matrixSEXP, SEXP document_topic_countsSEXP, SEXP topic_interaction_patternsSEXP, SEXP interceptsSEXP, SEXP coefficientsSEXP, SEXP latent_positionsSEXP, SEXP covariatesSEXP, SEXP using_coefficientsSEXP, SEXP intercept_prior_meanSEXP, SEXP intercept_prior_standard_deviationSEXP, SEXP intercept_proposal_standard_deviationsSEXP, SEXP coefficient_prior_meanSEXP, SEXP coefficient_prior_standard_deviationSEXP, SEXP coefficient_proposal_standard_deviationsSEXP, SEXP latent_position_prior_meanSEXP, SEXP latent_position_prior_standard_deviationSEXP, SEXP latent_position_proposal_standard_deviationsSEXP, SEXP target_accept_rateSEXP, SEXP tolleranceSEXP, SEXP update_sizeSEXP, SEXP seedSEXP, SEXP metropolis_iterationsSEXP, SEXP adaptive_metropolis_every_x_iterationsSEXP, SEXP stop_adaptive_metropolis_after_x_updatesSEXP, SEXP samples_to_storeSEXP, SEXP sample_everySEXP, SEXP burninSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
@@ -340,14 +340,14 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::cube >::type covariates(covariatesSEXP);
     Rcpp::traits::input_parameter< bool >::type using_coefficients(using_coefficientsSEXP);
     Rcpp::traits::input_parameter< double >::type intercept_prior_mean(intercept_prior_meanSEXP);
-    Rcpp::traits::input_parameter< double >::type intercept_prior_variance(intercept_prior_varianceSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type intercept_proposal_variances(intercept_proposal_variancesSEXP);
+    Rcpp::traits::input_parameter< double >::type intercept_prior_standard_deviation(intercept_prior_standard_deviationSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type intercept_proposal_standard_deviations(intercept_proposal_standard_deviationsSEXP);
     Rcpp::traits::input_parameter< double >::type coefficient_prior_mean(coefficient_prior_meanSEXP);
-    Rcpp::traits::input_parameter< double >::type coefficient_prior_variance(coefficient_prior_varianceSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type coefficient_proposal_variances(coefficient_proposal_variancesSEXP);
+    Rcpp::traits::input_parameter< double >::type coefficient_prior_standard_deviation(coefficient_prior_standard_deviationSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type coefficient_proposal_standard_deviations(coefficient_proposal_standard_deviationsSEXP);
     Rcpp::traits::input_parameter< double >::type latent_position_prior_mean(latent_position_prior_meanSEXP);
-    Rcpp::traits::input_parameter< double >::type latent_position_prior_variance(latent_position_prior_varianceSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type latent_position_proposal_variances(latent_position_proposal_variancesSEXP);
+    Rcpp::traits::input_parameter< double >::type latent_position_prior_standard_deviation(latent_position_prior_standard_deviationSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type latent_position_proposal_standard_deviations(latent_position_proposal_standard_deviationsSEXP);
     Rcpp::traits::input_parameter< double >::type target_accept_rate(target_accept_rateSEXP);
     Rcpp::traits::input_parameter< double >::type tollerance(tolleranceSEXP);
     Rcpp::traits::input_parameter< double >::type update_size(update_sizeSEXP);
@@ -358,7 +358,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type samples_to_store(samples_to_storeSEXP);
     Rcpp::traits::input_parameter< int >::type sample_every(sample_everySEXP);
     Rcpp::traits::input_parameter< int >::type burnin(burninSEXP);
-    __result = Rcpp::wrap(mh_to_convergence(author_indexes, document_edge_matrix, document_topic_counts, topic_interaction_patterns, intercepts, coefficients, latent_positions, covariates, using_coefficients, intercept_prior_mean, intercept_prior_variance, intercept_proposal_variances, coefficient_prior_mean, coefficient_prior_variance, coefficient_proposal_variances, latent_position_prior_mean, latent_position_prior_variance, latent_position_proposal_variances, target_accept_rate, tollerance, update_size, seed, metropolis_iterations, adaptive_metropolis_every_x_iterations, stop_adaptive_metropolis_after_x_updates, samples_to_store, sample_every, burnin));
+    __result = Rcpp::wrap(mh_to_convergence(author_indexes, document_edge_matrix, document_topic_counts, topic_interaction_patterns, intercepts, coefficients, latent_positions, covariates, using_coefficients, intercept_prior_mean, intercept_prior_standard_deviation, intercept_proposal_standard_deviations, coefficient_prior_mean, coefficient_prior_standard_deviation, coefficient_proposal_standard_deviations, latent_position_prior_mean, latent_position_prior_standard_deviation, latent_position_proposal_standard_deviations, target_accept_rate, tollerance, update_size, seed, metropolis_iterations, adaptive_metropolis_every_x_iterations, stop_adaptive_metropolis_after_x_updates, samples_to_store, sample_every, burnin));
     return __result;
 END_RCPP
 }

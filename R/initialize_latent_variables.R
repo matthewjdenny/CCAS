@@ -21,11 +21,11 @@ initialize_latent_variables <- function(CCAS_Object){
 
     # need to make these into vectors since they are only a single value
     # when they are used elsewhere
-    ipv <- rep(CCAS_Object@LSM_intercept_prior_variance,
+    ipv <- rep(CCAS_Object@LSM_intercept_prior_standard_deviation,
                CCAS_Object@interaction_patterns)
-    cpv <- rep(CCAS_Object@LSM_coefficient_prior_variance,
+    cpv <- rep(CCAS_Object@LSM_coefficient_prior_standard_deviation,
                CCAS_Object@interaction_patterns)
-    ppv <- rep(CCAS_Object@LSM_position_prior_variance,
+    ppv <- rep(CCAS_Object@LSM_position_prior_standard_deviation,
                CCAS_Object@interaction_patterns)
 
     # sample the new parameter values for these values
@@ -33,9 +33,9 @@ initialize_latent_variables <- function(CCAS_Object){
         intercepts,
         coefficients,
         latent_positions,
-        intercept_proposal_variances = ipv,
-        coefficient_proposal_variances = cpv,
-        latent_position_proposal_variances = ppv,
+        intercept_proposal_standard_deviations = ipv,
+        coefficient_proposal_standard_deviations = cpv,
+        latent_position_proposal_standard_deviations = ppv,
         using_coefficients)
 
     LSM_Params <- list(intercepts = params1[[1]],

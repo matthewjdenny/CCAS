@@ -203,11 +203,11 @@ namespace mjd {
             arma::mat coefficients,
             arma::cube latent_positions,
             double intercept_prior_mean,
-            double intercept_prior_variance,
+            double intercept_prior_standard_deviation,
             double coefficient_prior_mean,
-            double coefficient_prior_variance,
+            double coefficient_prior_standard_deviation,
             double latent_position_prior_mean,
-            double latent_position_prior_variance,
+            double latent_position_prior_standard_deviation,
             bool using_coefficients) {
 
         // get number of interaction patterns
@@ -233,11 +233,11 @@ namespace mjd {
         for (int i = 0; i < num_interaction_patterns; ++i) {
             // see https://svn.r-project.org/R/trunk/src/nmath/pnorm.c for source
             // code. First argument is the value we want to evaluate, second is prior
-            // mean, third is prior variance, fourth is whether function should
+            // mean, third is prior standard_deviation, fourth is whether function should
             // return the log probability (1), which is what we want.
             log_prior_probability += R::dnorm(intercepts[i],
                                               intercept_prior_mean,
-                                              intercept_prior_variance,
+                                              intercept_prior_standard_deviation,
                                               1);
         }
 
@@ -247,12 +247,12 @@ namespace mjd {
                 for (int j = 0; j < num_coefficients; ++j) {
                     // see https://svn.r-project.org/R/trunk/src/nmath/pnorm.c for
                     // source code. First argument is the value we want to evaluate,
-                    // second is prior mean, third is prior variance, fourth is
+                    // second is prior mean, third is prior standard_deviation, fourth is
                     // whether function should return the log probability (1), which
                     // is what we want.
                     log_prior_probability += R::dnorm(coefficients(i,j),
                                                       coefficient_prior_mean,
-                                                      coefficient_prior_variance,
+                                                      coefficient_prior_standard_deviation,
                                                       1);
                 }
             }
@@ -264,12 +264,12 @@ namespace mjd {
                 for (int k = 0; k < num_latent_dimensions; ++k) {
                     // see https://svn.r-project.org/R/trunk/src/nmath/pnorm.c for
                     // source code. First argument is the value we want to evaluate,
-                    // second is prior mean, third is prior variance, fourth is
+                    // second is prior mean, third is prior standard_deviation, fourth is
                     // whether function should return the log probability (1), which
                     // is what we want.
                     log_prior_probability += R::dnorm(latent_positions(i,j,k),
                                                       latent_position_prior_mean,
-                                                      latent_position_prior_variance,
+                                                      latent_position_prior_standard_deviation,
                                                       1);
                 }
             }
@@ -286,9 +286,9 @@ namespace mjd {
         arma::vec intercepts,
         arma::mat coefficients,
         arma::cube latent_positions,
-        arma::vec intercept_proposal_variances,
-        arma::vec coefficient_proposal_variances,
-        arma::vec latent_position_proposal_variances,
+        arma::vec intercept_proposal_standard_deviations,
+        arma::vec coefficient_proposal_standard_deviations,
+        arma::vec latent_position_proposal_standard_deviations,
         bool using_coefficients) {
 
         // get number of interaction patterns
@@ -320,9 +320,9 @@ namespace mjd {
         for (int i = 0; i < num_interaction_patterns; ++i) {
             // see https://svn.r-project.org/R/trunk/src/nmath/rnorm.c for source
             // code. First argument is the mean of the normal distribution we
-            // are sampling from and second is its variance.
+            // are sampling from and second is its standard_deviation.
             proposed_intercepts[i]= R::rnorm(intercepts[i],
-                                              intercept_proposal_variances[i]);
+                                              intercept_proposal_standard_deviations[i]);
         }
 
         // if we are using coefficients, sample new coefficients centered at
@@ -332,9 +332,9 @@ namespace mjd {
                 for (int j = 0; j < num_coefficients; ++j) {
                     // see https://svn.r-project.org/R/trunk/src/nmath/rnorm.c for source
                     // code. First argument is the mean of the normal distribution we
-                    // are sampling from and second is its variance.
+                    // are sampling from and second is its standard_deviation.
                     proposed_coefficients(i,j) += R::rnorm(coefficients(i,j),
-                                                    coefficient_proposal_variances[i]);
+                                                    coefficient_proposal_standard_deviations[i]);
                 }
             }
         }
@@ -345,10 +345,10 @@ namespace mjd {
                 for (int k = 0; k < num_latent_dimensions; ++k) {
                     // see https://svn.r-project.org/R/trunk/src/nmath/rnorm.c for source
                     // code. First argument is the mean of the normal distribution we
-                    // are sampling from and second is its variance.
+                    // are sampling from and second is its standard_deviation.
                     proposed_latent_positions(i,j,k) = R::rnorm(
                         latent_positions(i,j,k),
-                        latent_position_proposal_variances[i]);
+                        latent_position_proposal_standard_deviations[i]);
                 }
             }
         }
@@ -836,14 +836,14 @@ namespace mjd {
             arma::cube covariates,
             bool using_coefficients,
             double intercept_prior_mean,
-            double intercept_prior_variance,
-            arma::vec intercept_proposal_variances,
+            double intercept_prior_standard_deviation,
+            arma::vec intercept_proposal_standard_deviations,
             double coefficient_prior_mean,
-            double coefficient_prior_variance,
-            arma::vec coefficient_proposal_variances,
+            double coefficient_prior_standard_deviation,
+            arma::vec coefficient_proposal_standard_deviations,
             double latent_position_prior_mean,
-            double latent_position_prior_variance,
-            arma::vec latent_position_proposal_variances,
+            double latent_position_prior_standard_deviation,
+            arma::vec latent_position_proposal_standard_deviations,
             double random_number,
             arma::cube edge_probabilities) {
 
@@ -857,9 +857,9 @@ namespace mjd {
             intercepts,
             coefficients,
             latent_positions,
-            intercept_proposal_variances,
-            coefficient_proposal_variances,
-            latent_position_proposal_variances,
+            intercept_proposal_standard_deviations,
+            coefficient_proposal_standard_deviations,
+            latent_position_proposal_standard_deviations,
             using_coefficients);
 
         // allocate the appropriate objects out of the list returned above
@@ -874,11 +874,11 @@ namespace mjd {
             coefficients,
             latent_positions,
             intercept_prior_mean,
-            intercept_prior_variance,
+            intercept_prior_standard_deviation,
             coefficient_prior_mean,
-            coefficient_prior_variance,
+            coefficient_prior_standard_deviation,
             latent_position_prior_mean,
-            latent_position_prior_variance,
+            latent_position_prior_standard_deviation,
             using_coefficients);
 
         // get the log prior probability of the proposed interaction pattern
@@ -888,11 +888,11 @@ namespace mjd {
             proposed_coefficients,
             proposed_latent_positions,
             intercept_prior_mean,
-            intercept_prior_variance,
+            intercept_prior_standard_deviation,
             coefficient_prior_mean,
-            coefficient_prior_variance,
+            coefficient_prior_standard_deviation,
             latent_position_prior_mean,
-            latent_position_prior_variance,
+            latent_position_prior_standard_deviation,
             using_coefficients);
 
         // allocate variables outside of loop.
@@ -1160,9 +1160,9 @@ namespace mjd {
     // ***********************************************************************//
 
     Rcpp::List adaptive_metropolis(
-            arma::vec intercept_proposal_variances,
-            arma::vec coefficient_proposal_variances,
-            arma::vec latent_position_proposal_variances,
+            arma::vec intercept_proposal_standard_deviations,
+            arma::vec coefficient_proposal_standard_deviations,
+            arma::vec latent_position_proposal_standard_deviations,
             arma::vec accept_rates,
             double target_accept_rate,
             double tollerance,
@@ -1172,35 +1172,35 @@ namespace mjd {
             accept_rates.t() << std::endl;
 
         // get number of interaction patterns
-        int number_of_interaction_patterns = intercept_proposal_variances.n_elem;
+        int number_of_interaction_patterns = intercept_proposal_standard_deviations.n_elem;
 
         // loop over interaction patterns
         for (int i = 0; i < number_of_interaction_patterns; ++i) {
             if (accept_rates[i] < (target_accept_rate - tollerance)) {
                 // for now, we just want to make sure we do not go below zero
-                double floor = intercept_proposal_variances[i] - update_size;
+                double floor = intercept_proposal_standard_deviations[i] - update_size;
 
-                // only update if it will not make proposal variance negative
+                // only update if it will not make proposal standard_deviation negative
                 if (floor > 0) {
-                    intercept_proposal_variances[i] -= update_size;
-                    coefficient_proposal_variances[i] -= update_size;
-                    latent_position_proposal_variances[i] -= update_size;
+                    intercept_proposal_standard_deviations[i] -= update_size;
+                    coefficient_proposal_standard_deviations[i] -= update_size;
+                    latent_position_proposal_standard_deviations[i] -= update_size;
                 }
             }
             if (accept_rates[i] > (target_accept_rate + tollerance)) {
-                intercept_proposal_variances[i] += update_size;
-                coefficient_proposal_variances[i] += update_size;
-                latent_position_proposal_variances[i] += update_size;
+                intercept_proposal_standard_deviations[i] += update_size;
+                coefficient_proposal_standard_deviations[i] += update_size;
+                latent_position_proposal_standard_deviations[i] += update_size;
             }
         }
 
-        Rcpp::Rcout << "New Proposal Variances: " << std::endl <<
-            intercept_proposal_variances.t() << std::endl;
+        Rcpp::Rcout << "New Proposal standard_deviations: " << std::endl <<
+            intercept_proposal_standard_deviations.t() << std::endl;
 
         Rcpp::List ret_list(3);
-        ret_list[0] = intercept_proposal_variances;
-        ret_list[1] = coefficient_proposal_variances;
-        ret_list[2] = latent_position_proposal_variances;
+        ret_list[0] = intercept_proposal_standard_deviations;
+        ret_list[1] = coefficient_proposal_standard_deviations;
+        ret_list[2] = latent_position_proposal_standard_deviations;
 
         return ret_list;
     }
@@ -1355,14 +1355,14 @@ namespace mjd {
             arma::vec beta_n,
             bool using_coefficients,
             double intercept_prior_mean,
-            double intercept_prior_variance,
-            arma::vec intercept_proposal_variances,
+            double intercept_prior_standard_deviation,
+            arma::vec intercept_proposal_standard_deviations,
             double coefficient_prior_mean,
-            double coefficient_prior_variance,
-            arma::vec coefficient_proposal_variances,
+            double coefficient_prior_standard_deviation,
+            arma::vec coefficient_proposal_standard_deviations,
             double latent_position_prior_mean,
-            double latent_position_prior_variance,
-            arma::vec latent_position_proposal_variances,
+            double latent_position_prior_standard_deviation,
+            arma::vec latent_position_proposal_standard_deviations,
             double target_accept_rate,
             double tollerance,
             double update_size,
@@ -1387,7 +1387,7 @@ namespace mjd {
         // allocated global variables
         int t_i_p_update_counter = 0;
         int slice_sample_counter = 0;
-        int num_interaction_patterns = intercept_proposal_variances.n_elem;
+        int num_interaction_patterns = intercept_proposal_standard_deviations.n_elem;
         int num_topics = topic_interaction_patterns.n_elem;
         int num_actors = document_edge_matrix.n_cols;
         int num_latent_dimensions = latent_positions.n_slices;
@@ -1544,9 +1544,9 @@ namespace mjd {
                 // boolean
                 if (perform_adaptive_metropolis) {
                     Rcpp::List am_updates =  adaptive_metropolis(
-                            intercept_proposal_variances,
-                            coefficient_proposal_variances,
-                            latent_position_proposal_variances,
+                            intercept_proposal_standard_deviations,
+                            coefficient_proposal_standard_deviations,
+                            latent_position_proposal_standard_deviations,
                             accept_rates,
                             target_accept_rate,
                             tollerance,
@@ -1556,11 +1556,11 @@ namespace mjd {
                     // Rcpp List, then assign everything to the appropriate
                     // vectors.
                     arma::vec temp = am_updates[0];
-                    intercept_proposal_variances = temp;
+                    intercept_proposal_standard_deviations = temp;
                     arma::vec temp2 = am_updates[1];
-                    coefficient_proposal_variances = temp2;
+                    coefficient_proposal_standard_deviations = temp2;
                     arma::vec temp3 = am_updates[2];
-                    latent_position_proposal_variances = temp3;
+                    latent_position_proposal_standard_deviations = temp3;
 
                 }// end of conditional for whether we perform adaptive MH
             }// end of conditional checking to see if we are past the first update.
@@ -1582,14 +1582,14 @@ namespace mjd {
                         covariates,
                         using_coefficients,
                         intercept_prior_mean,
-                        intercept_prior_variance,
-                        intercept_proposal_variances,
+                        intercept_prior_standard_deviation,
+                        intercept_proposal_standard_deviations,
                         coefficient_prior_mean,
-                        coefficient_prior_variance,
-                        coefficient_proposal_variances,
+                        coefficient_prior_standard_deviation,
+                        coefficient_proposal_standard_deviations,
                         latent_position_prior_mean,
-                        latent_position_prior_variance,
-                        latent_position_proposal_variances,
+                        latent_position_prior_standard_deviation,
+                        latent_position_proposal_standard_deviations,
                         random_number,
                         edge_probabilities);
 
@@ -1669,7 +1669,7 @@ namespace mjd {
         ret_list[6] = topic_token_counts;
         ret_list[7] = token_topic_assignments;
         ret_list[8] = store_accept_rates;
-        ret_list[9] = intercept_proposal_variances;
+        ret_list[9] = intercept_proposal_standard_deviations;
         ret_list[10] = store_LDA_ll;
         // return everything
         return ret_list;
@@ -1846,14 +1846,14 @@ namespace mjd {
             arma::cube covariates,
             bool using_coefficients,
             double intercept_prior_mean,
-            double intercept_prior_variance,
-            arma::vec intercept_proposal_variances,
+            double intercept_prior_standard_deviation,
+            arma::vec intercept_proposal_standard_deviations,
             double coefficient_prior_mean,
-            double coefficient_prior_variance,
-            arma::vec coefficient_proposal_variances,
+            double coefficient_prior_standard_deviation,
+            arma::vec coefficient_proposal_standard_deviations,
             double latent_position_prior_mean,
-            double latent_position_prior_variance,
-            arma::vec latent_position_proposal_variances,
+            double latent_position_prior_standard_deviation,
+            arma::vec latent_position_proposal_standard_deviations,
             double target_accept_rate,
             double tollerance,
             double update_size,
@@ -1873,7 +1873,7 @@ namespace mjd {
         // double rand_num = uniform_distribution(generator);
 
         // allocated global variables
-        int num_interaction_patterns = intercept_proposal_variances.n_elem;
+        int num_interaction_patterns = intercept_proposal_standard_deviations.n_elem;
         int num_actors = document_edge_matrix.n_cols;
         int num_latent_dimensions = latent_positions.n_slices;
         int adaptive_MH_counter = 0;
@@ -1946,14 +1946,14 @@ namespace mjd {
                 covariates,
                 using_coefficients,
                 intercept_prior_mean,
-                intercept_prior_variance,
-                intercept_proposal_variances,
+                intercept_prior_standard_deviation,
+                intercept_proposal_standard_deviations,
                 coefficient_prior_mean,
-                coefficient_prior_variance,
-                coefficient_proposal_variances,
+                coefficient_prior_standard_deviation,
+                coefficient_proposal_standard_deviations,
                 latent_position_prior_mean,
-                latent_position_prior_variance,
-                latent_position_proposal_variances,
+                latent_position_prior_standard_deviation,
+                latent_position_proposal_standard_deviations,
                 random_number,
                 edge_probabilities);
 
@@ -1990,9 +1990,9 @@ namespace mjd {
                     }
 
                     Rcpp::List am_updates =  adaptive_metropolis(
-                        intercept_proposal_variances,
-                        coefficient_proposal_variances,
-                        latent_position_proposal_variances,
+                        intercept_proposal_standard_deviations,
+                        coefficient_proposal_standard_deviations,
+                        latent_position_proposal_standard_deviations,
                         accept_rates,
                         target_accept_rate,
                         tollerance,
@@ -2002,11 +2002,11 @@ namespace mjd {
                     // Rcpp List, then assign everything to the appropriate
                     // vectors.
                     arma::vec temp = am_updates[0];
-                    intercept_proposal_variances = temp;
+                    intercept_proposal_standard_deviations = temp;
                     arma::vec temp2 = am_updates[1];
-                    coefficient_proposal_variances = temp2;
+                    coefficient_proposal_standard_deviations = temp2;
                     arma::vec temp3 = am_updates[2];
-                    latent_position_proposal_variances = temp3;
+                    latent_position_proposal_standard_deviations = temp3;
 
                     // increment the total number of updates we do before
                     // stopping
@@ -2071,7 +2071,7 @@ namespace mjd {
         ret_list[1] = store_coefficients;
         ret_list[2] = store_latent_positions;
         ret_list[3] = store_accept_or_reject;
-        ret_list[4] = intercept_proposal_variances;
+        ret_list[4] = intercept_proposal_standard_deviations;
         // return everything
         return ret_list;
     }
@@ -2169,11 +2169,11 @@ double ppipp(arma::vec intercepts,
           arma::mat coefficients,
           arma::cube latent_positions,
           double intercept_prior_mean,
-          double intercept_prior_variance,
+          double intercept_prior_standard_deviation,
           double coefficient_prior_mean,
-          double coefficient_prior_variance,
+          double coefficient_prior_standard_deviation,
           double latent_position_prior_mean,
-          double latent_position_prior_variance,
+          double latent_position_prior_standard_deviation,
           bool using_coefficients){
 
     // we have to do this stupid trick to pass in 3d arrays from R. We pass in as
@@ -2187,11 +2187,11 @@ double ppipp(arma::vec intercepts,
         coefficients,
         latent_positions,
         intercept_prior_mean,
-        intercept_prior_variance,
+        intercept_prior_standard_deviation,
         coefficient_prior_mean,
-        coefficient_prior_variance,
+        coefficient_prior_standard_deviation,
         latent_position_prior_mean,
-        latent_position_prior_variance,
+        latent_position_prior_standard_deviation,
         using_coefficients);
 
     return log_prob;
@@ -2201,18 +2201,18 @@ double ppipp(arma::vec intercepts,
 List snipp(arma::vec intercepts,
           arma::mat coefficients,
           arma::cube latent_positions,
-          arma::vec intercept_proposal_variances,
-          arma::vec coefficient_proposal_variances,
-          arma::vec latent_position_proposal_variances,
+          arma::vec intercept_proposal_standard_deviations,
+          arma::vec coefficient_proposal_standard_deviations,
+          arma::vec latent_position_proposal_standard_deviations,
           bool using_coefficients){
 
     List new_params = mjd::sample_new_interaction_pattern_parameters (
         intercepts,
         coefficients,
         latent_positions,
-        intercept_proposal_variances,
-        coefficient_proposal_variances,
-        latent_position_proposal_variances,
+        intercept_proposal_standard_deviations,
+        coefficient_proposal_standard_deviations,
+        latent_position_proposal_standard_deviations,
         using_coefficients);
 
     return new_params;
@@ -2361,14 +2361,14 @@ List uipp(arma::vec author_indexes,
           arma::cube covariates,
           bool using_coefficients,
           double intercept_prior_mean,
-          double intercept_prior_variance,
-          arma::vec intercept_proposal_variances,
+          double intercept_prior_standard_deviation,
+          arma::vec intercept_proposal_standard_deviations,
           double coefficient_prior_mean,
-          double coefficient_prior_variance,
-          arma::vec coefficient_proposal_variances,
+          double coefficient_prior_standard_deviation,
+          arma::vec coefficient_proposal_standard_deviations,
           double latent_position_prior_mean,
-          double latent_position_prior_variance,
-          arma::vec latent_position_proposal_variances,
+          double latent_position_prior_standard_deviation,
+          arma::vec latent_position_proposal_standard_deviations,
           double random_number,
           arma::cube edge_probabilities){
 
@@ -2384,14 +2384,14 @@ List uipp(arma::vec author_indexes,
             covariates,
             using_coefficients,
             intercept_prior_mean,
-            intercept_prior_variance,
-            intercept_proposal_variances,
+            intercept_prior_standard_deviation,
+            intercept_proposal_standard_deviations,
             coefficient_prior_mean,
-            coefficient_prior_variance,
-            coefficient_proposal_variances,
+            coefficient_prior_standard_deviation,
+            coefficient_proposal_standard_deviations,
             latent_position_prior_mean,
-            latent_position_prior_variance,
-            latent_position_proposal_variances,
+            latent_position_prior_standard_deviation,
+            latent_position_proposal_standard_deviations,
             random_number,
             edge_probabilities);
 
@@ -2433,18 +2433,18 @@ arma::vec utipa(arma::vec author_indexes,
 
 
 // [[Rcpp::export]]
-List am(arma::vec intercept_proposal_variances,
-        arma::vec coefficient_proposal_variances,
-        arma::vec latent_position_proposal_variances,
+List am(arma::vec intercept_proposal_standard_deviations,
+        arma::vec coefficient_proposal_standard_deviations,
+        arma::vec latent_position_proposal_standard_deviations,
         arma::vec accept_rates,
         double target_accept_rate,
         double tollerance,
         double update_size){
 
     List ret_list = mjd::adaptive_metropolis(
-            intercept_proposal_variances,
-            coefficient_proposal_variances,
-            latent_position_proposal_variances,
+            intercept_proposal_standard_deviations,
+            coefficient_proposal_standard_deviations,
+            latent_position_proposal_standard_deviations,
             accept_rates,
             target_accept_rate,
             tollerance,
@@ -2471,14 +2471,14 @@ List model_inference(arma::vec author_indexes,
                      arma::vec beta_n,
                      bool using_coefficients,
                      double intercept_prior_mean,
-                     double intercept_prior_variance,
-                     arma::vec intercept_proposal_variances,
+                     double intercept_prior_standard_deviation,
+                     arma::vec intercept_proposal_standard_deviations,
                      double coefficient_prior_mean,
-                     double coefficient_prior_variance,
-                     arma::vec coefficient_proposal_variances,
+                     double coefficient_prior_standard_deviation,
+                     arma::vec coefficient_proposal_standard_deviations,
                      double latent_position_prior_mean,
-                     double latent_position_prior_variance,
-                     arma::vec latent_position_proposal_variances,
+                     double latent_position_prior_standard_deviation,
+                     arma::vec latent_position_proposal_standard_deviations,
                      double target_accept_rate,
                      double tollerance,
                      double update_size,
@@ -2510,14 +2510,14 @@ List model_inference(arma::vec author_indexes,
         beta_n,
         using_coefficients,
         intercept_prior_mean,
-        intercept_prior_variance,
-        intercept_proposal_variances,
+        intercept_prior_standard_deviation,
+        intercept_proposal_standard_deviations,
         coefficient_prior_mean,
-        coefficient_prior_variance,
-        coefficient_proposal_variances,
+        coefficient_prior_standard_deviation,
+        coefficient_proposal_standard_deviations,
         latent_position_prior_mean,
-        latent_position_prior_variance,
-        latent_position_proposal_variances,
+        latent_position_prior_standard_deviation,
+        latent_position_proposal_standard_deviations,
         target_accept_rate,
         tollerance,
         update_size,
@@ -2576,14 +2576,14 @@ Rcpp::List mh_to_convergence(
         arma::cube covariates,
         bool using_coefficients,
         double intercept_prior_mean,
-        double intercept_prior_variance,
-        arma::vec intercept_proposal_variances,
+        double intercept_prior_standard_deviation,
+        arma::vec intercept_proposal_standard_deviations,
         double coefficient_prior_mean,
-        double coefficient_prior_variance,
-        arma::vec coefficient_proposal_variances,
+        double coefficient_prior_standard_deviation,
+        arma::vec coefficient_proposal_standard_deviations,
         double latent_position_prior_mean,
-        double latent_position_prior_variance,
-        arma::vec latent_position_proposal_variances,
+        double latent_position_prior_standard_deviation,
+        arma::vec latent_position_proposal_standard_deviations,
         double target_accept_rate,
         double tollerance,
         double update_size,
@@ -2606,14 +2606,14 @@ Rcpp::List mh_to_convergence(
         covariates,
         using_coefficients,
         intercept_prior_mean,
-        intercept_prior_variance,
-        intercept_proposal_variances,
+        intercept_prior_standard_deviation,
+        intercept_proposal_standard_deviations,
         coefficient_prior_mean,
-        coefficient_prior_variance,
-        coefficient_proposal_variances,
+        coefficient_prior_standard_deviation,
+        coefficient_proposal_standard_deviations,
         latent_position_prior_mean,
-        latent_position_prior_variance,
-        latent_position_proposal_variances,
+        latent_position_prior_standard_deviation,
+        latent_position_proposal_standard_deviations,
         target_accept_rate,
         tollerance,
         update_size,

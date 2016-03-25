@@ -201,16 +201,16 @@ ccas <- function(formula,
                                       LSM_coefficient_prior_mean)
 
     # initialize vectors of proposal variances
-    CCAS_Object@LSM_intercept_proposal_variance <- rep(
-        LSM_intercept_proposal_variance,
+    CCAS_Object@LSM_intercept_proposal_standard_deviation <- rep(
+        sqrt(LSM_intercept_proposal_variance),
         interaction_patterns
     )
-    CCAS_Object@LSM_position_proposal_variance <- rep(
-        LSM_position_proposal_variance,
+    CCAS_Object@LSM_position_proposal_standard_deviation <- rep(
+        sqrt(LSM_position_proposal_variance),
         interaction_patterns
     )
-    CCAS_Object@LSM_coefficient_proposal_variance <- rep(
-        LSM_coefficient_proposal_variance,
+    CCAS_Object@LSM_coefficient_proposal_standard_deviation <- rep(
+        sqrt(LSM_coefficient_proposal_variance),
         interaction_patterns
     )
 
@@ -245,14 +245,14 @@ ccas <- function(formula,
         CCAS_Object@beta_n,
         CCAS_Object@ComNet_Object@using_covariates,
         CCAS_Object@LSM_intercept_prior_mean,
-        CCAS_Object@LSM_intercept_prior_variance,
-        CCAS_Object@LSM_intercept_proposal_variance,
+        CCAS_Object@LSM_intercept_prior_standard_deviation,
+        CCAS_Object@LSM_intercept_proposal_standard_deviation,
         CCAS_Object@LSM_coefficient_prior_mean,
-        CCAS_Object@LSM_coefficient_prior_variance,
-        CCAS_Object@LSM_coefficient_proposal_variance,
+        CCAS_Object@LSM_coefficient_prior_standard_deviation,
+        CCAS_Object@LSM_coefficient_proposal_standard_deviation,
         CCAS_Object@LSM_position_prior_mean,
-        CCAS_Object@LSM_position_prior_variance,
-        CCAS_Object@LSM_position_proposal_variance,
+        CCAS_Object@LSM_position_prior_standard_deviation,
+        CCAS_Object@LSM_position_proposal_standard_deviation,
         CCAS_Object@target_accept_rate,
         CCAS_Object@tolerance,
         CCAS_Object@adaptive_metropolis_update_size,
@@ -272,7 +272,7 @@ ccas <- function(formula,
                          coefficients = Inference_Results[[3]],
                          latent_positions = Inference_Results[[4]],
                          accept_rates = Inference_Results[[9]],
-                         final_proposal_variances = Inference_Results[[10]])
+                         final_proposal_standard_deviations = Inference_Results[[10]])
 
     Topic_Model_Results <- list(topic_interaction_patterns = Inference_Results[[1]],
                          document_topic_counts = Inference_Results[[5]],
@@ -331,14 +331,14 @@ ccas <- function(formula,
         CCAS_Object@covariate_array,
         CCAS_Object@ComNet_Object@using_covariates,
         CCAS_Object@LSM_intercept_prior_mean,
-        CCAS_Object@LSM_intercept_prior_variance,
-        CCAS_Object@MCMC_output$final_proposal_variances,
+        CCAS_Object@LSM_intercept_prior_standard_deviation,
+        CCAS_Object@MCMC_output$final_proposal_standard_deviations,
         CCAS_Object@LSM_coefficient_prior_mean,
-        CCAS_Object@LSM_coefficient_prior_variance,
-        CCAS_Object@MCMC_output$final_proposal_variances,
+        CCAS_Object@LSM_coefficient_prior_standard_deviation,
+        CCAS_Object@MCMC_output$final_proposal_standard_deviations,
         CCAS_Object@LSM_position_prior_mean,
-        CCAS_Object@LSM_position_prior_variance,
-        CCAS_Object@MCMC_output$final_proposal_variances,
+        CCAS_Object@LSM_position_prior_standard_deviation,
+        CCAS_Object@MCMC_output$final_proposal_standard_deviations,
         CCAS_Object@target_accept_rate,
         CCAS_Object@tolerance,
         CCAS_Object@adaptive_metropolis_update_size,
@@ -355,7 +355,7 @@ ccas <- function(formula,
     CCAS_Object@MCMC_output$intercepts = final_mh_results[[1]]
     CCAS_Object@MCMC_output$coefficients = final_mh_results[[2]]
     CCAS_Object@MCMC_output$latent_positions = final_mh_results[[3]]
-    CCAS_Object@MCMC_output$final_proposal_variances = final_mh_results[[4]]
+    CCAS_Object@MCMC_output$final_proposal_standard_deviations = final_mh_results[[4]]
 
     cat("\n##############################\n\n")
     cat("Generating Diagnostic Plots...\n\n")

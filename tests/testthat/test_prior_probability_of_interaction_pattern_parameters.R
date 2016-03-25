@@ -15,11 +15,11 @@ test_that("That calculating prior probs of interaction pattern params works", {
         coefficients = coefficients,
         latent_positions = latent_pos,
         intercept_prior_mean = 0,
-        intercept_prior_variance = 4,
+        intercept_prior_standard_deviation = 4,
         coefficient_prior_mean = 0,
-        coefficient_prior_variance = 4,
+        coefficient_prior_standard_deviation = 4,
         latent_position_prior_mean = 0,
-        latent_position_prior_variance = 4,
+        latent_position_prior_standard_deviation = 4,
         using_coefficients = FALSE)
 
     # no errors need to write an analytical test in R at some point
@@ -37,11 +37,11 @@ test_that("That calculating prior probs of interaction pattern params works", {
         coefficients = coefficients,
         latent_positions = latent_pos,
         intercept_prior_mean = 0,
-        intercept_prior_variance = 4,
+        intercept_prior_standard_deviation = 4,
         coefficient_prior_mean = 0,
-        coefficient_prior_variance = 4,
+        coefficient_prior_standard_deviation = 4,
         latent_position_prior_mean = 0,
-        latent_position_prior_variance = 4,
+        latent_position_prior_standard_deviation = 4,
         using_coefficients = TRUE)
 
 })

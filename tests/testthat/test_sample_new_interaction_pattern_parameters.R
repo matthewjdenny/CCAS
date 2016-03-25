@@ -14,9 +14,9 @@ test_that("That sampling new interaction pattern params works", {
         intercepts = intercepts,
         coefficients = coefficients,
         latent_positions = latent_pos,
-        intercept_proposal_variances = c(0.5,0.5,0.5,0.5),
-        coefficient_proposal_variances = c(0.5,0.5,0.5,0.5),
-        latent_position_proposal_variances = c(0.5,0.5,0.5,0.5),
+        intercept_proposal_standard_deviations = c(0.5,0.5,0.5,0.5),
+        coefficient_proposal_standard_deviations = c(0.5,0.5,0.5,0.5),
+        latent_position_proposal_standard_deviations = c(0.5,0.5,0.5,0.5),
         using_coefficients = FALSE)
 
     # no errors, we should write a Monte Carlo test here against an R version
@@ -27,9 +27,9 @@ test_that("That sampling new interaction pattern params works", {
         intercepts = intercepts,
         coefficients = coefficients,
         latent_positions = latent_pos,
-        intercept_proposal_variances = c(0.5,0.5,0.5,0.5),
-        coefficient_proposal_variances = c(0.5,0.5,0.5,0.5),
-        latent_position_proposal_variances = c(0.5,0.5,0.5,0.5),
+        intercept_proposal_standard_deviations = c(0.5,0.5,0.5,0.5),
+        coefficient_proposal_standard_deviations = c(0.5,0.5,0.5,0.5),
+        latent_position_proposal_standard_deviations = c(0.5,0.5,0.5,0.5),
         using_coefficients = TRUE)
 
 })

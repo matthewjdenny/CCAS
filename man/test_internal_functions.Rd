@@ -24,11 +24,14 @@ test_internal_functions(Test_Log_Space_Multinomial_Sampler = FALSE,
   current_token_topic_assignment = NULL,
   current_document_topic_counts = NULL, leave_out_current_token = NULL,
   topic_interaction_patterns = NULL, leave_out_topic = NULL,
-  intercept_prior_mean = NULL, intercept_prior_variance = NULL,
-  intercept_proposal_variances = NULL, coefficient_prior_mean = NULL,
-  coefficient_prior_variance = NULL, coefficient_proposal_variances = NULL,
-  latent_position_prior_mean = NULL, latent_position_prior_variance = NULL,
-  latent_position_proposal_variances = NULL, topic = NULL,
+  intercept_prior_mean = NULL, intercept_prior_standard_deviation = NULL,
+  intercept_proposal_standard_deviations = NULL,
+  coefficient_prior_mean = NULL,
+  coefficient_prior_standard_deviation = NULL,
+  coefficient_proposal_standard_deviations = NULL,
+  latent_position_prior_mean = NULL,
+  latent_position_prior_standard_deviation = NULL,
+  latent_position_proposal_standard_deviations = NULL, topic = NULL,
   document_edge_values = NULL, word_type_topic_counts = NULL,
   topic_token_counts = NULL, current_word_type = NULL, alpha_m = NULL,
   beta_n = NULL, beta = NULL, rand_num = NULL, author_indexes = NULL,
@@ -60,16 +63,17 @@ leave_out_topic must be provided.}
 
 \item{Test_Prior_Pobability_Of_I_P_Params}{Defaults to FALSE. If TRUE, then
 optional arguments intercepts, coefficients, latent_pos, intercept_prior_mean,
-intercept_prior_variance, coefficient_prior_mean, coefficient_prior_variance,
-latent_position_prior_mean, latent_position_prior_variance,
-using_coefficients must be provided.}
+intercept_prior_standard_deviation, coefficient_prior_mean,
+coefficient_prior_standard_deviation, latent_position_prior_mean,
+latent_position_prior_standard_deviation, using_coefficients must be
+provided.}
 
 \item{Test_Sample_New_I_P_Parameters}{Defaults to FALSE. If TRUE, then
 optional  arguments intercepts, coefficients, latent_pos,
-intercept_proposal_variances, coefficient_proposal_variances,
-latent_position_proposal_variances, (all of which must be of length = number
-of interaction patterns, and should all be equal) using_coefficients must be
-provided.}
+intercept_proposal_standard_deviations, coefficient_proposal_standard_deviations,
+latent_position_proposal_standard_deviations, (all of which must be of
+length = number of interaction patterns, and should all be equal)
+using_coefficients must be provided.}
 
 \item{Test_LSM_Contribution}{Defaults to FALSE. If TRUE, then optional
 arguments edge_probs, tokens_in_document, topic,
@@ -101,11 +105,12 @@ equal to the total number of tokens in the corpus.}
 then optional arguments author_indexes, document_edge_matrix,
 document_topic_counts, topic_interaction_patterns, intercepts, coefficients,
 latent_pos, covars, using_coefficients, intercept_prior_mean,
-intercept_prior_variance, intercept_proposal_variances,
-coefficient_prior_mean, coefficient_prior_variance,
-coefficient_proposal_variances, latent_position_prior_mean,
-latent_position_prior_variance, latent_position_proposal_variances, rand_num,
-edge_probs must be provided.}
+intercept_prior_standard_deviation, intercept_proposal_standard_deviations,
+coefficient_prior_mean, coefficient_prior_standard_deviation,
+coefficient_proposal_standard_deviations, latent_position_prior_mean,
+latent_position_prior_standard_deviation,
+latent_position_proposal_standard_deviations, rand_num, edge_probs must be
+provided.}
 
 \item{Test_Update_Topic_Interaction_Pattern_Assignments}{Defaults to FALSE.
 If TRUE, then optional arguments author_indexes, document_edge_matrix,
@@ -114,19 +119,23 @@ latent_pos, covars, using_coefficients, random_numbers, edge_probs must be
 provided.}
 
 \item{Test_Adaptive_Metropolis}{Defaults to FALSE. If TRUE, then optional
-arguments intercept_proposal_variances, coefficient_proposal_variances,
-latent_position_proposal_variances, accept_rates, target_accept_rate,
+arguments intercept_proposal_standard_deviations,
+coefficient_proposal_standard_deviations,
+latent_position_proposal_standard_deviations,
+accept_rates, target_accept_rate,
 tollerance, update_size must be provided.}
 
 \item{Test_Inference}{If TRUE, then optional arguments author_indexes,
 document_edge_matrix, document_topic_counts, topic_interaction_patterns,
 word_type_topic_counts, topic_token_counts, token_topic_assignments,
 token_word_types, intercepts, coefficients, latent_pos, covars, alpha_m,
-beta_n, using_coefficients, intercept_prior_mean, intercept_prior_variance,
-intercept_proposal_variances, coefficient_prior_mean,
-coefficient_prior_variance, coefficient_proposal_variances,
-latent_position_prior_mean, latent_position_prior_variance,
-latent_position_proposal_variances, target_accept_rate, tollerance,
+beta_n, using_coefficients, intercept_prior_mean,
+intercept_prior_standard_deviation,
+intercept_proposal_standard_deviations, coefficient_prior_mean,
+coefficient_prior_standard_deviation,
+coefficient_proposal_standard_deviations,
+latent_position_prior_mean, latent_position_prior_standard_deviation,
+latent_position_proposal_standard_deviations, target_accept_rate, tollerance,
 update_size, seed, iterations, metropolis_iterations, total_number_of_tokens,
 iterations_before_t_i_p_updates, update_t_i_p_every_x_iterations,
 perform_adaptive_metropolis must be provided.}
@@ -173,21 +182,21 @@ beta_n, random_numbers, and resample_word_types must be provided.}
 
 \item{intercept_prior_mean}{A double.}
 
-\item{intercept_prior_variance}{A double.}
+\item{intercept_prior_standard_deviation}{A double.}
 
-\item{intercept_proposal_variances}{A vector.}
+\item{intercept_proposal_standard_deviations}{A vector.}
 
 \item{coefficient_prior_mean}{A double.}
 
-\item{coefficient_prior_variance}{A double.}
+\item{coefficient_prior_standard_deviation}{A double.}
 
-\item{coefficient_proposal_variances}{A vector.}
+\item{coefficient_proposal_standard_deviations}{A vector.}
 
 \item{latent_position_prior_mean}{A double.}
 
-\item{latent_position_prior_variance}{A double.}
+\item{latent_position_prior_standard_deviation}{A double.}
 
-\item{latent_position_proposal_variances}{A vector.}
+\item{latent_position_proposal_standard_deviations}{A vector.}
 
 \item{topic}{An integer.}
 
