@@ -460,9 +460,13 @@ namespace mjd {
     //     Constructor for Parallel Token Topic Distribution Generator        //
     // ***********************************************************************//
 
+    // create a RcppParallel::Worker struct that we can use to fill in the
+    // entries in our token topic distribution in parallel
     struct Parallel_Token_Topic_Distribution : public RcppParallel::Worker {
 
-        // input matrix to read from
+        // Instantiate all of our input variables which will then be initialized
+        // via the Function initializer below. This is how the struct makes sure
+        // that everything has the right type
         arma::cube edge_probabilities;
         int tokens_in_document;
         int current_token_topic_assignment;
@@ -477,11 +481,12 @@ namespace mjd {
         int document_sender;
         double beta;
 
-        // output matrix to write to
+        // We need to initialize the output vector to an RcppParallel::RVector
+        // vector (which is compatible with an Rcpp::NumericVector but not an
+        // arma::vec). This is what will be implicitly returned
         RcppParallel::RVector<double> return_dist;
 
-        // initialize from Rcpp input and output matrixes (the RMatrix class
-        // can be automatically converted to from the Rcpp matrix type)
+        // Function initializer
         Parallel_Token_Topic_Distribution(arma::cube edge_probabilities,
                     int tokens_in_document,
                     int current_token_topic_assignment,
@@ -511,10 +516,11 @@ namespace mjd {
         beta(beta),
         return_dist(return_dist) {}
 
-        // function call operator that work for the specified range (begin/end)
+        // function call operator that works for the specified range (begin/end)
         void operator()(std::size_t begin, std::size_t end) {
             for (std::size_t i = begin; i < end; i++) {
-                // write to output matrix
+                // this is the exact same code as is in the non-parallel version
+                // (I copy-pasted it).
                 double lsm_contr = mjd::lsm_contribution (
                     edge_probabilities,
                     tokens_in_document,
@@ -567,11 +573,17 @@ namespace mjd {
             double beta,
             int number_of_topics) {
 
-        // allocate the matrix we will return
+        // the vector that will be operated on by RcppParallel::parallelFor.
+        // This vector must be an Rcpp::NumericVector or the parallelization
+        // will not work. THis makes everything slower, but I have not found an
+        // alternative
         Rcpp::NumericVector output_vec(number_of_topics);
+        // Once we have the token topic distribution back from the parallel for
+        // function, we will put it in to an arma::vec of the same length.
         arma::vec return_vec = arma::zeros(number_of_topics);
 
-        // create the worker
+        // create the RcppParallel::Worker function which will iterate over the
+        // distribution
         Parallel_Token_Topic_Distribution Parallel_Token_Topic_Distribution(
                 edge_probabilities,
                 tokens_in_document,
@@ -588,13 +600,15 @@ namespace mjd {
                 beta,
                 output_vec);
 
-        // call it with parallelFor
+        // Call our Parallel_Token_Topic_Distribution with parallelFor
         RcppParallel::parallelFor(0,
                                   number_of_topics,
                                   Parallel_Token_Topic_Distribution);
 
+        // Take the NumericVector output and put it in the arma::vec to actually
+        // return
         for (int i = 0; i < number_of_topics; i++) {
-            // write to output matrix
+            // write to output vector
             return_vec[i] = output_vec[i];
         }
 
@@ -630,6 +644,9 @@ namespace mjd {
         // generate a zero vector of length (number of topics)
         arma::vec unnormalized_log_distribution = arma::zeros(number_of_topics);
 
+        // we can form the token-topic distribution in parallel since each entry
+        // is independent of the others. I have verified that we get exactly the
+        // same thing out either way.
         if (parallel) {
             // use RcppParallel::parallelFor to loop over the distribution over
             // topics.
@@ -648,6 +665,9 @@ namespace mjd {
                 document_sender,
                 beta,
                 number_of_topics);
+
+        // if we do not want to do this in parallel (which may actually be
+        // faster for small numbers of topics, then just loop over the topics).
         } else {
             // loop over the topics to populate the unnormailized log distribution.
             for (int i = 0; i < number_of_topics; ++i) {
