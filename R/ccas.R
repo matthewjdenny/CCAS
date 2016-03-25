@@ -71,6 +71,12 @@
 #' @param cores The number of cores to be used if the parallel option is set to
 #' TRUE. Should not exceed the nubmer of cores availabel on the machine and will
 #' not show performance gains if cores > topics.
+#' @param output_directory The directory where the user would like to store
+#' output from the model. Defaults to NULL. If NULL, then the current working
+#' directory will be used to store output if an output_name_stem is provided.
+#' @param output_name_stem Defaults to NULL. If not null, then output will be
+#' saved to disk using the output_name_stem to differentiate it from output from
+#' other model runs.
 #' @return An object of class CCAS containing estimation results.
 #' @export
 ccas <- function(formula,
@@ -98,7 +104,9 @@ ccas <- function(formula,
                  slice_sample_alpha_m = FALSE,
                  slice_sample_step_size = 1,
                  parallel = FALSE,
-                 cores = 2) {
+                 cores = 2,
+                 output_directory = NULL,
+                 output_name_stem = NULL) {
 
     # for now, we only allow a common proposal variance, prior mean, and prior
     # variance. In the future, these could be different for each cluster and
@@ -371,12 +379,14 @@ ccas <- function(formula,
     CCAS_Object@MCMC_output$latent_positions = final_mh_results[[3]]
     CCAS_Object@MCMC_output$final_proposal_standard_deviations = final_mh_results[[4]]
 
-    cat("\n##############################\n\n")
-    cat("Generating Diagnostic Plots...\n\n")
-    cat("##############################\n\n")
+    cat("\n####################################\n\n")
+    cat("Generating Output and Diagnostics...\n\n")
+    cat("####################################\n\n")
 
-    # generate diagnostics
-
+    # generate output
+    generate_output(CCAS_Object,
+                    output_directory,
+                    output_name_stem)
 
     # retrun the CCAS object
     return(CCAS_Object)

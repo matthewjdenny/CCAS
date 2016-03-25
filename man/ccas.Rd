@@ -15,7 +15,8 @@ ccas(formula, interaction_patterns = 4, topics = 40, alpha = 1,
   seed = 12345, adaptive_metropolis_every_x_iterations = 1000,
   stop_adaptive_metropolis_after_x_updates = 50,
   slice_sample_alpha_m = FALSE, slice_sample_step_size = 1,
-  parallel = FALSE, cores = 2)
+  parallel = FALSE, cores = 2, output_directory = NULL,
+  output_name_stem = NULL)
 }
 \arguments{
 \item{formula}{A formula object of the form 'ComNet ~
@@ -112,6 +113,14 @@ runtime when training a model with a large number of topics.}
 \item{cores}{The number of cores to be used if the parallel option is set to
 TRUE. Should not exceed the nubmer of cores availabel on the machine and will
 not show performance gains if cores > topics.}
+
+\item{output_directory}{The directory where the user would like to store
+output from the model. Defaults to NULL. If NULL, then the current working
+directory will be used to store output if an output_name_stem is provided.}
+
+\item{output_name_stem}{Defaults to NULL. If not null, then output will be
+saved to disk using the output_name_stem to differentiate it from output from
+other model runs.}
 }
 \value{
 An object of class CCAS containing estimation results.
