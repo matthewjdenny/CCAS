@@ -2,7 +2,7 @@
 #' @description Generates a trace plot of the unnormalized topic model log
 #' likelihood. This is a potential way to diagnose the convergence of the model.
 #'
-#' @param An object of class CCAS containing estimation results.
+#' @param CCAS_Object devtoolAn object of class CCAS containing estimation results.
 #' @param topic_model_burnin The number of iterations of Gibbs sampling to
 #' discard before generating trace plot and calculating Geweke statistic.
 #' @return A plot.

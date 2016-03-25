@@ -7,10 +7,10 @@
 plot_topic_model_log_likelihood(CCAS_Object, topic_model_burnin = NULL)
 }
 \arguments{
+\item{CCAS_Object}{An object of class CCAS containing estimation results.}
+
 \item{topic_model_burnin}{The number of iterations of Gibbs sampling to
 discard before generating trace plot and calculating Geweke statistic.}
-
-\item{An}{object of class CCAS containing estimation results.}
 }
 \value{
 A plot.
