@@ -12,7 +12,8 @@ Imports:
     Rcpp,
     methods,
 	stringr,
-	RcppParallel	
+	RcppParallel,
+	coda	
 Depends:
     R (>= 3.2.1)
 LinkingTo: 
