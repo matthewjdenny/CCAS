@@ -6,7 +6,7 @@
 \usage{
 ccas(formula, interaction_patterns = 4, topics = 40, alpha = 1,
   beta = 0.01, iterations = 1000, metropolis_hastings_iterations = 500,
-  final_metropolis_hastings_burnin = 500,
+  final_metropolis_hastings_burnin = 50000,
   final_metropolis_hastings_iterations = 1e+05, thin = 1/100,
   target_accept_rate = 0.25, tolerance = 0.05,
   LSM_proposal_variance = 0.5, LSM_prior_variance = 1, LSM_prior_mean = 0,
@@ -15,7 +15,7 @@ ccas(formula, interaction_patterns = 4, topics = 40, alpha = 1,
   seed = 12345, adaptive_metropolis_every_x_iterations = 1000,
   stop_adaptive_metropolis_after_x_updates = 50,
   slice_sample_alpha_m = FALSE, slice_sample_step_size = 1,
-  parallel = FALSE)
+  parallel = FALSE, cores = 2)
 }
 \arguments{
 \item{formula}{A formula object of the form 'ComNet ~
@@ -26,53 +26,92 @@ by the prepare_data() function. May also include optional terms
 'nodemix("covariate_name", base = value)' and netcov("network_covariate"),
 which are defined analogously to the arguments in the latentnet package.}
 
-\item{interaction_patterns}{Defaults to 4.}
+\item{interaction_patterns}{The number of different interaction patterns
+governing message sending and recieving under the model. Defaults to 4.}
 
-\item{topics}{Defaults to 40.}
+\item{topics}{The number of topics to be used in the model. Defaults to 40.}
 
-\item{alpha}{Defaults to 1.}
+\item{alpha}{The hyperparameter govering document-topic distributions. Lower
+values encourage more peaked distributions. Defaults to 1.}
 
-\item{beta}{Defaults to 0.01.}
+\item{beta}{The hyperparameter governing the Dirichlet prior on the
+topic-word distributions. Lower values encourage more peaked distributions.
+Defaults to 0.01.}
 
-\item{iterations}{Defaults to 1000.}
+\item{iterations}{The number of iterations of Metropolis-within-Gibbs
+sampling to be used in model estimation. Defaults to 1,000.}
 
-\item{metropolis_hastings_iterations}{Defaults to 500.}
+\item{metropolis_hastings_iterations}{The number of Metropolis Hastings
+iterations to be run durring each iteration of Metropolis-within-Gibbs
+sampling to update interaction pattern parameters. Defaults to 500.}
 
-\item{final_metropolis_hastings_burnin}{Defaults to 500.}
+\item{final_metropolis_hastings_burnin}{The number of iterations to of
+Metropolis Hastings run after completing all main iterations of Gibbs
+sampling to discard before keeping samples. Defaults to 50,000.}
 
-\item{final_metropolis_hastings_iterations}{Defaults to 100000.}
+\item{final_metropolis_hastings_iterations}{The number of iterations to run
+Metropolis Hastings after completing all main iterations of Gibbs sampling.
+Defaults to 100,000.}
 
-\item{thin}{Defaults to 1/100.}
+\item{thin}{The proportion of network samples to keep from the final run of
+Metropolis Hastings to convergence. Defaults to 1/100, meaning that every
+100'th network sample will be returned.}
 
-\item{target_accept_rate}{Defaults to 0.25.}
+\item{target_accept_rate}{The target acceptance rate for the Metropolis
+Hastings algorithm. Defaults to 0.25 which is standard in the literature.}
 
-\item{tolerance}{Defaults to 0.05.}
+\item{tolerance}{The tolerance for differences between the observed and
+target Metropolis Hastings accept rates (+-). Defaults to 0.05.}
 
-\item{LSM_proposal_variance}{Defaults to .5.}
+\item{LSM_proposal_variance}{The Metropolis Hastings proposal variance for
+all interaction pattern parameters. Defaults to .5.}
 
-\item{LSM_prior_variance}{Defaults to 1.}
+\item{LSM_prior_variance}{The variance of the multivariate normal prior on
+all interaction pattern parameters. Defaults to 1.}
 
-\item{LSM_prior_mean}{Defaults to 0.}
+\item{LSM_prior_mean}{The mean of the multivariate normal prior on all
+interaction pattern parameters. Defaults to 0.}
 
-\item{iterations_before_t_i_p_updates}{Defaults to 5.}
+\item{iterations_before_t_i_p_updates}{The number of iterations to wait
+before beginning updates to topic interaction pattern assignments. Defaults
+to 5.}
 
-\item{update_t_i_p_every_x_iterations}{Defaults to 5.}
+\item{update_t_i_p_every_x_iterations}{The number of iterations between
+updates to topic interaction pattern assignments. Defaults to 5.}
 
-\item{adaptive_metropolis}{Defaults to TRUE.}
+\item{adaptive_metropolis}{Logical indicating whether adaptive Metropolis
+should be used (whether the proposal variance should be optimized). Defaults
+to TRUE.}
 
-\item{adaptive_metropolis_update_size}{Defaults to 0.05.}
+\item{adaptive_metropolis_update_size}{The amount by which the MH proposal
+variance is changed (up or down) durring adaptive Metropolis. Defaults to
+0.05.}
 
-\item{seed}{Defaults to 12345.}
+\item{seed}{The seed to be used (for replicability across runs). Defaults to
+12345.}
 
-\item{adaptive_metropolis_every_x_iterations}{Defaults to 1000.}
+\item{adaptive_metropolis_every_x_iterations}{The nubmer of iterations
+between proposal variance updates durring the final run of MH to convergence.
+Defaults to 1000.}
 
-\item{stop_adaptive_metropolis_after_x_updates}{Defualts to 50.}
+\item{stop_adaptive_metropolis_after_x_updates}{The number of Metropolis
+Hastings proposal variance updates to complete durring the final run of
+MH to convergence before fixing its value. Defualts to 50.}
 
-\item{slice_sample_alpha_m}{Defaults to FALSE.}
+\item{slice_sample_alpha_m}{Logical indicating whether hyperparameter
+optimization should be used to determine the optimal value of alpha. Defaults
+to FALSE.}
 
-\item{slice_sample_step_size}{Defaults to 1.}
+\item{slice_sample_step_size}{The initial size of the slice to use when slice
+sampling alpha (hyperparameter optimization). Defaults to 1.}
 
-\item{parallel}{Defaults to FALSE.}
+\item{parallel}{Argument indicating whether the token topic distributions
+should be generated in parallel. Defaults to FALSE. Can significantly reduce
+runtime when training a model with a large number of topics.}
+
+\item{cores}{The number of cores to be used if the parallel option is set to
+TRUE. Should not exceed the nubmer of cores availabel on the machine and will
+not show performance gains if cores > topics.}
 }
 \value{
 An object of class CCAS containing estimation results.

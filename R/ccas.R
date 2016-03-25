@@ -9,30 +9,68 @@
 #' 'sender("covariate_name")', receiver("covariate_name")',
 #' 'nodemix("covariate_name", base = value)' and netcov("network_covariate"),
 #' which are defined analogously to the arguments in the latentnet package.
-#' @param interaction_patterns Defaults to 4.
-#' @param topics Defaults to 40.
-#' @param alpha Defaults to 1.
-#' @param beta Defaults to 0.01.
-#' @param iterations Defaults to 1000.
-#' @param metropolis_hastings_iterations Defaults to 500.
-#' @param final_metropolis_hastings_burnin Defaults to 500.
-#' @param final_metropolis_hastings_iterations Defaults to 100000.
-#' @param thin Defaults to 1/100.
-#' @param target_accept_rate Defaults to 0.25.
-#' @param tolerance Defaults to 0.05.
-#' @param LSM_proposal_variance Defaults to .5.
-#' @param LSM_prior_variance Defaults to 1.
-#' @param LSM_prior_mean Defaults to 0.
-#' @param iterations_before_t_i_p_updates Defaults to 5.
-#' @param update_t_i_p_every_x_iterations Defaults to 5.
-#' @param adaptive_metropolis Defaults to TRUE.
-#' @param adaptive_metropolis_update_size Defaults to 0.05.
-#' @param seed Defaults to 12345.
-#' @param adaptive_metropolis_every_x_iterations Defaults to 1000.
-#' @param stop_adaptive_metropolis_after_x_updates Defualts to 50.
-#' @param slice_sample_alpha_m Defaults to FALSE.
-#' @param slice_sample_step_size Defaults to 1.
-#' @param parallel Defaults to FALSE.
+#' @param interaction_patterns The number of different interaction patterns
+#' governing message sending and recieving under the model. Defaults to 4.
+#' @param topics The number of topics to be used in the model. Defaults to 40.
+#' @param alpha The hyperparameter govering document-topic distributions. Lower
+#' values encourage more peaked distributions. Defaults to 1.
+#' @param beta The hyperparameter governing the Dirichlet prior on the
+#' topic-word distributions. Lower values encourage more peaked distributions.
+#' Defaults to 0.01.
+#' @param iterations The number of iterations of Metropolis-within-Gibbs
+#' sampling to be used in model estimation. Defaults to 1,000.
+#' @param metropolis_hastings_iterations The number of Metropolis Hastings
+#' iterations to be run durring each iteration of Metropolis-within-Gibbs
+#' sampling to update interaction pattern parameters. Defaults to 500.
+#' @param final_metropolis_hastings_burnin The number of iterations to of
+#' Metropolis Hastings run after completing all main iterations of Gibbs
+#' sampling to discard before keeping samples. Defaults to 50,000.
+#' @param final_metropolis_hastings_iterations The number of iterations to run
+#' Metropolis Hastings after completing all main iterations of Gibbs sampling.
+#' Defaults to 100,000.
+#' @param thin The proportion of network samples to keep from the final run of
+#' Metropolis Hastings to convergence. Defaults to 1/100, meaning that every
+#' 100'th network sample will be returned.
+#' @param target_accept_rate The target acceptance rate for the Metropolis
+#' Hastings algorithm. Defaults to 0.25 which is standard in the literature.
+#' @param tolerance The tolerance for differences between the observed and
+#' target Metropolis Hastings accept rates (+-). Defaults to 0.05.
+#' @param LSM_proposal_variance The Metropolis Hastings proposal variance for
+#' all interaction pattern parameters. Defaults to .5.
+#' @param LSM_prior_variance The variance of the multivariate normal prior on
+#' all interaction pattern parameters. Defaults to 1.
+#' @param LSM_prior_mean The mean of the multivariate normal prior on all
+#' interaction pattern parameters. Defaults to 0.
+#' @param iterations_before_t_i_p_updates The number of iterations to wait
+#' before beginning updates to topic interaction pattern assignments. Defaults
+#' to 5.
+#' @param update_t_i_p_every_x_iterations The number of iterations between
+#' updates to topic interaction pattern assignments. Defaults to 5.
+#' @param adaptive_metropolis Logical indicating whether adaptive Metropolis
+#' should be used (whether the proposal variance should be optimized). Defaults
+#' to TRUE.
+#' @param adaptive_metropolis_update_size The amount by which the MH proposal
+#' variance is changed (up or down) durring adaptive Metropolis. Defaults to
+#' 0.05.
+#' @param seed The seed to be used (for replicability across runs). Defaults to
+#' 12345.
+#' @param adaptive_metropolis_every_x_iterations The nubmer of iterations
+#' between proposal variance updates durring the final run of MH to convergence.
+#' Defaults to 1000.
+#' @param stop_adaptive_metropolis_after_x_updates The number of Metropolis
+#' Hastings proposal variance updates to complete durring the final run of
+#' MH to convergence before fixing its value. Defualts to 50.
+#' @param slice_sample_alpha_m Logical indicating whether hyperparameter
+#' optimization should be used to determine the optimal value of alpha. Defaults
+#' to FALSE.
+#' @param slice_sample_step_size The initial size of the slice to use when slice
+#' sampling alpha (hyperparameter optimization). Defaults to 1.
+#' @param parallel Argument indicating whether the token topic distributions
+#' should be generated in parallel. Defaults to FALSE. Can significantly reduce
+#' runtime when training a model with a large number of topics.
+#' @param cores The number of cores to be used if the parallel option is set to
+#' TRUE. Should not exceed the nubmer of cores availabel on the machine and will
+#' not show performance gains if cores > topics.
 #' @return An object of class CCAS containing estimation results.
 #' @export
 ccas <- function(formula,
@@ -42,7 +80,7 @@ ccas <- function(formula,
                  beta = 0.01,
                  iterations = 1000,
                  metropolis_hastings_iterations = 500,
-                 final_metropolis_hastings_burnin = 500,
+                 final_metropolis_hastings_burnin = 50000,
                  final_metropolis_hastings_iterations = 100000,
                  thin = 1/100,
                  target_accept_rate = 0.25,
@@ -59,7 +97,8 @@ ccas <- function(formula,
                  stop_adaptive_metropolis_after_x_updates = 50,
                  slice_sample_alpha_m = FALSE,
                  slice_sample_step_size = 1,
-                 parallel = FALSE) {
+                 parallel = FALSE,
+                 cores = 2) {
 
     # for now, we only allow a common proposal variance, prior mean, and prior
     # variance. In the future, these could be different for each cluster and
@@ -76,6 +115,11 @@ ccas <- function(formula,
 
     # set the seed
     set.seed(seed)
+
+    # set the number of threads to use with parallel
+    if (parallel) {
+        RcppParallel::setThreadOptions(numThreads = cores)
+    }
 
     # possible terms for inclusion in model specification.
     possible_structural_terms <- c("euclidean")
