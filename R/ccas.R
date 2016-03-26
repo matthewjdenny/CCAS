@@ -325,8 +325,9 @@ ccas <- function(formula,
     coefs <- CCAS_Object@MCMC_output$coefficients[,,
         dim(CCAS_Object@MCMC_output$coefficients)[3]]
     ld <- CCAS_Object@latent_space_dimensions
-    ind <- dim(CCAS_Object@MCMC_output$latent_positions)[3] - ld
-    lat_pos <- CCAS_Object@MCMC_output$latent_positions[,,ind:(ind + ld)]
+    # need to add one back on so we dont over-count the number of dimensions
+    ind <- dim(CCAS_Object@MCMC_output$latent_positions)[3] - ld + 1
+    lat_pos <- CCAS_Object@MCMC_output$latent_positions[,,ind:(ind + ld - 1)]
 
     # we also have to determine how many observations to actually store after
     # the burnin is complete and the chain has been appropriately thinned. We
