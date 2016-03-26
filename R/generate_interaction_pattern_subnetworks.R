@@ -1,8 +1,5 @@
 generate_interaction_pattern_subnetworks <- function(CCAS_Object) {
 
-    # get the final token topic assignments, topic-IP assignments, and doc-edge
-    # matrix
-
     # assign temporary variables we will operate on.
     num_actors <- CCAS_Object@ComNet_Object@num_actors
     num_IPs <- CCAS_Object@interaction_patterns
@@ -16,6 +13,9 @@ generate_interaction_pattern_subnetworks <- function(CCAS_Object) {
     # generate list of adjacency matrices we will fill in:
     interaction_pattern_networks <- vector(mode = "list",
                                            length = num_IPs)
+    # count the total number of emails where some edge weight was contributed
+    # to the interaction pattern sociomatrix
+    emails_represented <- rep(0,num_IPs)
     # populate the list object with blank networks
     for (i in 1:num_IPs) {
         interaction_pattern_networks[[i]] <- matrix(0,
@@ -50,9 +50,14 @@ generate_interaction_pattern_subnetworks <- function(CCAS_Object) {
             interaction_pattern_networks[[k]][senders,] <-
                 interaction_pattern_networks[[k]][senders,] +
                 cluster_proportions[k] * doc_edge_matrix[i,]
+            # increment the count of emails represented
+            if (cluster_proportions[k] > 0) {
+                emails_represented[k] <- emails_represented[k] + 1
+            }
         }
     }
 
     # return the list of networks
-    return(interaction_pattern_networks)
+    return(list(interaction_pattern_networks = interaction_pattern_networks,
+                emails_represented = emails_represented))
 }
