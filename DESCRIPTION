@@ -13,7 +13,8 @@ Imports:
     methods,
 	stringr,
 	RcppParallel,
-	coda	
+	coda,
+	vegan
 Depends:
     R (>= 3.2.1)
 LinkingTo: 
