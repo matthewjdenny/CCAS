@@ -1,8 +1,8 @@
 Package: CCAS
 Type: Package
 Title: Communication Content and Network Structure
-Version: 0.3.1
-Date: 2016-03-24
+Version: 0.3.2
+Date: 2016-03-26
 Author: Matthew J. Denny <mdenny@psu.edu>
 Maintainer: Matthew J. Denny <mdenny@psu.edu>
 Description: A statistical model of (electronic) communication network content and structure combining latent Dirichlet allocation and the Latent Space Network Model.
