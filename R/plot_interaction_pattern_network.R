@@ -1,4 +1,6 @@
 #' @title Plot interaction-pattern sepcific sub-networks
+#' @description Plots a sub network associated with a particular interaction
+#' pattern with nodes placed according to their posterior mean latent positions.
 #'
 #' @param CCAS_Object The object returned by the ccas() main estimation
 #' function.

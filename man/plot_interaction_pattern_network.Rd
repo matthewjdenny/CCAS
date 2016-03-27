@@ -23,4 +23,8 @@ nodes are plotted in the same color.}
 \value{
 An data.frame containing the mean latent coordinates of each actor.
 }
+\description{
+Plots a sub network associated with a particular interaction
+pattern with nodes placed according to their posterior mean latent positions.
+}
 
