@@ -1,6 +1,22 @@
+#' @title Plot interaction-pattern sepcific sub-networks
+#'
+#' @param CCAS_Object The object returned by the ccas() main estimation
+#' function.
+#' @param interaction_pattern_index The index of the cluster specific
+#' communication network we wish to plot.
+#' @param plot_color_category The name of a categorical covariate the user
+#' wishes to color nodes by. For example, nodes might be colored by gender. This
+#' function only currently supports plotting by a categroical variable
+#' containing five or less unique values. Defaults to NULL, in which case all
+#' nodes are plotted in the same color.
+#' @return An data.frame containing the mean latent coordinates of each actor.
+#' @export
 plot_interaction_pattern_network <- function(CCAS_Object,
-                                             cluster,
+                                             interaction_pattern_index,
                                              plot_color_category = NULL){
+    # shorthand name to be used in the function
+    cluster <- interaction_pattern_index
+
     # define light colors
     UMASS_BLUE <- rgb(51,51,153,20,maxColorValue = 255)
     UMASS_RED <- rgb(153,0,51,20,maxColorValue = 255)

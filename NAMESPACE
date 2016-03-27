@@ -2,6 +2,7 @@
 
 export(ccas)
 export(plot_interaction_pattern_log_likelihood)
+export(plot_interaction_pattern_network)
 export(plot_topic_model_log_likelihood)
 export(prepare_data)
 export(test_internal_functions)
