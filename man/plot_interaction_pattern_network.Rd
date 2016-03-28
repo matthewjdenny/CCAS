@@ -5,7 +5,7 @@
 \title{Plot interaction-pattern sepcific sub-networks}
 \usage{
 plot_interaction_pattern_network(CCAS_Object, interaction_pattern_index,
-  plot_color_category = NULL)
+  plot_color_category = NULL, generate_plot = TRUE)
 }
 \arguments{
 \item{CCAS_Object}{The object returned by the ccas() main estimation
@@ -19,6 +19,10 @@ wishes to color nodes by. For example, nodes might be colored by gender. This
 function only currently supports plotting by a categroical variable
 containing five or less unique values. Defaults to NULL, in which case all
 nodes are plotted in the same color.}
+
+\item{generate_plot}{Logical indicating whether plot should be printed.
+Defaults to TRUE, but can be set to FALSE if the user only wishes to access
+the mean latent positions of actors.}
 }
 \value{
 An data.frame containing the mean latent coordinates of each actor.

@@ -16,7 +16,7 @@ ccas(formula, interaction_patterns = 4, topics = 40, alpha = 1,
   stop_adaptive_metropolis_after_x_updates = 50,
   slice_sample_alpha_m = FALSE, slice_sample_step_size = 1,
   parallel = FALSE, cores = 2, output_directory = NULL,
-  output_name_stem = NULL)
+  output_name_stem = NULL, generate_plots = TRUE)
 }
 \arguments{
 \item{formula}{A formula object of the form 'ComNet ~
@@ -121,6 +121,9 @@ directory will be used to store output if an output_name_stem is provided.}
 \item{output_name_stem}{Defaults to NULL. If not null, then output will be
 saved to disk using the output_name_stem to differentiate it from output from
 other model runs.}
+
+\item{generate_plots}{Logical indicating whether diagnostic and summary plots
+should be generated, defaults to TRUE.}
 }
 \value{
 An object of class CCAS containing estimation results.

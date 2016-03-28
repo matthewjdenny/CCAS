@@ -11,11 +11,15 @@
 #' function only currently supports plotting by a categroical variable
 #' containing five or less unique values. Defaults to NULL, in which case all
 #' nodes are plotted in the same color.
+#' @param generate_plot Logical indicating whether plot should be printed.
+#' Defaults to TRUE, but can be set to FALSE if the user only wishes to access
+#' the mean latent positions of actors.
 #' @return An data.frame containing the mean latent coordinates of each actor.
 #' @export
 plot_interaction_pattern_network <- function(CCAS_Object,
                                              interaction_pattern_index,
-                                             plot_color_category = NULL){
+                                             plot_color_category = NULL,
+                                             generate_plot = TRUE){
     # shorthand name to be used in the function
     cluster <- interaction_pattern_index
 
@@ -158,90 +162,92 @@ plot_interaction_pattern_network <- function(CCAS_Object,
         }
     }
 
-    # make sure the background for the plot is white
-    par(bg = "white")
+    # if we are actaully generating a plot, then do so
+    if (generate_plot) {
+        # make sure the background for the plot is white
+        par(bg = "white")
 
-    # start the plot!
-    plot(mean_coordinates,
-         main = paste("Interaction Pattern:",cluster,"Fraction of Edges:",
-                      round(sum(network)/CCAS_Object@ComNet_Object@num_edges,3),
-                      "--- Number of Emails Represented:",emails_represented,
-                      " of ",CCAS_Object@ComNet_Object@num_documents, "\n",
-                      "Darker edges indicate more communication."),
-         pch = 20,
-         col = "white",
-         axes = F,
-         xlab = "",
-         ylab = "")
-    box(which = "plot")
+        # start the plot!
+        plot(mean_coordinates,
+             main = paste("Interaction Pattern:",cluster,"Fraction of Edges:",
+                          round(sum(network)/CCAS_Object@ComNet_Object@num_edges,3),
+                          "--- Number of Emails Represented:",emails_represented,
+                          " of ",CCAS_Object@ComNet_Object@num_documents, "\n",
+                          "Darker edges indicate more communication."),
+             pch = 20,
+             col = "white",
+             axes = F,
+             xlab = "",
+             ylab = "")
+        box(which = "plot")
 
-    # add in points
-    base <- latent_positions[,1:lat_dim]
-    for (i in 1:samples) {
-        start <- lat_dim * (i - 1) + 1
-        end <- lat_dim * i
-        temp <- latent_positions[,start:end]
-        rotated <- vegan::procrustes(base, temp, scale = F)$Yrot
-        # fill in points
-        for (j in 1:num_actors) {
-        points(x = rotated[j,1],
-               y = rotated[j,2],
-               col = point_colors[j],
-               pch = node_shapes,
-               cex = .4)
+        # add in points
+        base <- latent_positions[,1:lat_dim]
+        for (i in 1:samples) {
+            start <- lat_dim * (i - 1) + 1
+            end <- lat_dim * i
+            temp <- latent_positions[,start:end]
+            rotated <- vegan::procrustes(base, temp, scale = F)$Yrot
+            # fill in points
+            for (j in 1:num_actors) {
+                points(x = rotated[j,1],
+                       y = rotated[j,2],
+                       col = point_colors[j],
+                       pch = node_shapes,
+                       cex = .4)
+            }
         }
-    }
 
-    #add in lines between actors in order from dimmest to brightest
-    total <- length(which(network > 0))
+        #add in lines between actors in order from dimmest to brightest
+        total <- length(which(network > 0))
 
-    #iff there are any edges assigned to this cluster
-    if(total > 0){
-        ordering <- order(network, decreasing = F)
-        correct_ordering <- rep(0,length(ordering))
-        for (i in 1:length(ordering)) {
-            correct_ordering[ordering[i]] <- i
-        }
-        add_matrix <- matrix(correct_ordering,
-                             ncol = num_actors,
-                             nrow = num_actors)
-        colormat <- matrix(edge_colors,
-                           ncol = num_actors,
-                           nrow = num_actors)
+        #iff there are any edges assigned to this cluster
+        if(total > 0){
+            ordering <- order(network, decreasing = F)
+            correct_ordering <- rep(0,length(ordering))
+            for (i in 1:length(ordering)) {
+                correct_ordering[ordering[i]] <- i
+            }
+            add_matrix <- matrix(correct_ordering,
+                                 ncol = num_actors,
+                                 nrow = num_actors)
+            colormat <- matrix(edge_colors,
+                               ncol = num_actors,
+                               nrow = num_actors)
 
-        # fill in the edges in reverse order of darkness (weight) so that the
-        # darkest edges are on top
-        counter <- 1
-        for (l in 1:length(ordering)) {
-            for (i in 1:num_actors) {
-                for (j in 1:num_actors) {
-                    if (add_matrix[i,j] == l & network[i,j] > 0) {
-                        lines(c(mean_coordinates[j,1],
-                                mean_coordinates[i,1]) ,
-                              c(mean_coordinates[j,2],
-                                mean_coordinates[i,2]),
-                              col = colormat[i,j],
-                              lwd = 1.5)
+            # fill in the edges in reverse order of darkness (weight) so that the
+            # darkest edges are on top
+            for (l in 1:length(ordering)) {
+                for (i in 1:num_actors) {
+                    for (j in 1:num_actors) {
+                        if (add_matrix[i,j] == l & network[i,j] > 0) {
+                            lines(c(mean_coordinates[j,1],
+                                    mean_coordinates[i,1]) ,
+                                  c(mean_coordinates[j,2],
+                                    mean_coordinates[i,2]),
+                                  col = colormat[i,j],
+                                  lwd = 1.5)
+                        }
                     }
                 }
             }
         }
-    }
 
-    # now add in points for the nodes themselves
-    points(mean_coordinates,
-           col = node_colors,
-           pch = node_shapes,
-           cex = 1.5)
+        # now add in points for the nodes themselves
+        points(mean_coordinates,
+               col = node_colors,
+               pch = node_shapes,
+               cex = 1.5)
 
-    # if we used
-    if (colored_by_category) {
-        legend("topright",
-               inset = 0.05,
-               cats,
-               fill = dark_colors[1:num_categories],
-               horiz = FALSE,
-               bg = "white")
+        # if we used
+        if (colored_by_category) {
+            legend("topright",
+                   inset = 0.05,
+                   cats,
+                   fill = dark_colors[1:num_categories],
+                   horiz = FALSE,
+                   bg = "white")
+        }
     }
 
     return(mean_coordinates)

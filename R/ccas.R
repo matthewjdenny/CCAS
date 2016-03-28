@@ -77,6 +77,8 @@
 #' @param output_name_stem Defaults to NULL. If not null, then output will be
 #' saved to disk using the output_name_stem to differentiate it from output from
 #' other model runs.
+#' @param generate_plots Logical indicating whether diagnostic and summary plots
+#' should be generated, defaults to TRUE.
 #' @return An object of class CCAS containing estimation results.
 #' @export
 ccas <- function(formula,
@@ -106,7 +108,8 @@ ccas <- function(formula,
                  parallel = FALSE,
                  cores = 2,
                  output_directory = NULL,
-                 output_name_stem = NULL) {
+                 output_name_stem = NULL,
+                 generate_plots = TRUE) {
 
     # for now, we only allow a common proposal variance, prior mean, and prior
     # variance. In the future, these could be different for each cluster and
@@ -397,7 +400,8 @@ ccas <- function(formula,
     CCAS_Object <- generate_output(
         CCAS_Object,
         output_directory,
-        output_name_stem)
+        output_name_stem,
+        generate_plots)
 
     # retrun the CCAS object
     return(CCAS_Object)
