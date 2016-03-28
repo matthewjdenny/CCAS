@@ -1927,9 +1927,9 @@ namespace mjd {
         // allocate data structures to store samples in.
         arma::mat store_intercepts = arma::zeros(samples_to_store,
                                                  num_interaction_patterns);
-        arma::cube store_coefficients = arma::zeros(samples_to_store,
+        arma::cube store_coefficients = arma::zeros(num_interaction_patterns,
                                                     num_coefficients,
-                                                    metropolis_iterations);
+                                                    samples_to_store);
         //we are going to have to stack cubes here, hence the multiplication
         //in the last dimension
         arma::cube store_latent_positions = arma::zeros(
