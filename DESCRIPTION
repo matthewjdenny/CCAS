@@ -14,7 +14,8 @@ Imports:
 	stringr,
 	RcppParallel,
 	coda,
-	vegan
+	vegan,
+	ggplot2
 Depends:
     R (>= 3.2.1)
 LinkingTo: 
