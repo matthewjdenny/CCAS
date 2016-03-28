@@ -1,7 +1,20 @@
+#' @title Generate Interpretable Output from a CCAS object.
+#' @description Generates a large number of plots of various posterior quantites
+#' of interest, includingtrace plots, parameter estimates and top words.
+#'
+#' @param CCAS_Object The object returned by the ccas() main estimation
+#' function.
+#' @param output_directory Defaults to NULL, currently unimplemented.
+#' @param output_name_stem Defaults to NULL, currently unimplemented.
+#' @param generate_plots Logical indicating whether plots should be generated,
+#' defaults to TRUE, but may be set to FALSE if the user only wishes to access
+#' aggregate data.
+#' @return A series of plots and a CCAS_Object containing useful output.
+#' @export
 generate_output <- function(CCAS_Object,
-                            output_directory,
-                            output_name_stem,
-                            generate_plots) {
+                            output_directory = NULL,
+                            output_name_stem = NULL,
+                            generate_plots = TRUE) {
 
     # only generate plots if user specifies that they shoudl be generated
     if (generate_plots) {
@@ -61,6 +74,9 @@ generate_output <- function(CCAS_Object,
                                          generate_plots = generate_plots)
 
     CCAS_Object@parameter_estimates <- parameter_estimates
+
+    # get topic and interaction pattern top words
+    CCAS_Object <- top_words(CCAS_Object)
 
     return(CCAS_Object)
 }
