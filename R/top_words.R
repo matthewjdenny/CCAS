@@ -13,6 +13,21 @@ top_words <- function(CCAS_Object,
 
     # allocate some variables we will use below:
     interaction_patterns <- CCAS_Object@interaction_patterns
+    topics <- CCAS_Object@number_of_topics
+    vocab_size <- CCAS_Object@ComNet_Object@vocabulary_size
+    vocab <- CCAS_Object@ComNet_Object@vocabulary
+    topic_ips <- CCAS_Object@topic_model_results$topic_interaction_patterns
+    topic_ips <- topic_ips[nrow(topic_ips),]
+    topic_word_counts <- CCAS_Object@topic_model_results$word_type_topic_counts
+
+    # allocate a dataframe for top words and another for ordered counts
+    topic_top_words <- matrix(NA, nrow = topics, ncol = vocab_size)
+    topic_top_word_counts <- matrix(0, nrow = topics, ncol = vocab_size)
+
+    # loop through topics and generate ordered counts
+    for (i in 1:topics) {
+
+    }
 
 
 

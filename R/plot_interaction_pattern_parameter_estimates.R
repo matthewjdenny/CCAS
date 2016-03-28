@@ -31,6 +31,7 @@ plot_interaction_pattern_parameter_estimates <- function(
     normalize_coefficients = FALSE,
     generate_plot = TRUE) {
 
+    Color <- Variable <- Coefficient <- SE <- NULL
     UMASS_BLUE <- rgb(51,51,153,255,maxColorValue = 255)
 
     # get the number of samples after burnin and thinning

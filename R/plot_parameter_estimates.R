@@ -15,7 +15,7 @@ plot_parameter_estimates <- function(CCAS_Object,
                                      plots_per_row,
                                      generate_plots){
 
-    Interaction_Pattern <- NULL
+    Interaction_Pattern <- Color <- Variable <- Coefficient <- SE <- NULL
     # loop over interaction patterns
     for (i in  1:CCAS_Object@interaction_patterns) {
         temp <- plot_interaction_pattern_parameter_estimates(
