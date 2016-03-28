@@ -4,17 +4,20 @@
 \alias{top_words}
 \title{Generate Topic top words}
 \usage{
-top_words(CCAS_Object, output_LaTeX_code)
+top_words(CCAS_Object, output_LaTeX_code = FALSE, top_words_to_print = 10)
 }
 \arguments{
 \item{CCAS_Object}{The object returned by the ccas() main estimation
 function.}
 
 \item{output_LaTeX_code}{Logical indicating whether LaTeX code should be
-output by the functon for incorporating in tables.}
+output by the functon for incorporating in tables. Defaults to FALSE.}
+
+\item{top_words_to_print}{Defualts to 10, cna be adjusted by the user.}
 }
 \value{
-A list of data.frames with topic and interaction pattern top words.
+A CCAS object containing a list of data.frames with topic and
+interaction pattern top words in the 'at' model_output$top_words field.
 }
 \description{
 Generates data.frames containing the top words associated with
