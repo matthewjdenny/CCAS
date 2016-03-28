@@ -15,7 +15,8 @@ Imports:
 	RcppParallel,
 	coda,
 	vegan,
-	ggplot2
+	ggplot2,
+	SpeedReader
 Depends:
     R (>= 3.2.1)
 LinkingTo: 
@@ -28,3 +29,4 @@ Suggests:
     testthat
 RoxygenNote: 5.0.1
 SystemRequirements: GNU make
+Remotes: matthewjdenny/SpeedReader
