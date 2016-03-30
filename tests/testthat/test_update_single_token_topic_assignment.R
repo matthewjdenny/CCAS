@@ -40,7 +40,9 @@ test_that("That Update_Single_Token_Topic_Assignment works", {
         topic_interaction_patterns = c(0,1,1,2,3),
         document_sender = 0 ,
         rand_num = runif(1),
-        parallel = FALSE)
+        parallel = FALSE,
+        use_cached_token_topic_distribution = FALSE,
+        cached_token_topic_distribution = rep(-1,num_topics))
 
     # no errors, will write an analytical test
 

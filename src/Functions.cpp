@@ -619,7 +619,7 @@ namespace mjd {
     //                 Update Single Token Topic Assignment                   //
     // ***********************************************************************//
 
-    int update_single_token_topic_assignment(
+    arma::vec update_single_token_topic_assignment(
             arma::cube edge_probabilities,
             int tokens_in_document,
             int current_token_topic_assignment,
@@ -633,7 +633,9 @@ namespace mjd {
             arma::vec topic_interaction_patterns,
             int document_sender,
             double rand_num,
-            bool parallel) {
+            bool parallel,
+            bool use_cached_token_topic_distribution,
+            arma::vec cached_token_topic_distribution) {
 
         // calculate beta, the sum over beta_n
         double beta = arma::sum(beta_n);
@@ -648,23 +650,30 @@ namespace mjd {
         // is independent of the others. I have verified that we get exactly the
         // same thing out either way.
         if (parallel) {
-            // use RcppParallel::parallelFor to loop over the distribution over
-            // topics.
-            unnormalized_log_distribution = parallel_token_topic_probabilities(
-                edge_probabilities,
-                tokens_in_document,
-                current_token_topic_assignment,
-                current_document_topic_counts,
-                word_type_topic_counts,
-                topic_token_counts,
-                current_word_type,
-                alpha_m,
-                beta_n,
-                document_edge_values,
-                topic_interaction_patterns,
-                document_sender,
-                beta,
-                number_of_topics);
+            // if we are using the cached values, then we do not need to
+            // reconstruct the distribution.
+            use_cached_token_topic_distribution = false;
+            if (use_cached_token_topic_distribution) {
+                unnormalized_log_distribution = cached_token_topic_distribution;
+            } else {
+                // use RcppParallel::parallelFor to loop over the distribution over
+                // topics.
+                unnormalized_log_distribution = parallel_token_topic_probabilities(
+                    edge_probabilities,
+                    tokens_in_document,
+                    current_token_topic_assignment,
+                    current_document_topic_counts,
+                    word_type_topic_counts,
+                    topic_token_counts,
+                    current_word_type,
+                    alpha_m,
+                    beta_n,
+                    document_edge_values,
+                    topic_interaction_patterns,
+                    document_sender,
+                    beta,
+                    number_of_topics);
+            }
 
         // if we do not want to do this in parallel (which may actually be
         // faster for small numbers of topics, then just loop over the topics).
@@ -708,7 +717,15 @@ namespace mjd {
             unnormalized_log_distribution,
             rand_num);
 
-        return new_assignment;
+        // put the token topic assignment in the first spot and the dist
+        // in the rest.
+        arma::vec ret_vec = arma::zeros(number_of_topics + 1);
+        ret_vec[0] = new_assignment;
+        for (int i = 0; i < number_of_topics; ++i) {
+            ret_vec[i+1] = unnormalized_log_distribution[i];
+        }
+
+        return ret_vec;
     }
 
 
@@ -740,6 +757,7 @@ namespace mjd {
         int number_of_actors = document_edge_matrix.n_cols;
         int number_of_interaction_patterns = intercepts.n_elem;
         int rand_num_counter = 0;
+        int number_of_topics = alpha_m.n_elem;
 
         arma::cube edge_probabilities = arma::zeros(number_of_actors,
             number_of_actors,
@@ -768,6 +786,13 @@ namespace mjd {
 
         // loop over documents
         for (int i = 0; i < number_of_documents; ++i) {
+            // values to be used for caching if parallel == TRUE
+            bool tta_did_not_change = false;
+            arma::vec cached_token_topic_distribution = arma::zeros(number_of_topics);
+            bool previous_topic_assign_same_as_current = false;
+            int previous_topic_assign = -1;
+            bool use_cached_token_topic_distribution = false;
+
             // get the current token topic assignments as a vector
             arma::vec current_token_topic_assignments = token_topic_assignments[i];
             // get the current token word types as a vector
@@ -795,8 +820,23 @@ namespace mjd {
                 double rand_num = random_numbers[rand_num_counter];
                 rand_num_counter += 1;
 
+                if (previous_topic_assign == current_token_topic_assignment) {
+                    previous_topic_assign_same_as_current = true;
+                } else {
+                    previous_topic_assign_same_as_current = false;
+                }
+
+                // now determine whether we should use caching
+                if (previous_topic_assign_same_as_current &
+                    tta_did_not_change) {
+                    use_cached_token_topic_distribution = true;
+                } else {
+                    use_cached_token_topic_distribution = false;
+                }
+
+
                 // now get the new assignment
-                int new_topic_assignment = update_single_token_topic_assignment(
+                arma::vec new_topic_assignment_vec = update_single_token_topic_assignment(
                     edge_probabilities,
                     tokens_in_document,
                     current_token_topic_assignment,
@@ -810,8 +850,20 @@ namespace mjd {
                     topic_interaction_patterns,
                     document_sender,
                     rand_num,
-                    parallel);
+                    parallel,
+                    use_cached_token_topic_distribution,
+                    cached_token_topic_distribution);
 
+                // extract values from returned vec
+                int new_topic_assignment = new_topic_assignment_vec[0];
+                for (int i = 0; i < number_of_topics; ++i) {
+                    cached_token_topic_distribution[i] =
+                        new_topic_assignment_vec[i+1];;
+                }
+
+                // set cacheing values
+                tta_did_not_change = true;
+                previous_topic_assign = new_topic_assignment;
                 // if the assignment changed, then we need to update everything.
                 if (new_topic_assignment != current_token_topic_assignment) {
                     document_topic_counts(i,current_token_topic_assignment) -= 1;
@@ -823,6 +875,7 @@ namespace mjd {
                                            current_token_topic_assignment) -= 1;
                     word_type_topic_counts(current_word_type,
                                            new_topic_assignment) += 1;
+                    tta_did_not_change = false;
                 }
             }
             // put the vector back in the list
@@ -2307,7 +2360,7 @@ double ldac(int tokens_in_document,
 
 
 // [[Rcpp::export]]
-int ustta(arma::cube edge_probabilities,
+arma::vec ustta(arma::cube edge_probabilities,
         int tokens_in_document,
         int current_token_topic_assignment,
         arma::vec current_document_topic_counts,
@@ -2320,9 +2373,11 @@ int ustta(arma::cube edge_probabilities,
         arma::vec topic_interaction_patterns,
         int document_sender,
         double rand_num,
-        bool parallel){
+        bool parallel,
+        bool use_cached_token_topic_distribution,
+        arma::vec cached_token_topic_distribution){
 
-    int assignment = mjd::update_single_token_topic_assignment(
+   arma::vec assignment = mjd::update_single_token_topic_assignment(
             edge_probabilities,
             tokens_in_document,
             current_token_topic_assignment,
@@ -2336,7 +2391,9 @@ int ustta(arma::cube edge_probabilities,
             topic_interaction_patterns,
             document_sender,
             rand_num,
-            parallel);
+            parallel,
+            use_cached_token_topic_distribution,
+            cached_token_topic_distribution);
 
     return assignment;
 }

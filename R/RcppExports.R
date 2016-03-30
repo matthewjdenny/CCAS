@@ -29,8 +29,8 @@ ldac <- function(tokens_in_document, current_token_topic_assignment, current_doc
     .Call('CCAS_ldac', PACKAGE = 'CCAS', tokens_in_document, current_token_topic_assignment, current_document_topic_counts, word_type_topic_counts, topic_token_counts, topic, current_word_type, alpha_m, beta_n, beta)
 }
 
-ustta <- function(edge_probabilities, tokens_in_document, current_token_topic_assignment, current_document_topic_counts, word_type_topic_counts, topic_token_counts, current_word_type, alpha_m, beta_n, document_edge_values, topic_interaction_patterns, document_sender, rand_num, parallel) {
-    .Call('CCAS_ustta', PACKAGE = 'CCAS', edge_probabilities, tokens_in_document, current_token_topic_assignment, current_document_topic_counts, word_type_topic_counts, topic_token_counts, current_word_type, alpha_m, beta_n, document_edge_values, topic_interaction_patterns, document_sender, rand_num, parallel)
+ustta <- function(edge_probabilities, tokens_in_document, current_token_topic_assignment, current_document_topic_counts, word_type_topic_counts, topic_token_counts, current_word_type, alpha_m, beta_n, document_edge_values, topic_interaction_patterns, document_sender, rand_num, parallel, use_cached_token_topic_distribution, cached_token_topic_distribution) {
+    .Call('CCAS_ustta', PACKAGE = 'CCAS', edge_probabilities, tokens_in_document, current_token_topic_assignment, current_document_topic_counts, word_type_topic_counts, topic_token_counts, current_word_type, alpha_m, beta_n, document_edge_values, topic_interaction_patterns, document_sender, rand_num, parallel, use_cached_token_topic_distribution, cached_token_topic_distribution)
 }
 
 utta <- function(author_indexes, document_edge_matrix, topic_interaction_patterns, document_topic_counts, word_type_topic_counts, topic_token_counts, token_topic_assignments, token_word_types, intercepts, coefficients, latent_positions, covariates, alpha_m, beta_n, random_numbers, using_coefficients, parallel) {

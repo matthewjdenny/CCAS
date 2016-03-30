@@ -32,10 +32,11 @@ test_that("main the parallel token topic distribution updates return the same th
                             LSM_prior_variance = 1,
                             LSM_prior_mean = 0,
                             slice_sample_alpha_m = TRUE,
-                            slice_sample_step_size = 1)
+                            slice_sample_step_size = 1,
+                            generate_plots = FALSE)
     })
     # user  system elapsed
-    # 24.147   0.535  24.851
+    # 26.740   0.226  35.135
 
     system.time({
         CCAS_Object2 <- ccas(formula,
@@ -56,10 +57,11 @@ test_that("main the parallel token topic distribution updates return the same th
                              LSM_prior_mean = 0,
                              slice_sample_alpha_m = TRUE,
                              slice_sample_step_size = 1,
-                             parallel = TRUE)
+                             parallel = TRUE,
+                             generate_plots = FALSE)
     })
     # user  system elapsed
-    # 25.094   0.548  19.262
+    # 26.387   0.222  28.193
 
     # extract the topic model results
     TM1 <- CCAS_Object@topic_model_results

@@ -44,7 +44,8 @@ test_internal_functions(Test_Log_Space_Multinomial_Sampler = FALSE,
   update_t_i_p_every_x_iterations = NULL,
   perform_adaptive_metropolis = NULL, resample_word_types = NULL,
   slice_sample_alpha_m = NULL, slice_sample_step_size = NULL,
-  parallel = NULL)
+  parallel = NULL, use_cached_token_topic_distribution = NULL,
+  cached_token_topic_distribution = NULL)
 }
 \arguments{
 \item{Test_Log_Space_Multinomial_Sampler}{Defualts to FALSE. If TRUE, then
@@ -258,6 +259,11 @@ the value directly (normally 5, set to a negative number to turn off)),}
 \item{slice_sample_step_size}{An integer.}
 
 \item{parallel}{A boolean.}
+
+\item{use_cached_token_topic_distribution}{A boolean.}
+
+\item{cached_token_topic_distribution}{A vector with legth equal to the number
+of topics.}
 }
 \value{
 Whatever is returned by the internal function being tested

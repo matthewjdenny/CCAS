@@ -131,8 +131,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // ustta
-int ustta(arma::cube edge_probabilities, int tokens_in_document, int current_token_topic_assignment, arma::vec current_document_topic_counts, arma::mat word_type_topic_counts, arma::vec topic_token_counts, int current_word_type, arma::vec alpha_m, arma::vec beta_n, arma::vec document_edge_values, arma::vec topic_interaction_patterns, int document_sender, double rand_num, bool parallel);
-RcppExport SEXP CCAS_ustta(SEXP edge_probabilitiesSEXP, SEXP tokens_in_documentSEXP, SEXP current_token_topic_assignmentSEXP, SEXP current_document_topic_countsSEXP, SEXP word_type_topic_countsSEXP, SEXP topic_token_countsSEXP, SEXP current_word_typeSEXP, SEXP alpha_mSEXP, SEXP beta_nSEXP, SEXP document_edge_valuesSEXP, SEXP topic_interaction_patternsSEXP, SEXP document_senderSEXP, SEXP rand_numSEXP, SEXP parallelSEXP) {
+arma::vec ustta(arma::cube edge_probabilities, int tokens_in_document, int current_token_topic_assignment, arma::vec current_document_topic_counts, arma::mat word_type_topic_counts, arma::vec topic_token_counts, int current_word_type, arma::vec alpha_m, arma::vec beta_n, arma::vec document_edge_values, arma::vec topic_interaction_patterns, int document_sender, double rand_num, bool parallel, bool use_cached_token_topic_distribution, arma::vec cached_token_topic_distribution);
+RcppExport SEXP CCAS_ustta(SEXP edge_probabilitiesSEXP, SEXP tokens_in_documentSEXP, SEXP current_token_topic_assignmentSEXP, SEXP current_document_topic_countsSEXP, SEXP word_type_topic_countsSEXP, SEXP topic_token_countsSEXP, SEXP current_word_typeSEXP, SEXP alpha_mSEXP, SEXP beta_nSEXP, SEXP document_edge_valuesSEXP, SEXP topic_interaction_patternsSEXP, SEXP document_senderSEXP, SEXP rand_numSEXP, SEXP parallelSEXP, SEXP use_cached_token_topic_distributionSEXP, SEXP cached_token_topic_distributionSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
@@ -150,7 +150,9 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type document_sender(document_senderSEXP);
     Rcpp::traits::input_parameter< double >::type rand_num(rand_numSEXP);
     Rcpp::traits::input_parameter< bool >::type parallel(parallelSEXP);
-    __result = Rcpp::wrap(ustta(edge_probabilities, tokens_in_document, current_token_topic_assignment, current_document_topic_counts, word_type_topic_counts, topic_token_counts, current_word_type, alpha_m, beta_n, document_edge_values, topic_interaction_patterns, document_sender, rand_num, parallel));
+    Rcpp::traits::input_parameter< bool >::type use_cached_token_topic_distribution(use_cached_token_topic_distributionSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type cached_token_topic_distribution(cached_token_topic_distributionSEXP);
+    __result = Rcpp::wrap(ustta(edge_probabilities, tokens_in_document, current_token_topic_assignment, current_document_topic_counts, word_type_topic_counts, topic_token_counts, current_word_type, alpha_m, beta_n, document_edge_values, topic_interaction_patterns, document_sender, rand_num, parallel, use_cached_token_topic_distribution, cached_token_topic_distribution));
     return __result;
 END_RCPP
 }
