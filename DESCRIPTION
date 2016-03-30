@@ -29,4 +29,4 @@ Suggests:
     testthat
 RoxygenNote: 5.0.1
 SystemRequirements: GNU make
-Remotes: https://github.com/matthewjdenny/SpeedReader.git
+Remotes: matthewjdenny/SpeedReader
