@@ -6,6 +6,12 @@
 #' @param topic_model_burnin The number of iterations of Gibbs sampling to
 #' discard before generating trace plot and calculating Geweke statistic.
 #' @return A plot.
+#' @examples
+#' \dontrun{
+#' # load in saved model output from ccas() function.
+#' data(Model_Output)
+#' plot_topic_model_log_likelihood(Model_Output)
+#' }
 #' @export
 plot_topic_model_log_likelihood <- function(CCAS_Object,
                                             topic_model_burnin = NULL) {

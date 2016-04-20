@@ -4,6 +4,12 @@
 #'
 #' @param CCAS_Object devtoolAn object of class CCAS containing estimation results.
 #' @return A plot.
+#' @examples
+#' \dontrun{
+#' # load in saved model output from ccas() function.
+#' data(Model_Output)
+#' plot_interaction_pattern_log_likelihood(Model_Output)
+#' }
 #' @export
 plot_interaction_pattern_log_likelihood <- function(CCAS_Object) {
 

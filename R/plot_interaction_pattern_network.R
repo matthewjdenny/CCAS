@@ -15,6 +15,14 @@
 #' Defaults to TRUE, but can be set to FALSE if the user only wishes to access
 #' the mean latent positions of actors.
 #' @return An data.frame containing the mean latent coordinates of each actor.
+#' @examples
+#' \dontrun{
+#' # load in saved model output from ccas() function.
+#' data(Model_Output)
+#' mean_positions <- plot_interaction_pattern_network(Model_Output,
+#'                                  interaction_pattern_index = 1,
+#'                                  plot_color_category = "Gender")
+#' }
 #' @export
 plot_interaction_pattern_network <- function(CCAS_Object,
                                              interaction_pattern_index,

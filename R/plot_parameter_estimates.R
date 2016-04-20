@@ -4,16 +4,23 @@
 #'
 #' @param CCAS_Object The object returned by the ccas() main estimation
 #' function.
-#' @param plots_per_row THe number of interaction pattern coefficient plots to
+#' @param plots_per_row The number of interaction pattern coefficient plots to
 #' include in each row of the output figure.
 #' @param generate_plots Logical indicating whether plots should be generated,
 #' defaults to TRUE, but may be set to FALSE if the user only wishes to access
 #' parameter estimates.
-#' @return A plot
+#' @return A plot.
+#' @examples
+#' \dontrun{
+#' # load in saved model output from ccas() function.
+#' data(Model_Output)
+#' # plots_per_row should be equal to the number of interactions patterns.
+#' summary_data <- plot_parameter_estimates(Model_Output, plots_per_row = 4)
+#' }
 #' @export
 plot_parameter_estimates <- function(CCAS_Object,
                                      plots_per_row,
-                                     generate_plots){
+                                     generate_plots = TRUE){
 
     Interaction_Pattern <- Color <- Variable <- Coefficient <- SE <- NULL
     # loop over interaction patterns
