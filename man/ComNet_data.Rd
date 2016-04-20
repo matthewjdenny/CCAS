@@ -3,13 +3,14 @@
 \docType{data}
 \name{ComNet_data}
 \alias{ComNet_data}
-\title{Toy example ComNet dataset}
+\title{Department Manager Email dataset --  ComNet object}
 \format{A ComNet object.}
 \usage{
 ComNet_data
 }
 \description{
-An example dataset comprising 20 messages sent between 10 actors.
+An example dataset comprising 121 emails sent among 20 county government
+department managers.
 }
 \keyword{datasets}
 
