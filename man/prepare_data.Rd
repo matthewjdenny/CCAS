@@ -9,23 +9,48 @@ prepare_data(document_authors, document_edge_matrix, document_term_matrix,
 }
 \arguments{
 \item{document_authors}{A vector recording the index of the sender of each
-document.}
+document. This vector must be equal in length to the number of documents
+in the corpus, and should be one-indexed.}
 
-\item{document_edge_matrix}{A documents x actors matrix recording whether
-actor j was a recipient of message i.}
+\item{document_edge_matrix}{A documents (rows) by actors (columns) matrix
+recording whether actor j was a recipient of message i. This matrix should
+be one-indexed.}
 
-\item{document_term_matrix}{A documents x unique terms matrix recording the
-count of unique term j in document i.}
+\item{document_term_matrix}{A documents (rows) by unique terms (columns)
+matrix recording the count of unique term j in document i.}
 
-\item{covariate_data}{Defaults to NULL.}
+\item{covariate_data}{Defaults to NULL. The user may provide a data.frame
+containing covariate data for each actor. This data frame must have the same
+number of rows as actors, and should use descriptive variable names.}
 
-\item{vocabulary}{Defaults to NULL.}
+\item{vocabulary}{Defaults to NULL, in which case the column names of the
+document_term_matrix will be used as the vocabulary.}
 }
 \value{
-An object of class ComNet.
+An object of class ComNet that will be used by the ccas() function.
 }
 \description{
 Reads in and stores communication network data in a ComNet
 object for use in main estimation procedure.
+}
+\examples{
+\dontrun{
+# load in example county government email data.
+data(author_attributes)
+data(document_edge_matrix)
+data(document_word_matrix)
+data(vocabulary)
+
+# the first colun of the doc-edge matrix is the author index. Take it out and
+# then remove it from the doc-edge matrix.
+document_authors <- document_edge_matrix[,1]
+document_edge_matrix <- document_edge_matrix[,-1]
+ComNet <- prepare_data(
+document_authors = document_authors,
+document_edge_matrix = document_edge_matrix,
+document_term_matrix = document_word_matrix,
+covariate_data = author_attributes,
+vocabulary = vocabulary)
+}
 }
 
