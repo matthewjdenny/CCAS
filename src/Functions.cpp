@@ -1539,7 +1539,6 @@ namespace mjd {
             // take everything out of the returned list and put it back in the
             // main objects. We have to do this silly double assignment because
             // the direct assignment from and Rcpp::List object is ambiguous.
-
             arma::mat temp = Topic_Updates[0];
             document_topic_counts = temp;
             arma::mat temp2 = Topic_Updates[1];
@@ -1551,9 +1550,6 @@ namespace mjd {
             token_topic_assignments = Topic_Updates[3];
             arma::cube temp4 = Topic_Updates[4];
             edge_probabilities = temp4;
-
-            //Rcpp::Rcout << "Token Topic Assignment Updates Complete..." <<
-            //std::endl;
 
             // only update topic interaction pattern assignments if we have
             // completed atleast x iterations.
@@ -1583,32 +1579,39 @@ namespace mjd {
                         edge_probabilities);
                     //reset counter
                     t_i_p_update_counter = 0;
+
+                    // print the T. I. P. Assignments out so we can check for weird
+                    // stuff like all topics going toone IP.
                     Rcpp::Rcout << "Topic Interaction Pattern Assignments: " <<
-                        std::endl << Rcpp::as<Rcpp::NumericVector>(Rcpp::wrap(topic_interaction_patterns.t()))
-                        << std::endl;
+                        std::endl << Rcpp::as<Rcpp::NumericVector>(
+                        Rcpp::wrap(topic_interaction_patterns.t())) << std::endl;
                 }
                 //increment counter
                 t_i_p_update_counter += 1;
             } // end of topic interaction pattern update loop
 
-            //Rcpp::Rcout << "Topic I. P. Assignment Updates Complete..." <<
-            //std::endl;
+            // ************************************************************** //
+            // This section of the code is not necessary for our algorithm to
+            // perform inference, but will give us convergence diagnostics and
+            // better fit
 
-            //U pdate LDA hyperparameters here
-
+            // we need to work with the log of alpha m for slice sampling
             arma::vec log_alpha_m(num_topics);
             for(int t = 0; t < num_topics; ++t){
                 log_alpha_m[t] = log(alpha_m[t]);
             }
 
+            // get the unnormalied LDA log likelihood for assesing convergence.
             double LDA_ll = calculate_unnormalized_LDA_log_likelihood(
                 number_of_documents,
                 num_topics,
                 token_topic_assignments,
                 log_alpha_m);
 
+            // store the value.
             store_LDA_ll[i] = LDA_ll;
 
+            // if we are slice sampling this iteration, the do it.
             if (slice_sample_every_x_iterations == slice_sample_counter) {
                 alpha_m = slice_sample_new_alpha_m(number_of_documents,
                                                    num_topics,
@@ -1620,6 +1623,7 @@ namespace mjd {
                 Rcpp::Rcout << "New Alpha value:" << alpha_m[0] << std::endl;
             }
             slice_sample_counter += 1;
+            // ************************************************************** //
 
             // perform adaptive metropolis updates if there has been atleast
             // one outer iteration
