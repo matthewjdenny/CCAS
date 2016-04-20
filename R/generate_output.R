@@ -123,14 +123,20 @@ generate_output <- function(CCAS_Object,
     }
 
     # generate plots and get parameter estimates
-    pdf(file = paste(output_name_stem,
-                     "parameter_estimates.pdf", sep = "_"),
-        height = 6,
-        width = 12)
-    parameter_estimates <- plot_parameter_estimates(CCAS_Object,
-                                         plots_per_row = plots_per_row,
-                                         generate_plots = generate_plots)
-    dev.off()
+    if (!is.null(output_name_stem)) {
+        pdf(file = paste(output_name_stem,
+                         "parameter_estimates.pdf", sep = "_"),
+            height = 6,
+            width = 12)
+        parameter_estimates <- plot_parameter_estimates(CCAS_Object,
+                                                        plots_per_row = plots_per_row,
+                                                        generate_plots = generate_plots)
+        dev.off()
+    } else {
+        parameter_estimates <- plot_parameter_estimates(CCAS_Object,
+                                                        plots_per_row = plots_per_row,
+                                                        generate_plots = generate_plots)
+    }
 
     CCAS_Object@parameter_estimates <- parameter_estimates
 
