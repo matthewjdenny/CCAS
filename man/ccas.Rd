@@ -21,9 +21,11 @@ ccas(formula, interaction_patterns = 4, topics = 40, alpha = 1,
 \arguments{
 \item{formula}{A formula object of the form 'ComNet ~
 euclidean(d = 2)' where d is the number of dimensions in the latent space
-that the user would like to include, and Comnet is a ComNet object generated
-by the prepare_data() function. May also include optional terms
-'sender("covariate_name")', receiver("covariate_name")',
+that the user would like to include, and ComNet is an object of class
+'ComNet' generated  by the prepare_data() function. This object will contain
+all of hte relvant information about the corpus so that multiple models may
+be specified without the need to re-preprocess the data. The formula may also
+include optional terms sender("covariate_name")', receiver("covariate_name")',
 'nodemix("covariate_name", base = value)' and netcov("network_covariate"),
 which are defined analogously to the arguments in the latentnet package.}
 
@@ -52,7 +54,11 @@ sampling to discard before keeping samples. Defaults to 50,000.}
 
 \item{final_metropolis_hastings_iterations}{The number of iterations to run
 Metropolis Hastings after completing all main iterations of Gibbs sampling.
-Defaults to 100,000.}
+Defaults to 100,000. This additional number of iterations is required to
+ensure that the Markov chain of interaction pattern parameters has mixed
+appropriatly and converged to the target distribution. This can occasionally
+take on the order of 1-10 million iterations, but is often much faster in
+practice.}
 
 \item{thin}{The proportion of network samples to keep from the final run of
 Metropolis Hastings to convergence. Defaults to 1/100, meaning that every
@@ -75,7 +81,8 @@ interaction pattern parameters. Defaults to 0.}
 
 \item{iterations_before_t_i_p_updates}{The number of iterations to wait
 before beginning updates to topic interaction pattern assignments. Defaults
-to 5.}
+to 5. If the user does not wish to update these assignments, the value
+can be set greater than 'iterations'.}
 
 \item{update_t_i_p_every_x_iterations}{The number of iterations between
 updates to topic interaction pattern assignments. Defaults to 5.}
@@ -92,16 +99,19 @@ variance is changed (up or down) durring adaptive Metropolis. Defaults to
 12345.}
 
 \item{adaptive_metropolis_every_x_iterations}{The nubmer of iterations
-between proposal variance updates durring the final run of MH to convergence.
+between proposal variance updates during the final run of MH to convergence.
 Defaults to 1000.}
 
 \item{stop_adaptive_metropolis_after_x_updates}{The number of Metropolis
 Hastings proposal variance updates to complete durring the final run of
-MH to convergence before fixing its value. Defualts to 50.}
+MH to convergence before fixing its value. Defualts to 50. Make sure that
+the selection of this number is such that the proposal variance is fixed after
+burnin.}
 
 \item{slice_sample_alpha_m}{Logical indicating whether hyperparameter
 optimization should be used to determine the optimal value of alpha. Defaults
-to FALSE.}
+to FALSE. If TRUE, then alpha_m will be slice sampled. This can improve model
+fit.}
 
 \item{slice_sample_step_size}{The initial size of the slice to use when slice
 sampling alpha (hyperparameter optimization). Defaults to 1.}
@@ -131,5 +141,36 @@ An object of class CCAS containing estimation results.
 \description{
 Performs inference on the content conditional structure of a
 text valued communication network.
+}
+\examples{
+\dontrun{
+set.seed(12345)
+# read in data prepared by the prepare_data() function.
+data(ComNet_data)
+# specify a formula that we will use for testing.
+formula <- ComNet_data ~ euclidean(d = 2) +
+           nodemix("Gender", base = "Male")
+CCAS_Object <- ccas(formula,
+                    interaction_patterns = 4,
+                    topics = 40,
+                    alpha = 1,
+                    beta = 0.01,
+                    iterations = 20,
+                    metropolis_hastings_iterations = 500,
+                    final_metropolis_hastings_iterations = 10000,
+                    final_metropolis_hastings_burnin = 5000,
+                    thin = 1/10,
+                    target_accept_rate = 0.25,
+                    tolerance = 0.05,
+                    adaptive_metropolis_update_size = 0.05,
+                    LSM_proposal_variance = .5,
+                    LSM_prior_variance = 1,
+                    LSM_prior_mean = 0,
+                    slice_sample_alpha_m = TRUE,
+                    slice_sample_step_size = 1,
+                    generate_plots = TRUE,
+                    output_directory = NULL,
+                    output_name_stem = NULL)
+}
 }
 
