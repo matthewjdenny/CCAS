@@ -31,4 +31,13 @@ An data.frame containing the mean latent coordinates of each actor.
 Plots a sub network associated with a particular interaction
 pattern with nodes placed according to their posterior mean latent positions.
 }
+\examples{
+\dontrun{
+# load in saved model output from ccas() function.
+data(Model_Output)
+mean_positions <- plot_interaction_pattern_network(Model_Output,
+                                 interaction_pattern_index = 1,
+                                 plot_color_category = "Gender")
+}
+}
 

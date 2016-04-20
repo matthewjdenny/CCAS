@@ -19,4 +19,11 @@ A plot.
 Generates a trace plot of the unnormalized topic model log
 likelihood. This is a potential way to diagnose the convergence of the model.
 }
+\examples{
+\dontrun{
+# load in saved model output from ccas() function.
+data(Model_Output)
+plot_topic_model_log_likelihood(Model_Output)
+}
+}
 

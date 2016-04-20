@@ -16,4 +16,11 @@ A plot.
 Generates a trace plot of the interaction pattern model log
 likelihood. This is a potential way to diagnose the convergence of the model.
 }
+\examples{
+\dontrun{
+# load in saved model output from ccas() function.
+data(Model_Output)
+plot_interaction_pattern_log_likelihood(Model_Output)
+}
+}
 
