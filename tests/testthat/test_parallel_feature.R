@@ -5,14 +5,9 @@ test_that("main the parallel token topic distribution updates return the same th
     # create an example distribution
     set.seed(12345)
     data(ComNet_data)
-
-    net_covariate <- matrix(runif(100),10,10)
-
     # specify a formula that we will use for testing.
     formula <- ComNet_data ~ euclidean(d = 2) +
-        sender("age") +
-        nodemix("gender", base = "male") +
-        netcov("net_covariate")
+        nodemix("Gender", base = "Male")
 
     system.time({
         CCAS_Object <- ccas(formula,
@@ -35,8 +30,6 @@ test_that("main the parallel token topic distribution updates return the same th
                             slice_sample_step_size = 1,
                             generate_plots = FALSE)
     })
-    # user  system elapsed
-    # 26.740   0.226  35.135
 
     system.time({
         CCAS_Object2 <- ccas(formula,
@@ -60,8 +53,6 @@ test_that("main the parallel token topic distribution updates return the same th
                              parallel = TRUE,
                              generate_plots = FALSE)
     })
-    # user  system elapsed
-    # 26.387   0.222  28.193
 
     # extract the topic model results
     TM1 <- CCAS_Object@topic_model_results

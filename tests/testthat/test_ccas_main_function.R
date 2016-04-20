@@ -6,13 +6,9 @@ test_that("main function works", {
     set.seed(12345)
     data(ComNet_data)
 
-    net_covariate <- matrix(runif(100),10,10)
-
     # specify a formula that we will use for testing.
     formula <- ComNet_data ~ euclidean(d = 2) +
-                             sender("age") +
-                             nodemix("gender", base = "male") +
-                             netcov("net_covariate")
+                             nodemix("Gender", base = "Male")
 
     CCAS_Object <- ccas(formula,
                      interaction_patterns = 4,
@@ -32,7 +28,9 @@ test_that("main function works", {
                      LSM_prior_mean = 0,
                      slice_sample_alpha_m = TRUE,
                      slice_sample_step_size = 1,
-                     generate_plots = FALSE)
+                     generate_plots = FALSE,
+                     output_directory = NULL,
+                     output_name_stem = NULL)
 
     expect_equal(nrow(CCAS_Object@MCMC_output$intercepts),1000)
 
