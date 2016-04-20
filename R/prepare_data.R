@@ -3,14 +3,38 @@
 #' object for use in main estimation procedure.
 #'
 #' @param document_authors A vector recording the index of the sender of each
-#' document.
-#' @param document_edge_matrix A documents x actors matrix recording whether
-#' actor j was a recipient of message i.
-#' @param document_term_matrix A documents x unique terms matrix recording the
-#' count of unique term j in document i.
-#' @param covariate_data Defaults to NULL.
-#' @param vocabulary Defaults to NULL.
-#' @return An object of class ComNet.
+#' document. This vector must be equal in length to the number of documents
+#' in the corpus, and should be one-indexed.
+#' @param document_edge_matrix A documents (rows) by actors (columns) matrix
+#' recording whether actor j was a recipient of message i. This matrix should
+#' be one-indexed.
+#' @param document_term_matrix A documents (rows) by unique terms (columns)
+#'  matrix recording the count of unique term j in document i.
+#' @param covariate_data Defaults to NULL. The user may provide a data.frame
+#' containing covariate data for each actor. This data frame must have the same
+#' number of rows as actors, and should use descriptive variable names.
+#' @param vocabulary Defaults to NULL, in which case the column names of the
+#' document_term_matrix will be used as the vocabulary.
+#' @return An object of class ComNet that will be used by the ccas() function.
+#' @examples
+#' \dontrun{
+#' # load in example county government email data.
+#' data(author_attributes)
+#' data(document_edge_matrix)
+#' data(document_word_matrix)
+#' data(vocabulary)
+#'
+#' # the first colun of the doc-edge matrix is the author index. Take it out and
+#' # then remove it from the doc-edge matrix.
+#' document_authors <- document_edge_matrix[,1]
+#' document_edge_matrix <- document_edge_matrix[,-1]
+#' ComNet <- prepare_data(
+#' document_authors = document_authors,
+#' document_edge_matrix = document_edge_matrix,
+#' document_term_matrix = document_word_matrix,
+#' covariate_data = author_attributes,
+#' vocabulary = vocabulary)
+#' }
 #' @export
 prepare_data <- function(document_authors,
                          document_edge_matrix,
@@ -154,9 +178,6 @@ prepare_data <- function(document_authors,
         # now assign to slot in object
         ComNet_Object@covariate_data <- covariate_data
     }
-
-    # network_covariates_list will be left NULL for now but will eventually
-    # store any network covariates passed in to the ccas function.
 
     return(ComNet_Object)
 }
