@@ -1584,7 +1584,7 @@ namespace mjd {
                     //reset counter
                     t_i_p_update_counter = 0;
                     Rcpp::Rcout << "Topic Interaction Pattern Assignments: " <<
-                        std::endl << arma::round(topic_interaction_patterns.t())
+                        std::endl << Rcpp::as<Rcpp::NumericVector>(Rcpp::wrap(topic_interaction_patterns.t()))
                         << std::endl;
                 }
                 //increment counter
