@@ -11,9 +11,13 @@ generate_output(CCAS_Object, output_directory = NULL,
 \item{CCAS_Object}{The object returned by the ccas() main estimation
 function.}
 
-\item{output_directory}{Defaults to NULL, currently unimplemented.}
+\item{output_directory}{The directory where the user would like to save plots
+if an output_name_stem is given. Defaults to NULL, in which case the current
+working directory will be used.}
 
-\item{output_name_stem}{Defaults to NULL, currently unimplemented.}
+\item{output_name_stem}{Defaults to NULL. If not null, then output will be
+saved to disk using the output_name_stem to differentiate it from output from
+other model runs.}
 
 \item{generate_plots}{Logical indicating whether plots should be generated,
 defaults to TRUE, but may be set to FALSE if the user only wishes to access
@@ -24,6 +28,18 @@ A series of plots and a CCAS_Object containing useful output.
 }
 \description{
 Generates a large number of plots of various posterior quantites
-of interest, includingtrace plots, parameter estimates and top words.
+of interest, including trace plots, parameter estimates, and top words. Note
+that if the user wishes to generate network plots with nodes colored by some
+categorical variable, they will need to call the
+plot_interaction_pattern_network() function separately.
+}
+\examples{
+\dontrun{
+# load in saved model output from ccas() function.
+data(Model_Output)
+summary_output <- generate_output(Model_Output,
+                                  output_directory = "~/Desktop",
+                                  output_name_stem = "Testing")
+}
 }
 
