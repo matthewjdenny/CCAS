@@ -2,7 +2,7 @@
 A statistical model for communication network data (R package)
 
 ## Overview
-This package will eventually provide a number of functions to model communication networks
+This package provides a number of functions to read in and model communication network (email) data. See `?prepare_data`, and `?ccas` to get started, as well as the example at the bottom of this page.
 
 ## Installation
 
