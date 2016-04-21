@@ -23,10 +23,10 @@ ccas(formula, interaction_patterns = 4, topics = 40, alpha = 1,
 euclidean(d = 2)' where d is the number of dimensions in the latent space
 that the user would like to include, and ComNet is an object of class
 'ComNet' generated  by the prepare_data() function. This object will contain
-all of hte relvant information about the corpus so that multiple models may
+all of the relevant information about the corpus so that multiple models may
 be specified without the need to re-preprocess the data. The formula may also
-include optional terms sender("covariate_name")', receiver("covariate_name")',
-'nodemix("covariate_name", base = value)' and netcov("network_covariate"),
+include optional terms 'sender("covariate_name")', 'receiver("covariate_name")',
+'nodemix("covariate_name", base = value)' and 'netcov("network_covariate")',
 which are defined analogously to the arguments in the latentnet package.}
 
 \item{interaction_patterns}{The number of different interaction patterns
