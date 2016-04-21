@@ -128,16 +128,16 @@ top_words <- function(CCAS_Object,
             "Topic Top Words LaTeX Output:\n",
             "#############################\n\n")
 
-        SpeedReader::color_word_table(word_table,
-                                     covariate_columns  = 1,
-                                     word_columns = 2:(top_words_to_print+1),
-                                     min_black = 30,
-                                     print_first = topics,
-                                     all_same = FALSE,
-                                     remove_words = "",
-                                     second_table = NULL,
-                                     max_char_width = 60,
-                                     bold_covariates = T)
+        color_word_table(word_table,
+                         covariate_columns  = 1,
+                         word_columns = 2:(top_words_to_print+1),
+                         min_black = 30,
+                         print_first = topics,
+                         all_same = FALSE,
+                         remove_words = "",
+                         second_table = NULL,
+                         max_char_width = 60,
+                         bold_covariates = T)
 
         word_table <- cbind(iteraction_pattern_word_counts,
                             interaction_pattern_top_words)
@@ -147,16 +147,16 @@ top_words <- function(CCAS_Object,
             "Interaction Pattern Top Words LaTeX Output:\n",
             "###########################################\n\n")
 
-        SpeedReader::color_word_table(word_table,
-                                      covariate_columns  = 1,
-                                      word_columns = 2:(top_words_to_print+1),
-                                      min_black = 30,
-                                      print_first = interaction_patterns,
-                                      all_same = FALSE,
-                                      remove_words = "",
-                                      second_table = NULL,
-                                      max_char_width = 60,
-                                      bold_covariates = T)
+        color_word_table(word_table,
+                         covariate_columns  = 1,
+                         word_columns = 2:(top_words_to_print+1),
+                         min_black = 30,
+                         print_first = interaction_patterns,
+                         all_same = FALSE,
+                         remove_words = "",
+                         second_table = NULL,
+                         max_char_width = 60,
+                         bold_covariates = T)
     }
 
     return(CCAS_Object)
