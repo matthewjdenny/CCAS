@@ -15,5 +15,8 @@ NULL
 #' @useDynLib CCAS
 #' @importFrom Rcpp sourceCpp
 #' @importFrom RcppParallel RcppParallelLibs
+#' @importFrom grDevices colorRampPalette dev.off gray pdf rgb
+#' @importFrom graphics box legend lines par plot points
+#' @importFrom stats as.formula qnorm runif sd
 NULL
 #> NULL
