@@ -147,6 +147,20 @@ prepare_data <- function(document_authors,
 
     } # end of loop over documents
 
+    # for now, we do not allow the user to include emails that do not have words
+    # in them in the data. Eventually, we will deal with this in the model.
+    if (sum(blank_documents) > 0) {
+        inds <- which(blank_documents == 1)
+        # remove those documents
+        document_authors <- document_authors[-inds]
+        document_term_matrix <- document_term_matrix[-inds,]
+        document_edge_matrix <- document_edge_matrix[-inds,]
+        token_word_type_list <- token_word_type_list[-inds]
+        token_topic_assignment_list <- token_topic_assignment_list[-inds]
+        token_word_type_list_zero_indexed <- token_word_type_list_zero_indexed[-inds]
+        token_topic_assignment_list_zero_indexed <- token_topic_assignment_list_zero_indexed[-inds]
+    }
+
     ComNet_Object <- new("ComNet",
         document_authors = document_authors,
         document_term_matrix = document_term_matrix,
