@@ -151,6 +151,8 @@ prepare_data <- function(document_authors,
     # in them in the data. Eventually, we will deal with this in the model.
     if (sum(blank_documents) > 0) {
         inds <- which(blank_documents == 1)
+        warning(paste("Documents numbered:", inds,
+                      "contained no words and are being removed from the data."))
         # remove those documents
         document_authors <- document_authors[-inds]
         document_term_matrix <- document_term_matrix[-inds,]
