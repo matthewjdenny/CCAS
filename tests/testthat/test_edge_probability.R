@@ -2,7 +2,7 @@ test_that("That calculating edge probability works", {
     skip_on_cran()
 
     # create an example distribution
-    set.seed(12345)
+    set.seed(123456)
 
     latent_pos <- array(data = rnorm(n = 32, mean = 0, sd = 2), dim = c(4,4,2))
     coefficients <- matrix(rnorm(n = 16, mean = 0, sd = 2),nrow = 4, ncol = 4)
