@@ -122,7 +122,7 @@ namespace mjd {
         double squared_dist = 0;
         //generate the sum of squares
         for (int i = 0; i < num_latent_spaces; ++i) {
-            squared_dist = pow(
+            squared_dist += pow(
                 (latent_positions(interaction_pattern, sender, i) -
                 latent_positions(interaction_pattern, recipient, i)), 2);
         }
