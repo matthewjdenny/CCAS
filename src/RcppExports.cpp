@@ -25,14 +25,15 @@ BEGIN_RCPP
 END_RCPP
 }
 // lsms
-int lsms(arma::vec unnormalized_discrete_distribution, int seed);
-RcppExport SEXP CCAS_lsms(SEXP unnormalized_discrete_distributionSEXP, SEXP seedSEXP) {
+int lsms(arma::vec unnormalized_discrete_distribution, int seed, double u);
+RcppExport SEXP CCAS_lsms(SEXP unnormalized_discrete_distributionSEXP, SEXP seedSEXP, SEXP uSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
     Rcpp::traits::input_parameter< arma::vec >::type unnormalized_discrete_distribution(unnormalized_discrete_distributionSEXP);
     Rcpp::traits::input_parameter< int >::type seed(seedSEXP);
-    __result = Rcpp::wrap(lsms(unnormalized_discrete_distribution, seed));
+    Rcpp::traits::input_parameter< double >::type u(uSEXP);
+    __result = Rcpp::wrap(lsms(unnormalized_discrete_distribution, seed, u));
     return __result;
 END_RCPP
 }

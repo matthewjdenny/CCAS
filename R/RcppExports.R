@@ -5,8 +5,8 @@ ep <- function(intercepts, coefficients, latent_positions, sender, recipient, cu
     .Call('CCAS_ep', PACKAGE = 'CCAS', intercepts, coefficients, latent_positions, sender, recipient, current_covariates, interaction_pattern, using_coefficients)
 }
 
-lsms <- function(unnormalized_discrete_distribution, seed) {
-    .Call('CCAS_lsms', PACKAGE = 'CCAS', unnormalized_discrete_distribution, seed)
+lsms <- function(unnormalized_discrete_distribution, seed, u = NA_real_) {
+    .Call('CCAS_lsms', PACKAGE = 'CCAS', unnormalized_discrete_distribution, seed, u)
 }
 
 sotep <- function(edge_probabilities, tokens_in_document, current_token_topic_assignment, current_document_topic_counts, leave_out_current_token, topic_interaction_patterns, document_sender, document_recipient, leave_out_topic) {
