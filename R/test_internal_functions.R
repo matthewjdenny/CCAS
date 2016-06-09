@@ -145,6 +145,7 @@
 #' @param use_cached_token_topic_distribution A boolean.
 #' @param cached_token_topic_distribution A vector with legth equal to the number
 #' of topics.
+#' @param u A numeric of length 1 between 0 and 1.
 #' @return Whatever is returned by the internal function being tested
 #' @export
 test_internal_functions <- function(
@@ -220,14 +221,15 @@ test_internal_functions <- function(
     slice_sample_step_size = NULL,
     parallel = NULL,
     use_cached_token_topic_distribution = NULL,
-    cached_token_topic_distribution = NULL){
+    cached_token_topic_distribution = NULL,
+    u = NULL) {
 
     return_object <- NULL
 
     # test the lsms function
     if (Test_Log_Space_Multinomial_Sampler) {
         return_object <- lsms(distribution,
-                              seed)
+                              seed, u)
     }
 
     # test ep function

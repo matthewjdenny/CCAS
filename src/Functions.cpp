@@ -2213,8 +2213,7 @@ double ep(arma::vec intercepts,
 }
 
 // [[Rcpp::export]]
-int lsms(arma::vec unnormalized_discrete_distribution,
-         int seed){
+int lsms(arma::vec unnormalized_discrete_distribution, int seed, double u=NA_REAL){
 
     // Set RNG and define uniform distribution
     boost::mt19937 generator(seed);
@@ -2222,6 +2221,10 @@ int lsms(arma::vec unnormalized_discrete_distribution,
 
     // get the random uniform draw
     double rand_num = uniform_distribution(generator);
+
+    if (arma::is_finite(u)) {
+      rand_num = u;
+    }
 
     // take a draw from the unnormalized log distribution
     int temp = mjd::log_space_multinomial_sampler (
