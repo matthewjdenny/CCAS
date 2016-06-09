@@ -1,4 +1,4 @@
-# CCAS [![Travis-CI Build Status](https://travis-ci.org/matthewjdenny/CCAS.svg?branch=master)](https://travis-ci.org/matthewjdenny/CCAS)
+# CCAS [![Travis-CI Build Status](https://travis-ci.org/matthewjdenny/CCAS.svg?branch=master)](https://travis-ci.org/matthewjdenny/CCAS)  ![](http://www.r-pkg.org/badges/version/CCAS)
 A statistical model for communication network data (R package)
 
 ## Overview
