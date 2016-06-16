@@ -321,7 +321,7 @@ namespace mjd {
             // see https://svn.r-project.org/R/trunk/src/nmath/rnorm.c for source
             // code. First argument is the mean of the normal distribution we
             // are sampling from and second is its standard_deviation.
-            proposed_intercepts[i]= R::rnorm(intercepts[i],
+            proposed_intercepts[i] = R::rnorm(intercepts[i],
                                               intercept_proposal_standard_deviations[i]);
         }
 
@@ -333,7 +333,7 @@ namespace mjd {
                     // see https://svn.r-project.org/R/trunk/src/nmath/rnorm.c for source
                     // code. First argument is the mean of the normal distribution we
                     // are sampling from and second is its standard_deviation.
-                    proposed_coefficients(i,j) += R::rnorm(coefficients(i,j),
+                    proposed_coefficients(i,j) = R::rnorm(coefficients(i,j),
                                                     coefficient_proposal_standard_deviations[i]);
                 }
             }
