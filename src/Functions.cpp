@@ -2271,12 +2271,6 @@ double ppipp(arma::vec intercepts,
           double latent_position_prior_standard_deviation,
           bool using_coefficients){
 
-    // we have to do this stupid trick to pass in 3d arrays from R. We pass in as
-    // a vector, then instatiate a cube object from there.
-    // IntegerVector arrayDims = latent_pos.attr("dim");
-    // arma::cube latent_positions(latent_pos.begin(), arrayDims[0], arrayDims[1],
-    //                               arrayDims[2], false);
-
     double log_prob = mjd::prior_probability_interaction_pattern_parameters (
         intercepts,
         coefficients,

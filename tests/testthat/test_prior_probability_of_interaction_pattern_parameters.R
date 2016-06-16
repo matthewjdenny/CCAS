@@ -4,9 +4,9 @@ test_that("That calculating prior probs of interaction pattern params works", {
     # create an example distribution
     set.seed(12345)
 
-    intercepts <- rnorm(4,mean = 0, sd = 2)
-    latent_pos <- array(data = rnorm(n = 32, mean = 0, sd = 2), dim = c(4,4,2))
-    coefficients <- matrix(rnorm(n = 16, mean = 0, sd = 2),nrow = 4, ncol = 4)
+    intercepts <- rnorm(4, mean = 0, sd = 2)
+    latent_pos <- array(data = rnorm(n = 32, mean = 0, sd = 2), dim = c(4, 4, 2))
+    coefficients <- matrix(rnorm(n = 16, mean = 0, sd = 2), nrow = 4, ncol = 4)
 
     # first lets try without covariates
     result <- test_internal_functions(
@@ -22,13 +22,7 @@ test_that("That calculating prior probs of interaction pattern params works", {
         latent_position_prior_standard_deviation = 4,
         using_coefficients = FALSE)
 
-    # no errors need to write an analytical test in R at some point
-
-    # for now, I am just going to make sure it does not change from what I have
-    # seen
-    previous_result <- -87.7845433508862
-    expect_equal(result,previous_result)
-
+    expect_that(result, equals(sum(dnorm(intercepts, 0, 4, TRUE)) + sum(dnorm(latent_pos, 0, 4, TRUE))))
 
     # make sure that using coefficients works as well
     result2 <- test_internal_functions(
@@ -44,4 +38,7 @@ test_that("That calculating prior probs of interaction pattern params works", {
         latent_position_prior_standard_deviation = 4,
         using_coefficients = TRUE)
 
+    expect_that(result2, equals(sum(dnorm(intercepts, 0, 4, TRUE)) +
+                                  sum(dnorm(coefficients, 0, 4, TRUE)) +
+                                  sum(dnorm(latent_pos, 0, 4, TRUE))))
 })
