@@ -436,7 +436,7 @@ namespace mjd {
         // get the word-type topic count for the current word and topic
         int wttc = word_type_topic_counts(current_word_type,topic);
 
-        // get the total count of tokens currently assocaited with topic
+        // get the total count of tokens currently associated with topic
         int tc = topic_token_counts[topic];
 
         // the topic is the same as the current assignement, then we decrement
