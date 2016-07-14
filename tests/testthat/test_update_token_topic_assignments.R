@@ -99,9 +99,8 @@ test_that("That Update_Token_Topic_Assignments works", {
     # THe strange thing about Rcpp shallow data structures is that they
     # change the original along with the underlying data
     for (i in 1:num_documents) {
-        print(result[[4]][[i]] == test[[i]])
+      expect_that(result[[4]][[i]] == test[[i]])
     }
-
     # no errors!
 
 })
