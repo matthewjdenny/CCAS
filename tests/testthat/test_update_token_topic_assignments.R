@@ -13,7 +13,7 @@ test_that("That Update_Token_Topic_Assignments works", {
     numld <- 2
     num_covar <- 4
     total_word_count <- num_documents * words_per_doc
-    
+
     # five topics
     alpha <- 1
     random_numbers <- runif(total_word_count)
@@ -41,12 +41,15 @@ test_that("That Update_Token_Topic_Assignments works", {
 
     # create token topic assignemnts and token word types list
     init_token_topic_assignments <- vector(mode = "list", length = num_documents)
+    save_token_topic_assignments <- vector(mode = "list", length = num_documents)
     token_word_types <- vector(mode = "list", length = num_documents)
     document_topic_counts <- matrix(0, nrow = num_documents, ncol = num_topics)
     word_type_topic_counts <- matrix(0, nrow = num_terms, ncol = num_topics)
 
     for (i in 1:num_documents) {
-        init_token_topic_assignments[[i]] <- floor(runif(n = words_per_doc, min = 0, max = num_topics - .000001))
+        temp <- floor(runif(n = words_per_doc, min = 0, max = num_topics - .000001))
+        init_token_topic_assignments[[i]] <- temp
+        save_token_topic_assignments[[i]] <- temp
         token_word_types[[i]] <- floor(runif(n = words_per_doc, min = 0, max = num_terms - .000001))
         for(j in 0:(num_topics - 1)) {
           document_topic_counts[i, j] <- length(which(init_token_topic_assignments[[i]] == j))
@@ -69,6 +72,8 @@ test_that("That Update_Token_Topic_Assignments works", {
     topic_token_counts <- colSums(word_type_topic_counts)
     token_topic_assignments <- init_token_topic_assignments
     topic_interaction_patterns <- c(0, 1, 1, 2, 3)
+
+    # do.call(cbind, token_topic_assignments)
 
     # first lets try without covariates
     result <- test_internal_functions(
@@ -93,8 +98,22 @@ test_that("That Update_Token_Topic_Assignments works", {
 
     # check to see if anything changed
     # THe strange thing about Rcpp shallow data structures is that they
-    # change the original along with the underlying data
+    # change the original along with the underlying data, so these two things
+    # are now equal. But this is not right! now we have the initial and updated
+    # token topic assignments equal to eachother. They are even equal to
+    # init_token_topic_assignments if you want to check, which is even more
+    # interesting since we assigned from it on line 73.
     expect_that(do.call(cbind, result[[4]]), equals(do.call(cbind, token_topic_assignments)))
+
+    # but now noticing that the ending token topic assignments are equal to the
+    # starting ones, we need to reset the token_topic_assignments to
+    # save_token_topic_assignments (which broke referencing -- see line 52).
+    # This puts everything right again. You can check by explicitly printing
+    # the various data structures before and after calling the function on line
+    # 79.
+    # do.call(cbind, save_token_topic_assignments)
+
+    token_topic_assignments <- save_token_topic_assignments
 
     edge_probabilities <- array(0, c(ncol(document_edge_matrix), ncol(document_edge_matrix), length(intercepts)))
     for (i in 1:ncol(document_edge_matrix)) {
@@ -163,17 +182,24 @@ test_that("That Update_Token_Topic_Assignments works", {
 
           topic_token_counts[current_token_topic_assignment + 1] <-
             topic_token_counts[current_token_topic_assignment + 1] - 1
-          topic_token_counts[current_token_topic_assignment + 1] <-
-            topic_token_counts[new_topic_assignment + 1] - 1
+          topic_token_counts[new_topic_assignment + 1] <-
+            topic_token_counts[new_topic_assignment + 1] + 1
 
           word_type_topic_counts[current_word_type + 1, current_token_topic_assignment + 1] <-
             word_type_topic_counts[current_word_type + 1, current_token_topic_assignment + 1] - 1
           word_type_topic_counts[current_word_type + 1, new_topic_assignment + 1] <-
-            word_type_topic_counts[current_word_type + 1, new_topic_assignment + 1] - 1
+            word_type_topic_counts[current_word_type + 1, new_topic_assignment + 1] + 1
         }
       }
       token_topic_assignments[[d]] <- current_token_topic_assignments
     }
 
-    expect_that(do.call(cbind, result[[4]]), equals(do.call(cbind, token_topic_assignments) - 1))
+    # substracting one gives values of negative 1 in
+    # do.call(cbind, token_topic_assignments) - 1
+    # expect_that(do.call(cbind, result[[4]]),
+    # equals(do.call(cbind, token_topic_assignments) - 1))
+
+    # now everything works out!
+    expect_that(do.call(cbind, result[[4]]), equals(do.call(cbind, token_topic_assignments)))
+
 })
