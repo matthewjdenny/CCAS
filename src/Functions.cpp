@@ -1055,7 +1055,7 @@ namespace mjd {
         double accept_log_prob = log_proposed_probability + log_proposed_prior -
              log_current_probability - log_current_prior;
         double log_random_number = log(random_number);
-        Rcpp::List to_return(6);
+        Rcpp::List to_return(11);
 
         if (accept_log_prob > log_random_number) {
             to_return[0] = proposed_intercepts;
@@ -1064,6 +1064,11 @@ namespace mjd {
             to_return[3] = proposed_edge_probabilities;
             to_return[4] = 1; //tells us whether we accepted
             to_return[5] = log_current_probability;
+	    to_return[6] = intercepts;
+	    to_return[7] = coefficients;
+	    to_return[8] = latent_positions;
+	    to_return[9] = edge_probabilities;
+	    to_return[10] = log_proposed_probability;
         } else {
             to_return[0] = intercepts;
             to_return[1] = coefficients;
@@ -1071,6 +1076,11 @@ namespace mjd {
             to_return[3] = edge_probabilities;
             to_return[4] = 0; //tells us whether we accepted
             to_return[5] = log_current_probability;
+	    to_return[6] = proposed_intercepts;
+            to_return[7] = proposed_coefficients;
+            to_return[8] = proposed_latent_positions;
+            to_return[9] = proposed_edge_probabilities;
+	    to_return[10] = log_proposed_probability;
         }
 
         return to_return;
