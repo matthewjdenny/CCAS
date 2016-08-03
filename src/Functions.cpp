@@ -1019,54 +1019,35 @@ namespace mjd {
             for (int j = 0; j < number_of_actors; ++j) {
                 // if the assignment changed, then we need to update everything.
                 if (document_sender != j) {
-                    if (document_edge_values[i] == 1) {
-                        double temp = sum_over_t_edge_probability (
-                            edge_probabilities,
-                            tokens_in_document,
-                            -1,
-                            current_document_topic_counts,
-                            false,
-                            topic_interaction_patterns,
-                            document_sender,
-                            j,
-                            -1);
-                        log_current_probability += log(temp);
+		  double temp = sum_over_t_edge_probability(
+		      edge_probabilities,
+		      tokens_in_document,
+		      -1,
+		      current_document_topic_counts,
+		      false,
+		      topic_interaction_patterns,
+		      document_sender,
+		      j,
+		     -1);
 
-                        double temp2 = sum_over_t_edge_probability (
-                            proposed_edge_probabilities,
-                            tokens_in_document,
-                            -1,
-                            current_document_topic_counts,
-                            false,
-                            topic_interaction_patterns,
-                            document_sender,
-                            j,
-                            -1);
-                        log_proposed_probability += log(temp2);
-                    } else {
-                        double temp = sum_over_t_edge_probability (
-                            edge_probabilities,
-                            tokens_in_document,
-                            -1,
-                            current_document_topic_counts,
-                            false,
-                            topic_interaction_patterns,
-                            document_sender,
-                            j,
-                            -1);
-                        log_current_probability += log(1- temp);
-                        double temp2 = sum_over_t_edge_probability (
-                            proposed_edge_probabilities,
-                            tokens_in_document,
-                            -1,
-                            current_document_topic_counts,
-                            false,
-                            topic_interaction_patterns,
-                            document_sender,
-                            j,
-                            -1);
-                        log_proposed_probability += log(1- temp2);
-                    }
+		  double temp2 = sum_over_t_edge_probability (
+		      proposed_edge_probabilities,
+		      tokens_in_document,
+		      -1,
+		      current_document_topic_counts,
+		      false,
+		      topic_interaction_patterns,
+		      document_sender,
+		      j,
+		      -1);
+
+		  if (document_edge_values[j] == 1) {		   
+		    log_current_probability += log(temp);
+		    log_proposed_probability += log(temp2);
+		  } else {
+		    log_current_probability += log(1 - temp);
+		    log_proposed_probability += log(1 - temp2);
+		  }
                 } // end of condition making sure actor is not author
             } // end of loop over actors
         }// end of loop over documents
