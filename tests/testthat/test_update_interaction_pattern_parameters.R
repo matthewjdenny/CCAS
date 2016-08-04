@@ -57,6 +57,7 @@ test_that("That Update_Interaction_Pattern_Parameters works", {
     edge_probs <- array(data = runif(n = 64), dim = c(4, 4, 4))
     topic_interaction_patterns = c(0, 1, 1, 2, 3)
 
+    set.seed(12345)
     result <- test_internal_functions(
         Test_Update_Interaction_Pattern_Parameters = TRUE,
         author_indexes = author_indexes,
@@ -85,7 +86,6 @@ test_that("That Update_Interaction_Pattern_Parameters works", {
     number_of_interaction_patterns <- length(intercepts)
 
     set.seed(12345)
-
     proposed_parameters <- test_internal_functions(
       Test_Sample_New_I_P_Parameters = TRUE,
       intercepts = intercepts,
@@ -147,7 +147,7 @@ test_that("That Update_Interaction_Pattern_Parameters works", {
               document_recipient = j - 1,
               current_covariates = current_covariates,
               interaction_pattern = k - 1,
-              using_coefficients = FALSE
+              using_coefficients = TRUE
             )
           }
         }
@@ -204,29 +204,28 @@ test_that("That Update_Interaction_Pattern_Parameters works", {
     log_random_number <- log(rand_num)
 
     if (accept_log_prob > log_random_number) {
-      ret <- list(
-        intercepts = proposed_intercepts,
-        coefficients = proposed_coefficients,
-        latent_positions = proposed_latent_positions,
-        edge_probabilities = proposed_edge_probabilities,
-        accepted = 1,
-        log_current_probability = log_current_probability
-      )
+      expect_that(result[[5]], equals(1))
+      expect_that(result[[1]], equals(as.matrix(proposed_intercepts)))
+      expect_that(result[[2]], equals(proposed_coefficients))
+      expect_that(result[[3]], equals(proposed_latent_positions))
+      expect_that(result[[4]], equals(proposed_edge_probabilities))
+      expect_that(result[[6]], equals(log_current_probability))
+      expect_that(result[[7]], equals(intercepts))
+      expect_that(result[[8]], equals(coefficients))
+      expect_that(result[[9]], equals(latent_positions))
+      expect_that(result[[10]], equals(edge_probs))
+      expect_that(result[[11]], equals(log_proposed_probability))
     } else {
-      ret <- list(
-        intercepts = intercepts,
-        coefficients = coefficients,
-        latent_positions = latent_pos,
-        edge_probabilities = edge_probs,
-        accepted = 0,
-        log_current_probability = log_current_probability
-      )
+      expect_that(result[[5]], equals(0))
+      expect_that(result[[1]], equals(as.matrix(intercepts)))
+      expect_that(result[[2]], equals(coefficients))
+      expect_that(result[[3]], equals(latent_pos))
+      expect_that(result[[4]], equals(edge_probs))
+      expect_that(result[[6]], equals(log_current_probability))
+      expect_that(result[[7]], equals(proposed_intercepts))
+      expect_that(result[[8]], equals(proposed_coefficients))
+      expect_that(result[[9]], equals(proposed_latent_positions))
+      expect_that(result[[10]], equals(proposed_edge_probabilities))
+      expect_that(result[[11]], equals(log_proposed_probability))
     }
-
-    expect_that(result[[1]], equals(as.matrix(ret[[1]])))
-    expect_that(result[[2]], equals(ret[[2]]))
-    expect_that(result[[3]], equals(ret[[3]]))
-    expect_that(result[[4]], equals(ret[[4]]))
-    expect_that(result[[5]], equals(ret[[5]]))
-    expect_that(result[[6]], equals(ret[[6]]))
 })
