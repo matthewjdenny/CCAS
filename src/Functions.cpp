@@ -1140,30 +1140,21 @@ namespace mjd {
                 for (int j = 0; j < number_of_actors; ++j) {
                     // if the assignment changed, then we need to update everything.
                     if (document_sender != j) {
-                        if (document_edge_values[i] == 1) {
-                            double temp = sum_over_t_edge_probability (
-                                edge_probabilities,
-                                tokens_in_document,
-                                -1,
-                                current_document_topic_counts,
-                                false,
-                                topic_interaction_patterns,
-                                document_sender,
-                                j,
-                                t);
+		      double temp = sum_over_t_edge_probability (
+                          edge_probabilities,
+                          tokens_in_document,
+                          -1,
+                          current_document_topic_counts,
+                          false,
+                          topic_interaction_patterns,
+                          document_sender,
+                          j,
+                          t);
+		      
+                        if (document_edge_values[j] == 1) {
                             held_out_sum_over_t_terms(i,j) = temp;
                         } else {
-                            double temp = sum_over_t_edge_probability (
-                                edge_probabilities,
-                                tokens_in_document,
-                                -1,
-                                current_document_topic_counts,
-                                false,
-                                topic_interaction_patterns,
-                                document_sender,
-                                j,
-                                t);
-                            held_out_sum_over_t_terms(i,j) = 1- temp;
+                            held_out_sum_over_t_terms(i,j) = 1 - temp;
                         }
                     } // end of condition making sure actor is not author
                 } // end of loop over actors
@@ -1194,7 +1185,7 @@ namespace mjd {
                         if (document_sender != j) {
                             double ttc = double(current_document_topic_counts[t])/
                             double(tokens_in_document);
-                            if (document_edge_values[i] == 1) {
+                            if (document_edge_values[j] == 1) {
                                 log_prob += log(held_out_sum_over_t_terms(i,j) +
                                     double(ttc *
                                     edge_probabilities(document_sender,j,c)));
