@@ -11,18 +11,18 @@ License: GPL-3
 Imports:
     Rcpp,
     methods,
-	stringr,
-	RcppParallel,
-	coda,
-	vegan,
-	ggplot2
+    stringr,
+    RcppParallel,
+    coda,
+    vegan,
+    ggplot2
 Depends:
     R (>= 3.2.1)
 LinkingTo: 
     BH,
     Rcpp,
     RcppArmadillo,
-	RcppParallel
+    RcppParallel
 LazyData: TRUE
 Suggests:
     testthat
