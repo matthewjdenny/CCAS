@@ -1041,7 +1041,7 @@ namespace mjd {
 		      j,
 		      -1);
 
-		  if (document_edge_values[j] == 1) {		   
+		  if (document_edge_values[j] == 1) {
 		    log_current_probability += log(temp);
 		    log_proposed_probability += log(temp2);
 		  } else {
@@ -1150,7 +1150,7 @@ namespace mjd {
                           document_sender,
                           j,
                           t);
-		      
+
                         if (document_edge_values[j] == 1) {
                             held_out_sum_over_t_terms(i,j) = temp;
                         } else {
