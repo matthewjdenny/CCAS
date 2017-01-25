@@ -118,7 +118,6 @@ test_that("That Update_Topic_Interaction_Pattern_Assignments works", {
           }
         }
       }
-
       for (c in 1:number_of_interaction_patterns) {
         log_prob <- 0
         for (i in 1:number_of_documents) {
@@ -151,8 +150,9 @@ test_that("That Update_Topic_Interaction_Pattern_Assignments works", {
         distribution = interaction_pattern_assignment_log_probs,
         u = random_number, seed = seed
       )
-      topic_interaction_patterns[t] <- new_assignment
+      # see lines 2200-2219: it incrementes by one in c++
+      topic_interaction_patterns[t] <- new_assignment - 1
     }
 
-  expect_that(topic_interaction_patterns - 1, equals(as.vector(result)))
+  expect_that(topic_interaction_patterns, equals(as.vector(result)))
 })
