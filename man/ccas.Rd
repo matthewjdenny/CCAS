@@ -24,7 +24,7 @@ euclidean(d = 2)' where d is the number of dimensions in the latent space
 that the user would like to include, and ComNet is an object of class
 'ComNet' generated  by the prepare_data() function. This object will contain
 all of the relevant information about the corpus so that multiple models may
-be specified without the need to re-preprocess the data. The formula may also
+be specified without the need to repreprocess the data. The formula may also
 include optional terms 'sender("covariate_name")', 'receiver("covariate_name")',
 'nodemix("covariate_name", base = value)' and 'netcov("network_covariate")',
 which are defined analogously to the arguments in the latentnet package.}
@@ -34,7 +34,7 @@ governing message sending and recieving under the model. Defaults to 4.}
 
 \item{topics}{The number of topics to be used in the model. Defaults to 40.}
 
-\item{alpha}{The hyperparameter govering document-topic distributions. Lower
+\item{alpha}{The hyperparameter governing document-topic distributions. Lower
 values encourage more peaked distributions. Defaults to 1.}
 
 \item{beta}{The hyperparameter governing the Dirichlet prior on the
@@ -45,18 +45,18 @@ Defaults to 0.01.}
 sampling to be used in model estimation. Defaults to 1,000.}
 
 \item{metropolis_hastings_iterations}{The number of Metropolis Hastings
-iterations to be run durring each iteration of Metropolis-within-Gibbs
+iterations to be run during each iteration of Metropolis-within-Gibbs
 sampling to update interaction pattern parameters. Defaults to 500.}
 
-\item{final_metropolis_hastings_burnin}{The number of iterations to of
-Metropolis Hastings run after completing all main iterations of Gibbs
+\item{final_metropolis_hastings_burnin}{The number of iterations of
+Metropolis Hastings to run after completing the main iterations of Gibbs
 sampling to discard before keeping samples. Defaults to 50,000.}
 
 \item{final_metropolis_hastings_iterations}{The number of iterations to run
 Metropolis Hastings after completing all main iterations of Gibbs sampling.
 Defaults to 100,000. This additional number of iterations is required to
 ensure that the Markov chain of interaction pattern parameters has mixed
-appropriatly and converged to the target distribution. This can occasionally
+appropriately and converged to the target distribution. This can occasionally
 take on the order of 1-10 million iterations, but is often much faster in
 practice.}
 
@@ -82,7 +82,7 @@ interaction pattern parameters. Defaults to 0.}
 \item{iterations_before_t_i_p_updates}{The number of iterations to wait
 before beginning updates to topic interaction pattern assignments. Defaults
 to 5. If the user does not wish to update these assignments, the value
-can be set greater than 'iterations'.}
+can be set to a value greater than 'iterations'.}
 
 \item{update_t_i_p_every_x_iterations}{The number of iterations between
 updates to topic interaction pattern assignments. Defaults to 5.}
@@ -91,22 +91,22 @@ updates to topic interaction pattern assignments. Defaults to 5.}
 should be used (whether the proposal variance should be optimized). Defaults
 to TRUE.}
 
-\item{adaptive_metropolis_update_size}{The amount by which the MH proposal
-variance is changed (up or down) durring adaptive Metropolis. Defaults to
-0.05.}
+\item{adaptive_metropolis_update_size}{The amount by which the Metroplis Hastings
+proposal distribution variance is changed (up or down) durring adaptive Metropolis.
+Defaults to 0.05.}
 
 \item{seed}{The seed to be used (for replicability across runs). Defaults to
 12345.}
 
 \item{adaptive_metropolis_every_x_iterations}{The nubmer of iterations
-between proposal variance updates during the final run of MH to convergence.
-Defaults to 1000.}
+between proposal variance updates during the final run of Metropolis Hastings
+to convergence. Defaults to 1000.}
 
 \item{stop_adaptive_metropolis_after_x_updates}{The number of Metropolis
-Hastings proposal variance updates to complete durring the final run of
-MH to convergence before fixing its value. Defualts to 50. Make sure that
-the selection of this number is such that the proposal variance is fixed after
-burnin.}
+Hastings proposal variance updates to complete during the final run of
+Metropolis Hastings to convergence before fixing its value.
+Defualts to 50. Make sure that the selection of this number is such that
+the proposal variance is fixed after burnin.}
 
 \item{slice_sample_alpha_m}{Logical indicating whether hyperparameter
 optimization should be used to determine the optimal value of alpha. Defaults
@@ -121,14 +121,14 @@ should be generated in parallel. Defaults to FALSE. Can significantly reduce
 runtime when training a model with a large number of topics.}
 
 \item{cores}{The number of cores to be used if the parallel option is set to
-TRUE. Should not exceed the nubmer of cores availabel on the machine and will
+TRUE. Should not exceed the number of cores available on the machine and will
 not show performance gains if cores > topics.}
 
 \item{output_directory}{The directory where the user would like to store
 output from the model. Defaults to NULL. If NULL, then the current working
 directory will be used to store output if an output_name_stem is provided.}
 
-\item{output_name_stem}{Defaults to NULL. If not null, then output will be
+\item{output_name_stem}{Defaults to NULL. If not NULL, then output will be
 saved to disk using the output_name_stem to differentiate it from output from
 other model runs.}
 
