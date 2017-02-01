@@ -156,6 +156,8 @@
 #' @param num_ip An integer.
 #' @param num_ld An integer.
 #' @param GiR_samples An integer.
+#' @param forward_sample A logical. If TRUE, the forward GiR samples are
+#' generated. If FALSE, then backwards GiR samples are generated.
 #' @return Whatever is returned by the internal function being tested
 #' @export
 test_internal_functions <- function(
@@ -241,7 +243,8 @@ test_internal_functions <- function(
     num_actors = NULL,
     num_ip = NULL,
     num_ld = NULL,
-    GiR_samples = NULL) {
+    GiR_samples = NULL,
+    forward_sample = TRUE) {
 
     return_object <- NULL
 
@@ -503,8 +506,8 @@ test_internal_functions <- function(
             num_ip,
             num_ld,
             total_number_of_tokens,
-            GiR_samples
-        )
+            GiR_samples,
+            forward_sample)
     }
 
     # return whatever needs to be returned

@@ -15,13 +15,13 @@ test_internal_functions(Test_Log_Space_Multinomial_Sampler = FALSE,
   Test_Update_Topic_Interaction_Pattern_Assignments = FALSE,
   Test_Adaptive_Metropolis = FALSE, Test_Inference = FALSE,
   Test_RDirichlet = FALSE,
-  Test_Sample_Token_Topics_From_Generative_Process = FALSE, seed = NULL,
-  distribution = NULL, intercepts = NULL, coefficients = NULL,
-  latent_positions = NULL, document_sender = NULL,
-  document_recipient = NULL, current_covariates = NULL,
-  interaction_pattern = NULL, using_coefficients = NULL,
-  edge_probabilities = NULL, tokens_in_document = NULL,
-  current_token_topic_assignment = NULL,
+  Test_Sample_Token_Topics_From_Generative_Process = FALSE,
+  Getting_It_Right = FALSE, seed = NULL, distribution = NULL,
+  intercepts = NULL, coefficients = NULL, latent_positions = NULL,
+  document_sender = NULL, document_recipient = NULL,
+  current_covariates = NULL, interaction_pattern = NULL,
+  using_coefficients = NULL, edge_probabilities = NULL,
+  tokens_in_document = NULL, current_token_topic_assignment = NULL,
   current_document_topic_counts = NULL, leave_out_current_token = NULL,
   topic_interaction_patterns = NULL, leave_out_topic = NULL,
   intercept_prior_mean = NULL, intercept_prior_standard_deviation = NULL,
@@ -45,7 +45,10 @@ test_internal_functions(Test_Log_Space_Multinomial_Sampler = FALSE,
   perform_adaptive_metropolis = NULL, resample_word_types = NULL,
   slice_sample_alpha_m = NULL, slice_sample_step_size = NULL,
   parallel = NULL, use_cached_token_topic_distribution = NULL,
-  cached_token_topic_distribution = NULL, u = NULL)
+  cached_token_topic_distribution = NULL, u = NULL, num_documents = NULL,
+  words_per_doc = NULL, num_topics = NULL, num_terms = NULL,
+  num_actors = NULL, num_ip = NULL, num_ld = NULL, GiR_samples = NULL,
+  forward_sample = TRUE)
 }
 \arguments{
 \item{Test_Log_Space_Multinomial_Sampler}{Defualts to FALSE. If TRUE, then
@@ -146,6 +149,9 @@ perform_adaptive_metropolis must be provided.}
 \item{Test_Sample_Token_Topics_From_Generative_Process}{If TRUE, then optional
 arguments author_indexes, token_topic_assignments, token_word_types, alpha_m,
 beta_n, random_numbers, and resample_word_types must be provided.}
+
+\item{Getting_It_Right}{If TRUE, then Geweke's getting it right test is
+performed}
 
 \item{seed}{An integerg.}
 
@@ -266,6 +272,25 @@ the value directly (normally 5, set to a negative number to turn off)),}
 of topics.}
 
 \item{u}{A numeric of length 1 between 0 and 1.}
+
+\item{num_documents}{An integer.}
+
+\item{words_per_doc}{An integer.}
+
+\item{num_topics}{An integer.}
+
+\item{num_terms}{An integer.}
+
+\item{num_actors}{An integer.}
+
+\item{num_ip}{An integer.}
+
+\item{num_ld}{An integer.}
+
+\item{GiR_samples}{An integer.}
+
+\item{forward_sample}{A logical. If TRUE, the forward GiR samples are
+generated. If FALSE, then backwards GiR samples are generated.}
 }
 \value{
 Whatever is returned by the internal function being tested
