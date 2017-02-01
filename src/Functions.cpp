@@ -2150,6 +2150,72 @@ namespace mjd {
         return ret_list;
     }
 
+    // ***********************************************************************//
+    //            Sample Data/Parameters From Generative Process              //
+    // ***********************************************************************//
+    Rcpp::List sample_from_generative_process(arma::vec author_indexes,
+                                        arma::cube covariates,
+                                        arma::vec alpha_m,
+                                        arma::vec beta_n,
+                                        bool using_coefficients,
+                                        double intercept_prior_mean,
+                                        double intercept_prior_standard_deviation,
+                                        double coefficient_prior_mean,
+                                        double coefficient_prior_standard_deviation,
+                                        double latent_position_prior_mean,
+                                        double latent_position_prior_standard_deviation,
+                                        int total_number_of_tokens,
+                                        int num_documents,
+                                        int words_per_doc,
+                                        int num_topics,
+                                        int num_terms,
+                                        int num_actors,
+                                        int num_ip,
+                                        int num_ld,
+                                        arma::vec random_numbers,
+                                        Rcpp::List token_topic_assignments,
+                                        Rcpp::List token_word_types,
+                                        bool resample_word_types) {
+
+        // sample token topic assignments and word types from generative process
+        Rcpp::List ret = sample_token_topics_generative_process(
+            token_topic_assignments,
+            token_word_types,
+            alpha_m,
+            beta_n,
+            num_documents,
+            resample_word_types,
+            random_numbers);
+
+        // extract new parameters from the list object
+        token_topic_assignments = ret[0];
+        token_word_types = ret[1];
+        arma::mat document_topic_counts = ret[2];
+        arma::vec topic_token_counts = ret[3];
+        arma::mat word_type_topic_counts = ret[4];
+        arma::mat document_topic_distributions = ret[5];
+        arma::mat topic_word_type_distributions = ret[6];
+
+        // store everything so it can be returned
+        Rcpp::List ret_list(13);
+        ret_list[0] = token_topic_assignments;
+        ret_list[1] = token_word_types;
+        ret_list[2] = document_topic_counts;
+        ret_list[3] = topic_token_counts;
+        ret_list[4] = word_type_topic_counts;
+        ret_list[5] = document_topic_distributions;
+        ret_list[6] = topic_word_type_distributions;
+        ret_list[7] = 0;
+        ret_list[8] = 0;
+        ret_list[9] = 0;
+        ret_list[10] = 0;
+        ret_list[11] = 0;
+        ret_list[12] = 0;
+
+
+        return ret_list;
+    }
+
 
 } // end of MJD namespace
 
@@ -2740,7 +2806,10 @@ arma::mat gir(arma::vec author_indexes,
          int num_ip,
          int num_ld,
          int GiR_samples,
-         bool forward_sample){
+         bool forward_sample,
+         Rcpp::List token_topic_assignments,
+         Rcpp::List token_word_types,
+         bool resample_word_types){
 
     // we will calculate all statistics on which we wish to compare the two
     // chains in C++ and will then store them in a matrix.
