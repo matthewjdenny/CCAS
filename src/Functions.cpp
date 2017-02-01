@@ -2264,10 +2264,44 @@ namespace mjd {
                                                                      interaction_pattern_probs) ;
 
         //our last task is to resample edge values
+        arma::mat document_edge_matrix = arma::zeros(num_documents,num_actors);
+        // loop over documents
+        for (int d = 0; d < num_documents; ++d) {
+            // we need to allocate row vectors from a matrix before we can
+            // convert to arma::vec as desired (typeing issue)
+            arma::rowvec temp = document_topic_counts.row(d);
+            // now we convert to an arma::vec (ugly but it works)
+            arma::vec current_document_topic_counts = arma::conv_to<arma::vec>::from(temp);
+            // get the current number of tokens
+            int tokens_in_document = arma::sum(current_document_topic_counts);
+            int document_sender = author_indexes[d];
+            //loop over actors
+            for (int r = 0; r < num_actors; ++r) {
+                if (r != document_sender) {
+                    // now we loop over topics and determine hte edge probability
+                    double edge_prob = 0;
+                    for (int t = 0; t < num_topics; ++t) {
+                        edge_prob += (double(current_document_topic_counts[t])/
+                            double(tokens_in_document)) *
+                                edge_probabilities(
+                                    document_sender,
+                                    r,
+                                    topic_interaction_patterns[t]);
+                    }
 
+                    // now take a random uniform draw and if it is smaller than
+                    // the edge prob then we set the edge to 1.
+                    double rand_unif_draw = R::runif(0,1);
+                    if (edge_prob < rand_unif_draw) {
+                        document_edge_matrix(d,r) = 1;
+                    }
+                }
+            }
+
+        }
 
         // store everything so it can be returned
-        Rcpp::List ret_list(13);
+        Rcpp::List ret_list(12);
         ret_list[0] = token_topic_assignments;
         ret_list[1] = token_word_types;
         ret_list[2] = document_topic_counts;
@@ -2279,8 +2313,7 @@ namespace mjd {
         ret_list[8] = coefficients;
         ret_list[9] = latent_positions;
         ret_list[10] = topic_interaction_patterns;
-        ret_list[11] = 0;
-        ret_list[12] = 0;
+        ret_list[11] = document_edge_matrix;
 
 
         return ret_list;
