@@ -2319,6 +2319,50 @@ namespace mjd {
         return ret_list;
     }
 
+    // ***********************************************************************//
+    //            Calculate Statistics for Getting it Right                   //
+    // ***********************************************************************//
+    arma::vec calculate_statistics_for_getting_it_right(arma::mat document_topic_counts,
+        arma::vec topic_token_counts,
+        arma::mat word_type_topic_counts,
+        arma::mat document_topic_distributions,
+        arma::mat topic_word_type_distributions,
+        arma::vec intercepts,
+        arma::mat coefficients,
+        arma::cube latent_positions,
+        arma::vec topic_interaction_patterns,
+        arma::mat document_edge_matrix,
+        int num_statistics) {
+
+        //variables we will need for calcualting statistics
+        int number_of_interaction_patterns = intercepts.n_elem;
+        int number_of_topics = topic_token_counts.n_elem;
+        int number_of_word_types = word_type_topic_counts.n_rows;
+
+        // allocate a vector in which to store statistics we calculate on our
+        // data and latent variables
+        arma::vec statistics = arma::zeros(num_statistics);
+        stat_counter = 0;
+
+        // For reference, this is what we are saving.
+        //we want average ls positions, coefficients, the intercept + sum of
+        //distances for each interaction pattern, number of tokens assigned to each
+        //interaction pattern
+        //number_of_statistics += 5*num_ip;
+        //number_of_statistics += num_terms + num_topics;
+        //number_of_statistics += 2; //average cluster assignment and mean network density.
+
+        // all interaction pattern specific stats
+
+        // mean of LS positions in each interaction pattern
+        for (int i = 0; i < number_of_interaction_patterns; ++i) {
+            statistics[stat_counter] = 0;
+            stat_counter += 1;
+        }
+
+
+        return statistics;
+    }
 
 } // end of MJD namespace
 
@@ -2921,7 +2965,15 @@ arma::mat gir(arma::vec author_indexes,
     // we will calculate all statistics on which we wish to compare the two
     // chains in C++ and will then store them in a matrix.
     // We pre-allocate it now, and then return them in a list object.
-    int number_of_statistics = 20;
+    int number_of_statistics = 0;
+
+    //we want average ls positions, coefficients, the intercept + sum of
+    //distances for each interaction pattern, number of tokens assigned to each
+    //interaction pattern
+    number_of_statistics += 5*num_ip;
+    number_of_statistics += num_terms + num_topics;
+    number_of_statistics += 2; //average cluster assignment and mean network density.
+
     arma::mat sample_statistics = arma::zeros(GiR_samples,number_of_statistics);
 
     // determine hte number of covariates we are using so we can determine
