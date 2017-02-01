@@ -2319,6 +2319,57 @@ namespace mjd {
         return ret_list;
     }
 
+
+    // ***********************************************************************//
+    //                      Calculate Mean of a Matrix                        //
+    // ***********************************************************************//
+    double matrix_mean(arma::mat matrix,
+                       int subtract_out_entries) {
+        int num_cols = matrix.n_cols;
+        int num_rows = matrix.n_rows;
+
+        // calculate mean value while optionally holding out some number of
+        // entries from the denominator (if they should be zeros, like self ties)
+        arma::mat sum_term = arma::sum(matrix);
+        double mean_val = double(sum_term(0,0))/double((num_cols*num_rows) - subtract_out_entries);
+
+        return mean_val;
+    }
+
+    // ***********************************************************************//
+    //                      Calculate Mean of a Vector                        //
+    // ***********************************************************************//
+    double vector_mean(arma::vec vect) {
+        int len = vect.n_elem;
+
+        // calculate mean value
+        double mean_val = double(arma::sum(vect))/double(len);
+
+        return mean_val;
+    }
+
+    // ***********************************************************************//
+    //                      Calculate Sum of LS Distnaces                     //
+    // ***********************************************************************//
+    double calculate_sum_of_ls_distances(arma::mat positions) {
+        int num_actors = positions.n_rows;
+        int num_ld = positions.n_cols;
+        double sum_term = 0;
+
+        for (int i = 0; i < num_actors; ++i) {
+            for (int j = 0; j < num_actors; ++j) {
+                if (i < j) {
+                    double squared_dist = 0;
+                    for (int k = 0; k < num_ld; ++k) {
+                        squared_dist += pow((positions(i,k) - positions(j,k)), 2);
+                    }
+                    sum_term += sqrt(squared_dist);
+                }
+            }
+        }
+        return sum_term;
+    }
+
     // ***********************************************************************//
     //            Calculate Statistics for Getting it Right                   //
     // ***********************************************************************//
@@ -2333,6 +2384,20 @@ namespace mjd {
         arma::vec topic_interaction_patterns,
         arma::mat document_edge_matrix,
         int num_statistics) {
+
+        // For reference
+        //get the number of actors
+        //int num_actors = latent_positions.n_cols;
+        //get the number of latent dimensions
+        //int num_latent_dimensions = latent_positions.n_slices;
+        // initialize the proposed values
+        //arma::vec proposed_intercepts = arma::zeros(num_interaction_patterns);
+        //arma::mat proposed_coefficients = arma::zeros(num_interaction_patterns,
+        //                                              num_coefficients);
+        //arma::cube proposed_latent_positions = arma::zeros(
+        //    num_interaction_patterns,
+        //    num_actors,
+        //    num_latent_dimensions);
 
         //variables we will need for calcualting statistics
         int number_of_interaction_patterns = intercepts.n_elem;
@@ -2350,15 +2415,38 @@ namespace mjd {
         //interaction pattern
         //number_of_statistics += 5*num_ip;
         //number_of_statistics += num_terms + num_topics;
-        //number_of_statistics += 2; //average cluster assignment and mean network density.
+        //number_of_statistics += 2; //average cluster assignment and mean network
 
         // all interaction pattern specific stats
 
-        // mean of LS positions in each interaction pattern
+        // intercept for each interaction pattern
         for (int i = 0; i < number_of_interaction_patterns; ++i) {
-            statistics[stat_counter] = 0;
+            statistics[stat_counter] = intercepts[i];
             stat_counter += 1;
         }
+
+        // mean of coefficients positions in each interaction pattern
+        for (int i = 0; i < number_of_interaction_patterns; ++i) {
+            arma::vec temp = coefficients.row(i);
+            statistics[stat_counter] = vector_mean(temp);
+            stat_counter += 1;
+        }
+
+        // mean of LS positions in each interaction pattern
+        for (int i = 0; i < number_of_interaction_patterns; ++i) {
+            arma::mat temp = latent_positions.slice(i);
+            statistics[stat_counter] = matrix_mean(temp,
+                                                   0);
+            stat_counter += 1;
+        }
+
+        // sum of LS distances in each interaction pattern
+        for (int i = 0; i < number_of_interaction_patterns; ++i) {
+            arma::mat temp = latent_positions.slice(i);
+            statistics[stat_counter] = calculate_sum_of_ls_distances(temp);
+            stat_counter += 1;
+        }
+
 
 
         // all topic specific stats
