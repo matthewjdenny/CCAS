@@ -1,3 +1,4 @@
+#include <RcppArmadilloExtensions/sample.h>
 // [[Rcpp::depends(RcppArmadillo)]]
 // [[Rcpp::depends(BH)]]
 // [[Rcpp::depends(RcppParallel)]]
@@ -16,6 +17,7 @@ using std::sqrt;
 using std::pow;
 // use the mjd namespace so we can call in other functions
 namespace mjd {
+    using namespace Rcpp ;
     using std::log;
     using std::exp;
     using std::max;
@@ -1064,11 +1066,11 @@ namespace mjd {
             to_return[3] = proposed_edge_probabilities;
             to_return[4] = 1; //tells us whether we accepted
             to_return[5] = log_current_probability;
-	    to_return[6] = intercepts;
-	    to_return[7] = coefficients;
-	    to_return[8] = latent_positions;
-	    to_return[9] = edge_probabilities;
-	    to_return[10] = log_proposed_probability;
+	        to_return[6] = intercepts;
+	        to_return[7] = coefficients;
+	        to_return[8] = latent_positions;
+	        to_return[9] = edge_probabilities;
+	        to_return[10] = log_proposed_probability;
         } else {
             to_return[0] = intercepts;
             to_return[1] = coefficients;
@@ -1076,11 +1078,11 @@ namespace mjd {
             to_return[3] = edge_probabilities;
             to_return[4] = 0; //tells us whether we accepted
             to_return[5] = log_current_probability;
-	    to_return[6] = proposed_intercepts;
+	        to_return[6] = proposed_intercepts;
             to_return[7] = proposed_coefficients;
             to_return[8] = proposed_latent_positions;
             to_return[9] = proposed_edge_probabilities;
-	    to_return[10] = log_proposed_probability;
+	        to_return[10] = log_proposed_probability;
         }
 
         return to_return;
@@ -2158,12 +2160,9 @@ namespace mjd {
                                         arma::vec alpha_m,
                                         arma::vec beta_n,
                                         bool using_coefficients,
-                                        double intercept_prior_mean,
-                                        double intercept_prior_standard_deviation,
-                                        double coefficient_prior_mean,
-                                        double coefficient_prior_standard_deviation,
-                                        double latent_position_prior_mean,
-                                        double latent_position_prior_standard_deviation,
+                                        arma::vec intercept_prior_standard_deviations,
+                                        arma::vec coefficient_prior_standard_deviations,
+                                        arma::vec latent_position_prior_standard_deviations,
                                         int total_number_of_tokens,
                                         int num_documents,
                                         int words_per_doc,
@@ -2175,7 +2174,10 @@ namespace mjd {
                                         arma::vec random_numbers,
                                         Rcpp::List token_topic_assignments,
                                         Rcpp::List token_word_types,
-                                        bool resample_word_types) {
+                                        bool resample_word_types,
+                                        arma::vec intercepts,
+                                        arma::mat coefficients,
+                                        arma::cube latent_positions) {
 
         // sample token topic assignments and word types from generative process
         Rcpp::List ret = sample_token_topics_generative_process(
@@ -2196,6 +2198,74 @@ namespace mjd {
         arma::mat document_topic_distributions = ret[5];
         arma::mat topic_word_type_distributions = ret[6];
 
+        // get the interaction pattern parameters. One level up we use the prior
+        // means to initialize intercepts, coefficients, latent_positions, at
+        // ther mean values, or just pass in their previous values if we are
+        // doing backwards sampling. We also need to create vectors of matching
+        // standard devaitions in the next level up.
+        Rcpp::List ret2 = sample_new_interaction_pattern_parameters(
+                intercepts,
+                coefficients,
+                latent_positions,
+                intercept_prior_standard_deviations,
+                coefficient_prior_standard_deviations,
+                latent_position_prior_standard_deviations,
+                using_coefficients);
+
+        // update the input latent positions
+        arma::vec temp1 = ret2[0];
+        arma::mat temp2 = ret2[1];
+        arma::cube temp3 = ret2[2];
+        intercepts = temp1;
+        coefficients = temp2;
+        latent_positions = temp3;
+
+        //generate edge probabilities
+        arma::cube edge_probabilities = arma::zeros(num_actors,
+                                                    num_actors,
+                                                    num_ip);
+
+        // loop over docs, actors, interaction patterns to fill edge_probabilities
+        for (int i = 0; i < num_actors; ++i) {
+            for (int j = 0; j < num_actors; ++j) {
+                // .tube gives us all slices
+                arma::vec current_covariates = covariates.tube(i,j);
+                if (i != j) {
+                    for (int k = 0; k < num_ip; ++k) {
+                        edge_probabilities(i,j,k) = mjd::edge_probability(
+                            intercepts,
+                            coefficients,
+                            latent_positions,
+                            i,
+                            j,
+                            current_covariates,
+                            k,
+                            using_coefficients);
+                    }
+                }
+            }
+        }
+
+        // draw interaction patterns from a discrete uniform distribution
+        arma::vec interaction_pattern_indices = arma::zeros(num_ip);
+        arma::vec interaction_pattern_probs = arma::zeros(num_ip);
+        // fill these in with unifrom probabilities
+        for (int k = 0; k < num_ip; ++k) {
+            interaction_pattern_indices[k] = k;
+            interaction_pattern_probs[k] = double(double(1)/double(num_ip));
+        }
+        //now use RcppArmadillo's implementation of the sample function,
+        //with replacement. See:
+        //http://gallery.rcpp.org/articles/using-the-Rcpp-based-sample-implementation/
+        //for an example and explanation
+        arma::vec topic_interaction_patterns = RcppArmadillo::sample(interaction_pattern_indices,
+                                                                     num_topics,
+                                                                     true,
+                                                                     interaction_pattern_probs) ;
+
+        //our last task is to resample edge values
+
+
         // store everything so it can be returned
         Rcpp::List ret_list(13);
         ret_list[0] = token_topic_assignments;
@@ -2205,10 +2275,10 @@ namespace mjd {
         ret_list[4] = word_type_topic_counts;
         ret_list[5] = document_topic_distributions;
         ret_list[6] = topic_word_type_distributions;
-        ret_list[7] = 0;
-        ret_list[8] = 0;
-        ret_list[9] = 0;
-        ret_list[10] = 0;
+        ret_list[7] = intercepts;
+        ret_list[8] = coefficients;
+        ret_list[9] = latent_positions;
+        ret_list[10] = topic_interaction_patterns;
         ret_list[11] = 0;
         ret_list[12] = 0;
 
