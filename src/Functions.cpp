@@ -2704,4 +2704,48 @@ Rcpp::List mh_to_convergence(
 }
 
 
+// [[Rcpp::export]]
+List gir(arma::vec author_indexes,
+         arma::cube covariates,
+         arma::vec alpha_m,
+         arma::vec beta_n,
+         bool using_coefficients,
+         double intercept_prior_mean,
+         double intercept_prior_standard_deviation,
+         arma::vec intercept_proposal_standard_deviations,
+         double coefficient_prior_mean,
+         double coefficient_prior_standard_deviation,
+         arma::vec coefficient_proposal_standard_deviations,
+         double latent_position_prior_mean,
+         double latent_position_prior_standard_deviation,
+         arma::vec latent_position_proposal_standard_deviations,
+         double target_accept_rate,
+         double tollerance,
+         double update_size,
+         int seed,
+         int iterations,
+         int metropolis_iterations,
+         int total_number_of_tokens,
+         int iterations_before_t_i_p_updates,
+         int update_t_i_p_every_x_iterations,
+         bool perform_adaptive_metropolis,
+         int slice_sample_every_x_iterations,
+         double slice_sample_step_size,
+         bool parallel,
+         int num_documents,
+         int words_per_doc,
+         int num_topics,
+         int num_terms,
+         int num_actors,
+         int num_ip,
+         int num_ld,
+         int GiR_samples){
+
+    // need to fill in the fuction here:
+    List ret_list =  List(4);
+
+    return ret_list;
+
+}
+
 
