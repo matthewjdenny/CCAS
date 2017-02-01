@@ -2705,7 +2705,7 @@ Rcpp::List mh_to_convergence(
 
 
 // [[Rcpp::export]]
-List gir(arma::vec author_indexes,
+arma::mat gir(arma::vec author_indexes,
          arma::cube covariates,
          arma::vec alpha_m,
          arma::vec beta_n,
@@ -2739,13 +2739,55 @@ List gir(arma::vec author_indexes,
          int num_actors,
          int num_ip,
          int num_ld,
-         int GiR_samples){
+         int GiR_samples,
+         bool forward_sample){
 
-    // need to fill in the fuction here:
-    List ret_list =  List(4);
+    // we will calculate all statistics on which we wish to compare the two
+    // chains in C++ and will then store them in a matrix.
+    // We pre-allocate it now, and then return them in a list object.
+    int number_of_statistics = 20;
+    arma::mat sample_statistics = arma::zeros(GiR_samples,number_of_statistics);
 
-    return ret_list;
+    // allocate data structures to store
+    if (forward_sample) {
+        // Forward Samples:
+        for (int i = 0; i < GiR_samples; ++i) {
+            // Take a draw from the generative process
 
+
+            // Calculate statistics
+
+
+            // Store statistics
+
+
+        }
+    } else {
+        // Backward Samples:
+        // Run the generative process for the first time and extract relevant
+        // datastructures
+
+
+        for (int i = 0; i < GiR_samples; ++i) {
+            // Run inference for 5 Gibbs (50 MH per Gibbs) iterations.
+
+
+            // Take a draw from the generative process using updated parameters.
+
+
+            // Calculate statistics
+
+
+            // Store statistics
+
+
+        }
+
+
+    }
+
+    // return the statistics
+    return sample_statistics;
 }
 
 
