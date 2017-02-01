@@ -507,7 +507,10 @@ test_internal_functions <- function(
             num_ld,
             total_number_of_tokens,
             GiR_samples,
-            forward_sample)
+            forward_sample,
+            token_topic_assignments,
+            token_word_types,
+            resample_word_types)
     }
 
     # return whatever needs to be returned

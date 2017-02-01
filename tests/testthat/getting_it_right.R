@@ -6,6 +6,7 @@ test_that("That we get it right", {
     # create an example distribution
     set.seed(12345)
 
+    resample_token_word_types = FALSE
     GiR_samples = 10000000
     num_documents = 5
     words_per_doc = 10
@@ -31,6 +32,24 @@ test_that("That we get it right", {
     covars <- array(data = rnorm(n = num_actors*num_actors*num_covar,0,2),
                     dim = c(num_actors, num_actors, num_covar))
 
+    token_topic_assignments <- vector(mode = "list",
+                                           length = num_documents)
+    token_word_types <- vector(mode = "list",
+                               length = num_documents)
+
+    for (i in 1:num_documents) {
+        # initialize to -1 to make sure we throw an error if the C++ generative
+        # process does not take care of it.
+        token_topic_assignments[[i]] <- rep(-1, words_per_doc)
+        if (resample_token_word_types) {
+            token_word_types[[i]] <- rep(-1, words_per_doc)
+        } else {
+            # if we are not resampling then they need to be fixed from the start.
+            token_word_types[[i]] <- floor(runif(n = words_per_doc,
+                                                 min = 0,
+                                                 max = num_terms - .000001))
+        }
+    }
 
 
     # first lets try without covariates
@@ -71,7 +90,10 @@ test_that("That we get it right", {
         num_ld = num_ld,
         total_number_of_tokens = total_word_count,
         GiR_samples = GiR_samples,
-        forward_sample = TRUE)
+        forward_sample = TRUE,
+        token_topic_assignments = token_topic_assignments,
+        token_word_types = token_word_types,
+        resample_word_types = resample_token_word_types)
 
     backward_samples <- test_internal_functions(
         Getting_It_Right = TRUE,
@@ -110,7 +132,10 @@ test_that("That we get it right", {
         num_ld = num_ld,
         total_number_of_tokens = total_word_count,
         GiR_samples = GiR_samples,
-        forward_sample = FALSE)
+        forward_sample = FALSE,
+        token_topic_assignments = token_topic_assignments,
+        token_word_types = token_word_types,
+        resample_word_types = resample_token_word_types)
 
     # now we need to compare
 
