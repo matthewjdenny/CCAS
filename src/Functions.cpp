@@ -2342,7 +2342,7 @@ namespace mjd {
         // allocate a vector in which to store statistics we calculate on our
         // data and latent variables
         arma::vec statistics = arma::zeros(num_statistics);
-        stat_counter = 0;
+        int stat_counter = 0;
 
         // For reference, this is what we are saving.
         //we want average ls positions, coefficients, the intercept + sum of
@@ -2360,6 +2360,20 @@ namespace mjd {
             stat_counter += 1;
         }
 
+
+        // all topic specific stats
+        // number of tokens assigned to each topic
+        for (int i = 0; i < number_of_topics; ++i) {
+            statistics[stat_counter] = 0;
+            stat_counter += 1;
+        }
+
+        // all word-type specific stats
+        // number of tokens assigned to each word type
+        for (int i = 0; i < number_of_word_types; ++i) {
+            statistics[stat_counter] = 0;
+            stat_counter += 1;
+        }
 
         return statistics;
     }
