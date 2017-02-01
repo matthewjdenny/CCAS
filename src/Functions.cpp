@@ -3189,29 +3189,205 @@ arma::mat gir(arma::vec author_indexes,
             arma::mat document_edge_matrix = ret[11];
 
             // Calculate statistics
-
+            arma::vec stats =  mjd::calculate_statistics_for_getting_it_right(document_topic_counts,
+                topic_token_counts,
+                word_type_topic_counts,
+                document_topic_distributions,
+                topic_word_type_distributions,
+                intercepts,
+                coefficients,
+                latent_positions,
+                topic_interaction_patterns,
+                document_edge_matrix,
+                number_of_statistics);
 
             // Store statistics
-
+            for (int k = 0; k < number_of_statistics; ++k) {
+                sample_statistics(i,k) = stats[k];
+            }
 
         }
     } else {
         // Backward Samples:
         // Run the generative process for the first time and extract relevant
         // datastructures
+        // Take a draw from the generative process
+        // generate a vector of random numbers to pass in to the topic-token
+        // update function.
+        arma::vec random_numbers = arma::zeros(total_number_of_tokens);
+        for (int k = 0; k < total_number_of_tokens; ++k) {
+            random_numbers[k] = uniform_distribution(generator);
+        }
 
+        Rcpp::List ret = mjd::sample_from_generative_process(author_indexes,
+                                                             covariates,
+                                                             alpha_m,
+                                                             beta_n,
+                                                             using_coefficients,
+                                                             intercept_prior_standard_deviations,
+                                                             coefficient_prior_standard_deviations,
+                                                             latent_position_prior_standard_deviations,
+                                                             total_number_of_tokens,
+                                                             num_documents,
+                                                             words_per_doc,
+                                                             num_topics,
+                                                             num_terms,
+                                                             num_actors,
+                                                             num_ip,
+                                                             num_ld,
+                                                             random_numbers,
+                                                             token_topic_assignments,
+                                                             token_word_types,
+                                                             resample_word_types,
+                                                             intercepts,
+                                                             coefficients,
+                                                             latent_positions);
+
+        //now extract everything from the list.
+        Rcpp::List token_topic_assignments = ret[0];
+        Rcpp::List token_word_types = ret[1];
+        arma::mat document_topic_counts = ret[2];
+        arma::vec topic_token_counts = ret[3];
+        arma::mat word_type_topic_counts = ret[4];
+        arma::mat document_topic_distributions = ret[5];
+        arma::mat topic_word_type_distributions = ret[6];
+        arma::vec temp1 = ret[7];
+        intercepts = temp1;
+        arma::mat temp2 = ret[8];
+        coefficients = temp2;
+        arma::cube temp3 = ret[9];
+        latent_positions= temp3;
+        arma::vec topic_interaction_patterns = ret[10];
+        arma::mat document_edge_matrix = ret[11];
 
         for (int i = 0; i < GiR_samples; ++i) {
             // Run inference for 5 Gibbs (50 MH per Gibbs) iterations.
 
+            Rcpp::List ret_list =  mjd::inference(
+                author_indexes,
+                document_edge_matrix,
+                document_topic_counts,
+                topic_interaction_patterns,
+                word_type_topic_counts,
+                topic_token_counts,
+                token_topic_assignments,
+                token_word_types,
+                intercepts,
+                coefficients,
+                latent_positions,
+                covariates,
+                alpha_m,
+                beta_n,
+                using_coefficients,
+                intercept_prior_mean,
+                intercept_prior_standard_deviation,
+                intercept_proposal_standard_deviations,
+                coefficient_prior_mean,
+                coefficient_prior_standard_deviation,
+                coefficient_proposal_standard_deviations,
+                latent_position_prior_mean,
+                latent_position_prior_standard_deviation,
+                latent_position_proposal_standard_deviations,
+                target_accept_rate,
+                tollerance,
+                update_size,
+                seed,
+                iterations,
+                metropolis_iterations,
+                total_number_of_tokens,
+                iterations_before_t_i_p_updates,
+                update_t_i_p_every_x_iterations,
+                perform_adaptive_metropolis,
+                slice_sample_every_x_iterations,
+                slice_sample_step_size,
+                parallel);
+
+            //extract parameters
+            // ret_list[0] = store_topic_interaction_patterns;
+            // ret_list[1] = store_intercepts;
+            // ret_list[2] = store_coefficients;
+            // ret_list[3] = store_latent_positions;
+            // ret_list[4] = document_topic_counts;
+            // ret_list[5] = word_type_topic_counts;
+            // ret_list[6] = topic_token_counts;
+            // ret_list[7] = token_topic_assignments;
+
 
             // Take a draw from the generative process using updated parameters.
+            // generate a vector of random numbers to pass in to the topic-token
+            // update function.
+            arma::vec random_numbers = arma::zeros(total_number_of_tokens);
+            for (int k = 0; k < total_number_of_tokens; ++k) {
+                random_numbers[k] = uniform_distribution(generator);
+            }
 
+            Rcpp::List ret = mjd::sample_from_generative_process(author_indexes,
+                                                                 covariates,
+                                                                 alpha_m,
+                                                                 beta_n,
+                                                                 using_coefficients,
+                                                                 intercept_prior_standard_deviations,
+                                                                 coefficient_prior_standard_deviations,
+                                                                 latent_position_prior_standard_deviations,
+                                                                 total_number_of_tokens,
+                                                                 num_documents,
+                                                                 words_per_doc,
+                                                                 num_topics,
+                                                                 num_terms,
+                                                                 num_actors,
+                                                                 num_ip,
+                                                                 num_ld,
+                                                                 random_numbers,
+                                                                 token_topic_assignments,
+                                                                 token_word_types,
+                                                                 resample_word_types,
+                                                                 intercepts,
+                                                                 coefficients,
+                                                                 latent_positions);
+
+            //now extract everything from the list.
+            Rcpp::List temp4 = ret[0];
+            token_topic_assignments = temp4;
+            Rcpp::List temp5 = ret[1];
+            token_word_types = temp5;
+            arma::mat temp6 = ret[2];
+            document_topic_counts = temp6;
+            arma::vec temp7 = ret[3];
+            topic_token_counts = temp7;
+            arma::mat temp8 = ret[4];
+            word_type_topic_counts = temp8;
+            arma::mat temp9 = ret[5];
+            document_topic_distributions = temp9;
+            arma::mat temp10 = ret[6];
+            topic_word_type_distributions = temp10;
+            arma::vec temp11 = ret[7];
+            intercepts = temp11;
+            arma::mat temp12 = ret[8];
+            coefficients = temp12;
+            arma::cube temp13 = ret[9];
+            latent_positions= temp13;
+            arma::vec temp14 = ret[10];
+            topic_interaction_patterns = temp14;
+            arma::mat temp15 = ret[11];
+            document_edge_matrix = temp15;
 
             // Calculate statistics
-
+            arma::vec stats =  mjd::calculate_statistics_for_getting_it_right(document_topic_counts,
+                                                                              topic_token_counts,
+                                                                              word_type_topic_counts,
+                                                                              document_topic_distributions,
+                                                                              topic_word_type_distributions,
+                                                                              intercepts,
+                                                                              coefficients,
+                                                                              latent_positions,
+                                                                              topic_interaction_patterns,
+                                                                              document_edge_matrix,
+                                                                              number_of_statistics);
 
             // Store statistics
+            for (int k = 0; k < number_of_statistics; ++k) {
+                sample_statistics(i,k) = stats[k];
+            }
 
 
         }
