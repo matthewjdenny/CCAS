@@ -2371,6 +2371,23 @@ namespace mjd {
     }
 
     // ***********************************************************************//
+    //         Count Tokens Assigned To Current Interaction Pattern           //
+    // ***********************************************************************//
+    int count_tokens_assigned_to_ip(arma::vec topic_token_counts,
+                                    arma::vec topic_interaction_patterns,
+                                    int current_ip) {
+        int num_topics = topic_token_counts.n_elem;
+        int count = 0;
+
+        for (int i = 0; i < num_topics; ++i) {
+            if (topic_interaction_patterns[i] == current_ip) {
+                count += topic_token_counts[i];
+            }
+        }
+        return count;
+    }
+
+    // ***********************************************************************//
     //            Calculate Statistics for Getting it Right                   //
     // ***********************************************************************//
     arma::vec calculate_statistics_for_getting_it_right(arma::mat document_topic_counts,
@@ -2403,6 +2420,8 @@ namespace mjd {
         int number_of_interaction_patterns = intercepts.n_elem;
         int number_of_topics = topic_token_counts.n_elem;
         int number_of_word_types = word_type_topic_counts.n_rows;
+        int num_docs = document_topic_distributions.n_rows;
+        int num_actors = latent_positions.n_cols;
 
         // allocate a vector in which to store statistics we calculate on our
         // data and latent variables
@@ -2434,7 +2453,7 @@ namespace mjd {
 
         // mean of LS positions in each interaction pattern
         for (int i = 0; i < number_of_interaction_patterns; ++i) {
-            arma::mat temp = latent_positions.slice(i);
+            arma::mat temp = latent_positions.tube(i,0,i,num_actors-1);
             statistics[stat_counter] = matrix_mean(temp,
                                                    0);
             stat_counter += 1;
@@ -2442,26 +2461,43 @@ namespace mjd {
 
         // sum of LS distances in each interaction pattern
         for (int i = 0; i < number_of_interaction_patterns; ++i) {
-            arma::mat temp = latent_positions.slice(i);
+            arma::mat temp = latent_positions.tube(i,0,i,num_actors-1);
             statistics[stat_counter] = calculate_sum_of_ls_distances(temp);
             stat_counter += 1;
         }
 
-
+        // sum of tokens assigned to topics in each interaction pattern
+        for (int i = 0; i < number_of_interaction_patterns; ++i) {
+            statistics[stat_counter] = count_tokens_assigned_to_ip(topic_token_counts,
+                                                                   topic_interaction_patterns,
+                                                                   i);
+            stat_counter += 1;
+        }
 
         // all topic specific stats
         // number of tokens assigned to each topic
         for (int i = 0; i < number_of_topics; ++i) {
-            statistics[stat_counter] = 0;
+            statistics[stat_counter] = topic_token_counts[i];
             stat_counter += 1;
         }
 
         // all word-type specific stats
         // number of tokens assigned to each word type
         for (int i = 0; i < number_of_word_types; ++i) {
-            statistics[stat_counter] = 0;
+            arma::vec temp = word_type_topic_counts.row(i);
+            statistics[stat_counter] = arma::sum(temp);
             stat_counter += 1;
         }
+
+        // now get density which will be calcualted as the fraction of all
+        // possible email recipients
+        statistics[stat_counter] = matrix_mean(document_edge_matrix,
+                                               num_docs);
+        stat_counter += 1;
+
+        // now get the mean of cluster assignments
+        statistics[stat_counter] = vector_mean(topic_interaction_patterns);
+        stat_counter += 1;
 
         return statistics;
     }
