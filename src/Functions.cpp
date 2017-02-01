@@ -2914,18 +2914,89 @@ arma::mat gir(arma::vec author_indexes,
          Rcpp::List token_word_types,
          bool resample_word_types){
 
+    // Set RNG and define uniform distribution
+    boost::mt19937 generator(seed);
+    boost::uniform_01<double> uniform_distribution;
+
     // we will calculate all statistics on which we wish to compare the two
     // chains in C++ and will then store them in a matrix.
     // We pre-allocate it now, and then return them in a list object.
     int number_of_statistics = 20;
     arma::mat sample_statistics = arma::zeros(GiR_samples,number_of_statistics);
 
+    // determine hte number of covariates we are using so we can determine
+    // the correct number of coefficients
+    int num_coefficients = 2;
+    if(using_coefficients){
+        num_coefficients = covariates.n_slices;
+    }
+    // allocate interaction pattern parameter and prior sd vectors.
+    arma::vec intercept_prior_standard_deviations = arma::zeros(num_ip);
+    arma::vec coefficient_prior_standard_deviations = arma::zeros(num_ip);
+    arma::vec latent_position_prior_standard_deviations = arma::zeros(num_ip);
+    arma::vec intercepts = arma::zeros(num_ip);
+    arma::mat coefficients = arma::zeros(num_ip,num_coefficients);
+    arma::cube latent_positions = arma::zeros(num_actors,num_actors,num_ld);
+    //now fill them in with the appropriate values
+    intercept_prior_standard_deviations.fill(intercept_prior_standard_deviation);
+    coefficient_prior_standard_deviations.fill(coefficient_prior_standard_deviation);
+    latent_position_prior_standard_deviations.fill(latent_position_prior_standard_deviation);
+    intercepts.fill(intercept_prior_mean);
+    coefficients.fill(coefficient_prior_mean);
+    latent_positions.fill(latent_position_prior_mean);
+
     // allocate data structures to store
     if (forward_sample) {
         // Forward Samples:
         for (int i = 0; i < GiR_samples; ++i) {
             // Take a draw from the generative process
+            // generate a vector of random numbers to pass in to the topic-token
+            // update function.
+            arma::vec random_numbers = arma::zeros(total_number_of_tokens);
+            for (int k = 0; k < total_number_of_tokens; ++k) {
+                random_numbers[k] = uniform_distribution(generator);
+            }
 
+            Rcpp::List ret = mjd::sample_from_generative_process(author_indexes,
+                  covariates,
+                  alpha_m,
+                  beta_n,
+                  using_coefficients,
+                  intercept_prior_standard_deviations,
+                  coefficient_prior_standard_deviations,
+                  latent_position_prior_standard_deviations,
+                  total_number_of_tokens,
+                  num_documents,
+                  words_per_doc,
+                  num_topics,
+                  num_terms,
+                  num_actors,
+                  num_ip,
+                  num_ld,
+                  random_numbers,
+                  token_topic_assignments,
+                  token_word_types,
+                  resample_word_types,
+                  intercepts,
+                  coefficients,
+                  latent_positions);
+
+            //now extract everything from the list.
+            Rcpp::List token_topic_assignments = ret[0];
+            Rcpp::List token_word_types = ret[1];
+            arma::mat document_topic_counts = ret[2];
+            arma::vec topic_token_counts = ret[3];
+            arma::mat word_type_topic_counts = ret[4];
+            arma::mat document_topic_distributions = ret[5];
+            arma::mat topic_word_type_distributions = ret[6];
+            arma::vec temp1 = ret[7];
+            intercepts = temp1;
+            arma::mat temp2 = ret[8];
+            coefficients = temp2;
+            arma::cube temp3 = ret[9];
+            latent_positions= temp3;
+            arma::vec topic_interaction_patterns = ret[10];
+            arma::mat document_edge_matrix = ret[11];
 
             // Calculate statistics
 
