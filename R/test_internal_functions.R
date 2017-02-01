@@ -85,6 +85,8 @@
 #' @param Test_Sample_Token_Topics_From_Generative_Process If TRUE, then optional
 #' arguments author_indexes, token_topic_assignments, token_word_types, alpha_m,
 #' beta_n, random_numbers, and resample_word_types must be provided.
+#' @param Getting_It_Right If TRUE, then Geweke's getting it right test is
+#' performed
 #' @param seed An integerg.
 #' @param distribution A log-space vector
 #' @param intercepts A vector.
@@ -146,6 +148,14 @@
 #' @param cached_token_topic_distribution A vector with legth equal to the number
 #' of topics.
 #' @param u A numeric of length 1 between 0 and 1.
+#' @param num_documents An integer.
+#' @param words_per_doc An integer.
+#' @param num_topics An integer.
+#' @param num_terms An integer.
+#' @param num_actors An integer.
+#' @param num_ip An integer.
+#' @param num_ld An integer.
+#' @param GiR_samples An integer.
 #' @return Whatever is returned by the internal function being tested
 #' @export
 test_internal_functions <- function(
@@ -164,6 +174,7 @@ test_internal_functions <- function(
     Test_Inference = FALSE,
     Test_RDirichlet = FALSE,
     Test_Sample_Token_Topics_From_Generative_Process = FALSE,
+    Getting_It_Right = FALSE,
     seed = NULL,
     distribution = NULL,
     intercepts = NULL,
@@ -222,7 +233,15 @@ test_internal_functions <- function(
     parallel = NULL,
     use_cached_token_topic_distribution = NULL,
     cached_token_topic_distribution = NULL,
-    u = NULL) {
+    u = NULL,
+    num_documents = NULL,
+    words_per_doc = NULL,
+    num_topics = NULL,
+    num_terms = NULL,
+    num_actors = NULL,
+    num_ip = NULL,
+    num_ld = NULL,
+    GiR_samples = NULL) {
 
     return_object <- NULL
 
@@ -446,6 +465,46 @@ test_internal_functions <- function(
             length(token_topic_assignments),
             resample_word_types,
             random_numbers)
+    }
+
+    if (Getting_It_Right) {
+        return_object <- gir(
+            author_indexes,
+            covariates,
+            alpha_m,
+            beta_n,
+            using_coefficients,
+            intercept_prior_mean,
+            intercept_prior_standard_deviation,
+            intercept_proposal_standard_deviations,
+            coefficient_prior_mean,
+            coefficient_prior_standard_deviation,
+            coefficient_proposal_standard_deviations,
+            latent_position_prior_mean,
+            latent_position_prior_standard_deviation,
+            latent_position_proposal_standard_deviations,
+            target_accept_rate,
+            tollerance,
+            update_size,
+            seed,
+            iterations,
+            metropolis_iterations,
+            iterations_before_t_i_p_updates,
+            update_t_i_p_every_x_iterations,
+            perform_adaptive_metropolis,
+            slice_sample_alpha_m,
+            slice_sample_step_size,
+            parallel,
+            num_documents,
+            words_per_doc,
+            num_topics,
+            num_terms,
+            num_actors,
+            num_ip,
+            num_ld,
+            total_number_of_tokens,
+            GiR_samples
+        )
     }
 
     # return whatever needs to be returned
