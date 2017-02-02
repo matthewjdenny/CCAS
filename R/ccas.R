@@ -89,6 +89,8 @@
 #' other model runs.
 #' @param generate_plots Logical indicating whether diagnostic and summary plots
 #' should be generated, defaults to TRUE.
+#' @param verbose Defaults to TRUE, if FALSE, then no output is printed to the
+#' screen by the inference code.
 #' @return An object of class CCAS containing estimation results.
 #' @examples
 #' \dontrun{
@@ -149,7 +151,8 @@ ccas <- function(formula,
                  cores = 2,
                  output_directory = NULL,
                  output_name_stem = NULL,
-                 generate_plots = TRUE) {
+                 generate_plots = TRUE,
+                 verbose = TRUE) {
 
     # for now, we only allow a common proposal variance, prior mean, and prior
     # variance. In the future, these could be different for each cluster and
@@ -337,7 +340,8 @@ ccas <- function(formula,
         CCAS_Object@perform_adaptive_metropolis,
         slice_sample_alpha_m_every,
         slice_sample_step_size,
-        parallel)
+        parallel,
+        verbose)
 
     # make sure all of the output is put into the appropriate named list objects
     MCMC_Results <- list(intercepts = Inference_Results[[2]],

@@ -16,7 +16,7 @@ ccas(formula, interaction_patterns = 4, topics = 40, alpha = 1,
   stop_adaptive_metropolis_after_x_updates = 50,
   slice_sample_alpha_m = FALSE, slice_sample_step_size = 1,
   parallel = FALSE, cores = 2, output_directory = NULL,
-  output_name_stem = NULL, generate_plots = TRUE)
+  output_name_stem = NULL, generate_plots = TRUE, verbose = TRUE)
 }
 \arguments{
 \item{formula}{A formula object of the form 'ComNet ~
@@ -134,6 +134,9 @@ other model runs.}
 
 \item{generate_plots}{Logical indicating whether diagnostic and summary plots
 should be generated, defaults to TRUE.}
+
+\item{verbose}{Defaults to TRUE, if FALSE, then no output is printed to the
+screen by the inference code.}
 }
 \value{
 An object of class CCAS containing estimation results.
