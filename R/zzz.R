@@ -1,7 +1,7 @@
 .onAttach <- function(libname, pkgname) {
     packageStartupMessage("CCAS: A Model for Communication Network Content and Structure
-Version 0.4.1 created on 2016-04-20.
-copyright (c) 2016: Matthew J. Denny, Penn State University,
+Version 0.5.1 created on 2017-02-01.
+copyright (c) 2017: Matthew J. Denny, Penn State University,
                     Zachary M. Jones, Penn State University,
                     Bruce Desmarais, Penn State University,
                     Hanna Wallach, Microsoft Research
