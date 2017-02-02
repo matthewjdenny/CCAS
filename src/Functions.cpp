@@ -3164,6 +3164,9 @@ arma::mat gir(arma::vec author_indexes,
     if (forward_sample) {
         // Forward Samples:
         for (int i = 0; i < GiR_samples; ++i) {
+            if (i % 1000000 == 0) {
+                Rcpp::Rcout << "Forward Sample Iteration: " << i << std::endl;
+            }
             // Take a draw from the generative process
             // generate a vector of random numbers to pass in to the topic-token
             // update function.
@@ -3284,6 +3287,10 @@ arma::mat gir(arma::vec author_indexes,
         arma::mat document_edge_matrix = ret[9];
 
         for (int i = 0; i < GiR_samples; ++i) {
+            // more fequent updates since it is slower
+            if (i % 100000 == 0) {
+                Rcpp::Rcout << "Backward Sample Iteration: " << i << std::endl;
+            }
             // Run inference for 5 Gibbs (50 MH per Gibbs) iterations.
 
             Rcpp::List ret_list =  mjd::inference(

@@ -138,6 +138,6 @@ test_that("That we get it right", {
         resample_word_types = resample_token_word_types,
         verbose = FALSE)
 
-    # now we need to compare
+    # now we need to compare the two output streams
 
 })
