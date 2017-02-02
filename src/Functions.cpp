@@ -1225,10 +1225,14 @@ namespace mjd {
             arma::vec accept_rates,
             double target_accept_rate,
             double tollerance,
-            double update_size) {
+            double update_size,
+            bool verbose) {
 
-        Rcpp::Rcout << "Metropolis Hastings Accept Rates: " << std::endl <<
-            accept_rates.t() << std::endl;
+        if (verbose) {
+            Rcpp::Rcout << "Metropolis Hastings Accept Rates: " << std::endl <<
+                accept_rates.t() << std::endl;
+        }
+
 
         // get number of interaction patterns
         int number_of_interaction_patterns = intercept_proposal_standard_deviations.n_elem;
@@ -1258,8 +1262,10 @@ namespace mjd {
 
         // print out the new proposal sd's so the user can keep track of what
         // is going on.
-        Rcpp::Rcout << "New Proposal Standard Deviations: " << std::endl <<
-            intercept_proposal_standard_deviations.t() << std::endl;
+        if (verbose) {
+            Rcpp::Rcout << "New Proposal Standard Deviations: " << std::endl <<
+                intercept_proposal_standard_deviations.t() << std::endl;
+        }
 
         // put everything in a return list
         Rcpp::List ret_list(3);
@@ -1278,7 +1284,8 @@ namespace mjd {
     double calculate_unnormalized_LDA_log_likelihood(int number_of_documents,
                                                      int number_of_topics,
                                                      Rcpp::List token_topic_assignments,
-                                                     arma::vec log_alpha_m) {
+                                                     arma::vec log_alpha_m,
+                                                     bool verbose) {
 
         //initialize variables that will be used across iterations
         double Unnormalized_Corpus_Log_Likelihood = 0;
@@ -1325,9 +1332,10 @@ namespace mjd {
         // transform
         Unnormalized_Corpus_Log_Likelihood += (double(number_of_topics) *
             log_alpha_m[0]);
-
-        Rcpp::Rcout << "Corpus Log Likelihood: " <<
-            Unnormalized_Corpus_Log_Likelihood << std::endl;
+        if (verbose) {
+            Rcpp::Rcout << "Corpus Log Likelihood: " <<
+                Unnormalized_Corpus_Log_Likelihood << std::endl;
+        }
 
         return Unnormalized_Corpus_Log_Likelihood;
     }
@@ -1375,7 +1383,8 @@ namespace mjd {
                 number_of_documents,
                 number_of_topics,
                 token_topic_assignments,
-                proposed_alpha_m);
+                proposed_alpha_m,
+                true);
 
             // ========== check to see if it is under the curve ======== //
             if(proposed_LDA_ll > slice_probability_floor){
@@ -1443,7 +1452,8 @@ namespace mjd {
             bool perform_adaptive_metropolis,
             int slice_sample_every_x_iterations,
             double slice_sample_step_size,
-            bool parallel) {
+            bool parallel,
+            bool verbose) {
 
         // Set RNG and define uniform distribution
         boost::mt19937 generator(seed);
@@ -1491,7 +1501,9 @@ namespace mjd {
 
         // loop over interaction patterns
         for (int i = 0; i < iterations; ++i) {
-            Rcpp::Rcout << "Iteration: " << i << std::endl;
+            if (verbose) {
+                Rcpp::Rcout << "Iteration: " << i << std::endl;
+            }
 
             // generate a vector of random numbers to pass in to the topic-token
             // update function.
@@ -1566,9 +1578,11 @@ namespace mjd {
 
                     // print the T. I. P. Assignments out so we can check for weird
                     // stuff like all topics going toone IP.
-                    Rcpp::Rcout << "Topic Interaction Pattern Assignments: " <<
-                        std::endl << Rcpp::as<Rcpp::NumericVector>(
-                        Rcpp::wrap(topic_interaction_patterns.t())) << std::endl;
+                    if (verbose) {
+                        Rcpp::Rcout << "Topic Interaction Pattern Assignments: " <<
+                            std::endl << Rcpp::as<Rcpp::NumericVector>(
+                                    Rcpp::wrap(topic_interaction_patterns.t())) << std::endl;
+                    }
                 }
                 //increment counter
                 t_i_p_update_counter += 1;
@@ -1590,7 +1604,8 @@ namespace mjd {
                 number_of_documents,
                 num_topics,
                 token_topic_assignments,
-                log_alpha_m);
+                log_alpha_m,
+                verbose);
 
             // store the value.
             store_LDA_ll[i] = LDA_ll;
@@ -1604,7 +1619,9 @@ namespace mjd {
                                                    LDA_ll,
                                                    slice_sample_step_size);
                 slice_sample_counter = 0;
-                Rcpp::Rcout << "New Alpha value:" << alpha_m[0] << std::endl;
+                if (verbose) {
+                    Rcpp::Rcout << "New Alpha value:" << alpha_m[0] << std::endl;
+                }
             }
             slice_sample_counter += 1;
             // ************************************************************** //
@@ -1622,7 +1639,8 @@ namespace mjd {
                             accept_rates,
                             target_accept_rate,
                             tollerance,
-                            update_size);
+                            update_size,
+                            verbose);
 
                     // deal with type ambiguity while extracting objects from an
                     // Rcpp List, then assign everything to the appropriate
@@ -2076,7 +2094,8 @@ namespace mjd {
                         accept_rates,
                         target_accept_rate,
                         tollerance,
-                        update_size);
+                        update_size,
+                        true);
 
                     // deal with type ambiguity while extracting objects from an
                     // Rcpp List, then assign everything to the appropriate
@@ -2876,7 +2895,8 @@ List am(arma::vec intercept_proposal_standard_deviations,
             accept_rates,
             target_accept_rate,
             tollerance,
-            update_size);
+            update_size,
+            true);
 
     return ret_list;
 
@@ -2919,7 +2939,8 @@ List model_inference(arma::vec author_indexes,
                      bool perform_adaptive_metropolis,
                      int slice_sample_every_x_iterations,
                      double slice_sample_step_size,
-                     bool parallel){
+                     bool parallel,
+                     bool verbose){
 
     List ret_list =  mjd::inference(
         author_indexes,
@@ -2958,7 +2979,8 @@ List model_inference(arma::vec author_indexes,
         perform_adaptive_metropolis,
         slice_sample_every_x_iterations,
         slice_sample_step_size,
-        parallel);
+        parallel,
+        verbose);
 
     return ret_list;
 
@@ -3301,7 +3323,8 @@ arma::mat gir(arma::vec author_indexes,
                 perform_adaptive_metropolis,
                 slice_sample_every_x_iterations,
                 slice_sample_step_size,
-                parallel);
+                parallel,
+                false);
 
             //extract parameters
             arma::mat inf1 = ret_list[4];
