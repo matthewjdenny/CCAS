@@ -2185,8 +2185,7 @@ namespace mjd {
                                         arma::cube latent_positions) {
 
         // sample token topic assignments and word types from generative process
-        Rcpp::List ret = sample_token_topics_generative_process(
-            token_topic_assignments,
+        Rcpp::List ret = sample_token_topics_generative_process(token_topic_assignments,
             token_word_types,
             alpha_m,
             beta_n,
@@ -2445,8 +2444,10 @@ namespace mjd {
 
         // mean of coefficients positions in each interaction pattern
         for (int i = 0; i < number_of_interaction_patterns; ++i) {
-            arma::vec temp = coefficients.row(i);
-            statistics[stat_counter] = vector_mean(temp);
+            arma::rowvec temp = coefficients.row(i);
+            // now we convert to an arma::vec (ugly but it works)
+            arma::vec temp2 = arma::conv_to<arma::vec>::from(temp);
+            statistics[stat_counter] = vector_mean(temp2);
             stat_counter += 1;
         }
 
@@ -2483,8 +2484,10 @@ namespace mjd {
         // all word-type specific stats
         // number of tokens assigned to each word type
         for (int i = 0; i < number_of_word_types; ++i) {
-            arma::vec temp = word_type_topic_counts.row(i);
-            statistics[stat_counter] = arma::sum(temp);
+            arma::rowvec temp = word_type_topic_counts.row(i);
+            // now we convert to an arma::vec (ugly but it works)
+            arma::vec temp2 = arma::conv_to<arma::vec>::from(temp);
+            statistics[stat_counter] = arma::sum(temp2);
             stat_counter += 1;
         }
 
@@ -3103,6 +3106,7 @@ arma::mat gir(arma::vec author_indexes,
     // chains in C++ and will then store them in a matrix.
     // We pre-allocate it now, and then return them in a list object.
     int number_of_statistics = 0;
+    total_number_of_tokens = total_number_of_tokens * 5;
 
     //we want average ls positions, coefficients, the intercept + sum of
     //distances for each interaction pattern, number of tokens assigned to each
@@ -3147,28 +3151,28 @@ arma::mat gir(arma::vec author_indexes,
             }
 
             Rcpp::List ret = mjd::sample_from_generative_process(author_indexes,
-                  covariates,
-                  alpha_m,
-                  beta_n,
-                  using_coefficients,
-                  intercept_prior_standard_deviations,
-                  coefficient_prior_standard_deviations,
-                  latent_position_prior_standard_deviations,
-                  total_number_of_tokens,
-                  num_documents,
-                  words_per_doc,
-                  num_topics,
-                  num_terms,
-                  num_actors,
-                  num_ip,
-                  num_ld,
-                  random_numbers,
-                  token_topic_assignments,
-                  token_word_types,
-                  resample_word_types,
-                  intercepts,
-                  coefficients,
-                  latent_positions);
+                                                                 covariates,
+                                                                 alpha_m,
+                                                                 beta_n,
+                                                                 using_coefficients,
+                                                                 intercept_prior_standard_deviations,
+                                                                 coefficient_prior_standard_deviations,
+                                                                 latent_position_prior_standard_deviations,
+                                                                 total_number_of_tokens,
+                                                                 num_documents,
+                                                                 words_per_doc,
+                                                                 num_topics,
+                                                                 num_terms,
+                                                                 num_actors,
+                                                                 num_ip,
+                                                                 num_ld,
+                                                                 random_numbers,
+                                                                 token_topic_assignments,
+                                                                 token_word_types,
+                                                                 resample_word_types,
+                                                                 intercepts,
+                                                                 coefficients,
+                                                                 latent_positions);
 
             //now extract everything from the list.
             Rcpp::List token_topic_assignments = ret[0];
@@ -3187,14 +3191,14 @@ arma::mat gir(arma::vec author_indexes,
 
             // Calculate statistics
             arma::vec stats =  mjd::calculate_statistics_for_getting_it_right(document_topic_counts,
-                topic_token_counts,
-                word_type_topic_counts,
-                intercepts,
-                coefficients,
-                latent_positions,
-                topic_interaction_patterns,
-                document_edge_matrix,
-                number_of_statistics);
+                                                                              topic_token_counts,
+                                                                              word_type_topic_counts,
+                                                                              intercepts,
+                                                                              coefficients,
+                                                                              latent_positions,
+                                                                              topic_interaction_patterns,
+                                                                              document_edge_matrix,
+                                                                              number_of_statistics);
 
             // Store statistics
             for (int k = 0; k < number_of_statistics; ++k) {
@@ -3210,7 +3214,7 @@ arma::mat gir(arma::vec author_indexes,
         // generate a vector of random numbers to pass in to the topic-token
         // update function.
         arma::vec random_numbers = arma::zeros(total_number_of_tokens);
-        for (int k = 0; k < total_number_of_tokens; ++k) {
+        for (int k = 0; k < 5*total_number_of_tokens; ++k) {
             random_numbers[k] = uniform_distribution(generator);
         }
 
@@ -3302,8 +3306,8 @@ arma::mat gir(arma::vec author_indexes,
             word_type_topic_counts = inf2;
             arma::mat inf3 = ret_list[6];
             topic_token_counts = inf3;
-            arma::mat inf4 = ret_list[7];
-            token_topic_assignments = inf4;
+            // Rcpp::List inf4 = ret_list[7];
+            // token_topic_assignments = inf4;
             arma::vec inf5 = ret_list[11];
             intercepts = inf5;
             arma::mat inf6 = ret_list[12];
@@ -3334,8 +3338,8 @@ arma::mat gir(arma::vec author_indexes,
             // Take a draw from the generative process using updated parameters.
             // generate a vector of random numbers to pass in to the topic-token
             // update function.
-            arma::vec random_numbers = arma::zeros(total_number_of_tokens);
-            for (int k = 0; k < total_number_of_tokens; ++k) {
+            arma::vec random_numbers = arma::zeros(5*total_number_of_tokens);
+            for (int k = 0; k < 5*total_number_of_tokens; ++k) {
                 random_numbers[k] = uniform_distribution(generator);
             }
 
