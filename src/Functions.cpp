@@ -1731,7 +1731,7 @@ namespace mjd {
         }// end up gibbs/main sampling loop
 
         // allocate a list to store everything in.
-        Rcpp::List ret_list(11);
+        Rcpp::List ret_list(16);
         ret_list[0] = store_topic_interaction_patterns;
         ret_list[1] = store_intercepts;
         ret_list[2] = store_coefficients;
@@ -1743,6 +1743,11 @@ namespace mjd {
         ret_list[8] = store_accept_rates;
         ret_list[9] = intercept_proposal_standard_deviations;
         ret_list[10] = store_LDA_ll;
+        ret_list[11] = intercepts;
+        ret_list[12] = coefficients;
+        ret_list[13] = latent_positions;
+        ret_list[14] = topic_interaction_patterns;
+        ret_list[15] = word_type_topic_counts;
         // return everything
         return ret_list;
     }
@@ -2195,8 +2200,6 @@ namespace mjd {
         arma::mat document_topic_counts = ret[2];
         arma::vec topic_token_counts = ret[3];
         arma::mat word_type_topic_counts = ret[4];
-        arma::mat document_topic_distributions = ret[5];
-        arma::mat topic_word_type_distributions = ret[6];
 
         // get the interaction pattern parameters. One level up we use the prior
         // means to initialize intercepts, coefficients, latent_positions, at
@@ -2301,19 +2304,17 @@ namespace mjd {
         }
 
         // store everything so it can be returned
-        Rcpp::List ret_list(12);
+        Rcpp::List ret_list(10);
         ret_list[0] = token_topic_assignments;
         ret_list[1] = token_word_types;
         ret_list[2] = document_topic_counts;
         ret_list[3] = topic_token_counts;
         ret_list[4] = word_type_topic_counts;
-        ret_list[5] = document_topic_distributions;
-        ret_list[6] = topic_word_type_distributions;
-        ret_list[7] = intercepts;
-        ret_list[8] = coefficients;
-        ret_list[9] = latent_positions;
-        ret_list[10] = topic_interaction_patterns;
-        ret_list[11] = document_edge_matrix;
+        ret_list[5] = intercepts;
+        ret_list[6] = coefficients;
+        ret_list[7] = latent_positions;
+        ret_list[8] = topic_interaction_patterns;
+        ret_list[9] = document_edge_matrix;
 
 
         return ret_list;
@@ -2393,8 +2394,6 @@ namespace mjd {
     arma::vec calculate_statistics_for_getting_it_right(arma::mat document_topic_counts,
         arma::vec topic_token_counts,
         arma::mat word_type_topic_counts,
-        arma::mat document_topic_distributions,
-        arma::mat topic_word_type_distributions,
         arma::vec intercepts,
         arma::mat coefficients,
         arma::cube latent_positions,
@@ -2420,7 +2419,7 @@ namespace mjd {
         int number_of_interaction_patterns = intercepts.n_elem;
         int number_of_topics = topic_token_counts.n_elem;
         int number_of_word_types = word_type_topic_counts.n_rows;
-        int num_docs = document_topic_distributions.n_rows;
+        int num_docs = document_topic_counts.n_rows;
         int num_actors = latent_positions.n_cols;
 
         // allocate a vector in which to store statistics we calculate on our
@@ -3177,23 +3176,19 @@ arma::mat gir(arma::vec author_indexes,
             arma::mat document_topic_counts = ret[2];
             arma::vec topic_token_counts = ret[3];
             arma::mat word_type_topic_counts = ret[4];
-            arma::mat document_topic_distributions = ret[5];
-            arma::mat topic_word_type_distributions = ret[6];
-            arma::vec temp1 = ret[7];
+            arma::vec temp1 = ret[5];
             intercepts = temp1;
-            arma::mat temp2 = ret[8];
+            arma::mat temp2 = ret[6];
             coefficients = temp2;
-            arma::cube temp3 = ret[9];
+            arma::cube temp3 = ret[7];
             latent_positions= temp3;
-            arma::vec topic_interaction_patterns = ret[10];
-            arma::mat document_edge_matrix = ret[11];
+            arma::vec topic_interaction_patterns = ret[8];
+            arma::mat document_edge_matrix = ret[9];
 
             // Calculate statistics
             arma::vec stats =  mjd::calculate_statistics_for_getting_it_right(document_topic_counts,
                 topic_token_counts,
                 word_type_topic_counts,
-                document_topic_distributions,
-                topic_word_type_distributions,
                 intercepts,
                 coefficients,
                 latent_positions,
@@ -3249,16 +3244,14 @@ arma::mat gir(arma::vec author_indexes,
         arma::mat document_topic_counts = ret[2];
         arma::vec topic_token_counts = ret[3];
         arma::mat word_type_topic_counts = ret[4];
-        arma::mat document_topic_distributions = ret[5];
-        arma::mat topic_word_type_distributions = ret[6];
-        arma::vec temp1 = ret[7];
+        arma::vec temp1 = ret[5];
         intercepts = temp1;
-        arma::mat temp2 = ret[8];
+        arma::mat temp2 = ret[6];
         coefficients = temp2;
-        arma::cube temp3 = ret[9];
+        arma::cube temp3 = ret[7];
         latent_positions= temp3;
-        arma::vec topic_interaction_patterns = ret[10];
-        arma::mat document_edge_matrix = ret[11];
+        arma::vec topic_interaction_patterns = ret[8];
+        arma::mat document_edge_matrix = ret[9];
 
         for (int i = 0; i < GiR_samples; ++i) {
             // Run inference for 5 Gibbs (50 MH per Gibbs) iterations.
@@ -3303,15 +3296,40 @@ arma::mat gir(arma::vec author_indexes,
                 parallel);
 
             //extract parameters
-            // ret_list[0] = store_topic_interaction_patterns;
-            // ret_list[1] = store_intercepts;
-            // ret_list[2] = store_coefficients;
-            // ret_list[3] = store_latent_positions;
-            // ret_list[4] = document_topic_counts;
-            // ret_list[5] = word_type_topic_counts;
-            // ret_list[6] = topic_token_counts;
-            // ret_list[7] = token_topic_assignments;
+            arma::mat inf1 = ret_list[4];
+            document_topic_counts = inf1;
+            arma::mat inf2 = ret_list[5];
+            word_type_topic_counts = inf2;
+            arma::mat inf3 = ret_list[6];
+            topic_token_counts = inf3;
+            arma::mat inf4 = ret_list[7];
+            token_topic_assignments = inf4;
+            arma::vec inf5 = ret_list[11];
+            intercepts = inf5;
+            arma::mat inf6 = ret_list[12];
+            coefficients = inf6;
+            arma::cube inf7 = ret_list[13];
+            latent_positions= inf7;
+            arma::vec inf8 = ret_list[14];
+            topic_interaction_patterns = inf8;
+            arma::mat inf9 = ret_list[15];
+            word_type_topic_counts = inf9;
 
+            // Calculate statistics
+            arma::vec stats =  mjd::calculate_statistics_for_getting_it_right(document_topic_counts,
+                                                                              topic_token_counts,
+                                                                              word_type_topic_counts,
+                                                                              intercepts,
+                                                                              coefficients,
+                                                                              latent_positions,
+                                                                              topic_interaction_patterns,
+                                                                              document_edge_matrix,
+                                                                              number_of_statistics);
+
+            // Store statistics
+            for (int k = 0; k < number_of_statistics; ++k) {
+                sample_statistics(i,k) = stats[k];
+            }
 
             // Take a draw from the generative process using updated parameters.
             // generate a vector of random numbers to pass in to the topic-token
@@ -3356,39 +3374,16 @@ arma::mat gir(arma::vec author_indexes,
             topic_token_counts = temp7;
             arma::mat temp8 = ret[4];
             word_type_topic_counts = temp8;
-            arma::mat temp9 = ret[5];
-            document_topic_distributions = temp9;
-            arma::mat temp10 = ret[6];
-            topic_word_type_distributions = temp10;
-            arma::vec temp11 = ret[7];
+            arma::vec temp11 = ret[5];
             intercepts = temp11;
-            arma::mat temp12 = ret[8];
+            arma::mat temp12 = ret[6];
             coefficients = temp12;
-            arma::cube temp13 = ret[9];
+            arma::cube temp13 = ret[7];
             latent_positions= temp13;
-            arma::vec temp14 = ret[10];
+            arma::vec temp14 = ret[8];
             topic_interaction_patterns = temp14;
-            arma::mat temp15 = ret[11];
+            arma::mat temp15 = ret[9];
             document_edge_matrix = temp15;
-
-            // Calculate statistics
-            arma::vec stats =  mjd::calculate_statistics_for_getting_it_right(document_topic_counts,
-                                                                              topic_token_counts,
-                                                                              word_type_topic_counts,
-                                                                              document_topic_distributions,
-                                                                              topic_word_type_distributions,
-                                                                              intercepts,
-                                                                              coefficients,
-                                                                              latent_positions,
-                                                                              topic_interaction_patterns,
-                                                                              document_edge_matrix,
-                                                                              number_of_statistics);
-
-            // Store statistics
-            for (int k = 0; k < number_of_statistics; ++k) {
-                sample_statistics(i,k) = stats[k];
-            }
-
 
         }
 
