@@ -158,6 +158,8 @@
 #' @param GiR_samples An integer.
 #' @param forward_sample A logical. If TRUE, the forward GiR samples are
 #' generated. If FALSE, then backwards GiR samples are generated.
+#' @param verbose Defaults to TRUE, if FALSE, then no output is printed to the
+#' screen by the inference code.
 #' @return Whatever is returned by the internal function being tested
 #' @export
 test_internal_functions <- function(
@@ -244,7 +246,8 @@ test_internal_functions <- function(
     num_ip = NULL,
     num_ld = NULL,
     GiR_samples = NULL,
-    forward_sample = TRUE) {
+    forward_sample = TRUE,
+    verbose = TRUE) {
 
     return_object <- NULL
 
@@ -452,7 +455,8 @@ test_internal_functions <- function(
             perform_adaptive_metropolis,
             slice_sample_alpha_m,
             slice_sample_step_size,
-            parallel)
+            parallel,
+            verbose)
     }
 
     if (Test_RDirichlet){
@@ -511,6 +515,18 @@ test_internal_functions <- function(
             token_topic_assignments,
             token_word_types,
             resample_word_types)
+
+        # generate lables for the output
+        colnms <- c(paste("LSM_Intercept_",1:num_ip,sep = ""),
+                    paste("LSM_Mean_Coefficients_",1:num_ip,sep = ""),
+                    paste("LSM_Mean_Positions_",1:num_ip,sep = ""),
+                    paste("LSM_Sum_Of_Distances_",1:num_ip,sep = ""),
+                    paste("Tokens_Assigned_To_IP_",1:num_ip,sep = ""),
+                    paste("Token_Count_Topic_",1:num_topics,sep = ""),
+                    paste("Tokens_Count_Word_Type_",1:num_terms,sep = ""),
+                    "Mean_Edge_Value","Mean_IP_Value")
+
+        colnames(return_object) <- colnms
     }
 
     # return whatever needs to be returned

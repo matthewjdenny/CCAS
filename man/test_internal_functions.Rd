@@ -48,7 +48,7 @@ test_internal_functions(Test_Log_Space_Multinomial_Sampler = FALSE,
   cached_token_topic_distribution = NULL, u = NULL, num_documents = NULL,
   words_per_doc = NULL, num_topics = NULL, num_terms = NULL,
   num_actors = NULL, num_ip = NULL, num_ld = NULL, GiR_samples = NULL,
-  forward_sample = TRUE)
+  forward_sample = TRUE, verbose = TRUE)
 }
 \arguments{
 \item{Test_Log_Space_Multinomial_Sampler}{Defualts to FALSE. If TRUE, then
@@ -291,6 +291,9 @@ of topics.}
 
 \item{forward_sample}{A logical. If TRUE, the forward GiR samples are
 generated. If FALSE, then backwards GiR samples are generated.}
+
+\item{verbose}{Defaults to TRUE, if FALSE, then no output is printed to the
+screen by the inference code.}
 }
 \value{
 Whatever is returned by the internal function being tested
