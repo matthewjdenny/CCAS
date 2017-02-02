@@ -1,6 +1,5 @@
 test_that("That we get it right", {
     skip_on_cran()
-    skip() # until we get it working
 
     # we need a very simple model with a small number of actors, topics, odcuments etc.
     # create an example distribution
@@ -93,7 +92,8 @@ test_that("That we get it right", {
         forward_sample = TRUE,
         token_topic_assignments = token_topic_assignments,
         token_word_types = token_word_types,
-        resample_word_types = resample_token_word_types)
+        resample_word_types = resample_token_word_types,
+        verbose = FALSE)
 
     backward_samples <- test_internal_functions(
         Getting_It_Right = TRUE,
@@ -135,7 +135,8 @@ test_that("That we get it right", {
         forward_sample = FALSE,
         token_topic_assignments = token_topic_assignments,
         token_word_types = token_word_types,
-        resample_word_types = resample_token_word_types)
+        resample_word_types = resample_token_word_types,
+        verbose = FALSE)
 
     # now we need to compare
 
