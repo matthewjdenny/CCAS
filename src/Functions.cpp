@@ -3175,8 +3175,10 @@ arma::mat gir(arma::vec author_indexes,
                                                                  latent_positions);
 
             //now extract everything from the list.
-            Rcpp::List token_topic_assignments = ret[0];
-            Rcpp::List token_word_types = ret[1];
+            Rcpp::List templ1 = ret[0];
+            token_topic_assignments = templ1;
+            Rcpp::List templ2 = ret[1];
+            token_word_types = templ2;
             arma::mat document_topic_counts = ret[2];
             arma::vec topic_token_counts = ret[3];
             arma::mat word_type_topic_counts = ret[4];
@@ -3214,7 +3216,7 @@ arma::mat gir(arma::vec author_indexes,
         // generate a vector of random numbers to pass in to the topic-token
         // update function.
         arma::vec random_numbers = arma::zeros(total_number_of_tokens);
-        for (int k = 0; k < 5*total_number_of_tokens; ++k) {
+        for (int k = 0; k < total_number_of_tokens; ++k) {
             random_numbers[k] = uniform_distribution(generator);
         }
 
@@ -3243,8 +3245,10 @@ arma::mat gir(arma::vec author_indexes,
                                                              latent_positions);
 
         //now extract everything from the list.
-        Rcpp::List token_topic_assignments = ret[0];
-        Rcpp::List token_word_types = ret[1];
+        Rcpp::List templ1 = ret[0];
+        token_topic_assignments = templ1;
+        Rcpp::List templ2 = ret[1];
+        token_word_types = templ2;
         arma::mat document_topic_counts = ret[2];
         arma::vec topic_token_counts = ret[3];
         arma::mat word_type_topic_counts = ret[4];
@@ -3338,8 +3342,8 @@ arma::mat gir(arma::vec author_indexes,
             // Take a draw from the generative process using updated parameters.
             // generate a vector of random numbers to pass in to the topic-token
             // update function.
-            arma::vec random_numbers = arma::zeros(5*total_number_of_tokens);
-            for (int k = 0; k < 5*total_number_of_tokens; ++k) {
+            arma::vec random_numbers = arma::zeros(total_number_of_tokens);
+            for (int k = 0; k < total_number_of_tokens; ++k) {
                 random_numbers[k] = uniform_distribution(generator);
             }
 
