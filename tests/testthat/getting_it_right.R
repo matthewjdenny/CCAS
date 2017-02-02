@@ -7,7 +7,7 @@ test_that("That we get it right", {
     set.seed(12345)
 
     resample_token_word_types = FALSE
-    GiR_samples = 10000000
+    GiR_samples = 1000
     num_documents = 5
     words_per_doc = 10
     num_topics = 4
