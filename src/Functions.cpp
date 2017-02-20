@@ -3139,7 +3139,7 @@ arma::mat gir(arma::vec author_indexes,
 
     arma::mat sample_statistics = arma::zeros(GiR_samples,number_of_statistics);
 
-    // determine hte number of covariates we are using so we can determine
+    // determine the number of covariates we are using so we can determine
     // the correct number of coefficients
     int num_coefficients = 2;
     if(using_coefficients){

@@ -6,11 +6,11 @@ test_that("That we get it right", {
     set.seed(12345)
 
     resample_token_word_types = FALSE
-    GiR_samples = 1000
+    GiR_samples = 1000000
     num_documents = 5
-    words_per_doc = 10
-    num_topics = 4
-    num_terms = 10
+    words_per_doc = 4
+    num_topics = 3
+    num_terms = 5
     num_actors = 4
     num_ip = 2
     num_ld = 2
@@ -32,7 +32,7 @@ test_that("That we get it right", {
                     dim = c(num_actors, num_actors, num_covar))
 
     token_topic_assignments <- vector(mode = "list",
-                                           length = num_documents)
+      length = num_documents)
     token_word_types <- vector(mode = "list",
                                length = num_documents)
 
@@ -139,5 +139,13 @@ test_that("That we get it right", {
         verbose = FALSE)
 
     # now we need to compare the two output streams
+    plt = do.call("rbind", lapply(seq_len(ncol(forward_samples)), function(x) {
+      qq = as.data.frame(qqplot(forward_samples[, x], backward_samples[, x],
+        plot.it = FALSE))
+      qq$variable = colnames(forward_samples)[x]
+      qq
+    }))
 
+    ggplot(plt, aes(x, y)) + geom_point() +
+      facet_wrap(~ variable, scales = "free")
 })
