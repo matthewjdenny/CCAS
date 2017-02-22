@@ -140,12 +140,19 @@ test_that("That we get it right", {
 
     # now we need to compare the two output streams
     plt = do.call("rbind", lapply(seq_len(ncol(forward_samples)), function(x) {
-      qq = as.data.frame(qqplot(forward_samples[, x], backward_samples[, x],
+      qq = as.data.frame(ggplot2::qqplot(forward_samples[, x], backward_samples[, x],
         plot.it = FALSE))
       qq$variable = colnames(forward_samples)[x]
       qq
     }))
 
-    ggplot(plt, aes(x, y)) + geom_point() +
-      facet_wrap(~ variable, scales = "free")
+    # we do not want the plot to auto-generate under travis and r cmd check
+    make_plot <- FALSE
+    if (make_plot) {
+        pdf(file = "~/Desktop/QQ_Plots.pdf", height = 16, width = 20)
+        ggplot2::ggplot(plt, ggplot2::aes(x, y)) + ggplot2::geom_point() +
+            ggplot2::facet_wrap(~ variable, scales = "free")
+        dev.off()
+    }
+
 })
