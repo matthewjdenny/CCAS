@@ -3207,15 +3207,9 @@ arma::mat gir(arma::vec author_indexes,
             arma::mat document_topic_counts = ret[2];
             arma::vec topic_token_counts = ret[3];
             arma::mat word_type_topic_counts = ret[4];
-	    arma::vec intercepts = ret[5];
-	    arma::mat coefficients = ret[6];
-	    arma::cube latent_positions = ret[7];
-            // arma::vec temp1 = ret[5];
-            // intercepts = temp1;
-            // arma::mat temp2 = ret[6];
-            // coefficients = temp2;
-            // arma::cube temp3 = ret[7];
-            // latent_positions = temp3;
+	        arma::vec intercepts2 = ret[5];
+	        arma::mat coefficients2 = ret[6];
+	        arma::cube latent_positions2 = ret[7];
             arma::vec topic_interaction_patterns = ret[8];
             arma::mat document_edge_matrix = ret[9];
 
@@ -3225,9 +3219,9 @@ arma::mat gir(arma::vec author_indexes,
             arma::vec stats =  mjd::calculate_statistics_for_getting_it_right(document_topic_counts,
                                                                               topic_token_counts,
                                                                               word_type_topic_counts,
-                                                                              intercepts,
-                                                                              coefficients,
-                                                                              latent_positions,
+                                                                              intercepts2,
+                                                                              coefficients2,
+                                                                              latent_positions2,
                                                                               topic_interaction_patterns,
                                                                               document_edge_matrix,
                                                                               number_of_statistics);
