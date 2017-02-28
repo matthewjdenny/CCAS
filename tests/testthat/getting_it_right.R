@@ -6,7 +6,7 @@ test_that("That we get it right", {
     set.seed(12345)
 
     resample_token_word_types = FALSE
-    GiR_samples = 1000
+    GiR_samples = 5000000
     num_documents = 5
     words_per_doc = 4
     num_topics = 3
@@ -139,9 +139,27 @@ test_that("That we get it right", {
         verbose = FALSE)
 
     # now we need to compare the two output streams
+    # subsample points in the middle to make this possible to
+    # plot for a really large number of samples
+    k <- floor(0.0001 * GiR_samples)
+    m <- .001 * GiR_samples
+    e <- floor(0.0005 * GiR_samples)
+
+    quant.subsample = function(y, m = 100, e = 1) {
+      # m: size of a systematic sample
+      # e: number of extreme values at either end to use
+      x <- sort(y)
+      n <- length(x)
+      quants <- (1 + sin(1:m / (m + 1) * pi - pi / 2)) / 2
+      sort(c(x[1:e], quantile(x, probs = quants), x[(n + 1 - e):n]))
+      # Returns m + 2*e sorted values from the EDF of y
+    }
+
     plt = do.call("rbind", lapply(seq_len(ncol(forward_samples)), function(x) {
-      qq = as.data.frame(ggplot2::qqplot(forward_samples[, x], backward_samples[, x],
-        plot.it = FALSE))
+      qq = data.frame("forward" = quant.subsample(forward_samples[, x], m, e),
+        "backward" = quant.subsample(backward_samples[, x], m, e))
+      ## qq = as.data.frame(qqplot(forward_samples[, x], backward_samples[, x],
+      ##   plot.it = FALSE))
       qq$variable = colnames(forward_samples)[x]
       qq
     }))
@@ -150,7 +168,7 @@ test_that("That we get it right", {
     make_plot <- FALSE
     if (make_plot) {
         pdf(file = "~/Desktop/QQ_Plots.pdf", height = 16, width = 20)
-        ggplot2::ggplot(plt, ggplot2::aes(x, y)) + ggplot2::geom_point() +
+        ggplot2::ggplot(plt, ggplot2::aes(forward, backward)) + ggplot2::geom_point() +
             ggplot2::facet_wrap(~ variable, scales = "free")
         dev.off()
     }
