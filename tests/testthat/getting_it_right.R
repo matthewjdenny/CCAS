@@ -5,8 +5,8 @@ test_that("That we get it right", {
     # create an example distribution
     set.seed(12345)
 
-    resample_token_word_types = FALSE
-    GiR_samples = 5000000
+    resample_token_word_types = TRUE
+    GiR_samples = 1000000
     num_documents = 5
     words_per_doc = 4
     num_topics = 3
@@ -142,8 +142,8 @@ test_that("That we get it right", {
     # subsample points in the middle to make this possible to
     # plot for a really large number of samples
     k <- floor(0.0001 * GiR_samples)
-    m <- .001 * GiR_samples
-    e <- floor(0.0005 * GiR_samples)
+    m <- floor(.001 * GiR_samples)
+    e <- floor(0.01 * GiR_samples)
 
     quant.subsample = function(y, m = 100, e = 1) {
       # m: size of a systematic sample
@@ -167,10 +167,19 @@ test_that("That we get it right", {
     # we do not want the plot to auto-generate under travis and r cmd check
     make_plot <- FALSE
     if (make_plot) {
-        pdf(file = "~/Desktop/QQ_Plots.pdf", height = 16, width = 20)
-        ggplot2::ggplot(plt, ggplot2::aes(forward, backward)) + ggplot2::geom_point() +
-            ggplot2::facet_wrap(~ variable, scales = "free")
-        dev.off()
-    }
+      dir = tempdir()
+      lsm_idx = grepl("LSM", plt$variable)
+      pq = ggplot2::ggplot(plt[lsm_idx, ],
+        ggplot2::aes(forward, backward)) + ggplot2::geom_point() +
+        ggplot2::facet_wrap(~ variable, scales = "free")
+      ggsave(paste0(dir, "/qqplot.png"), pq, width = 8, height = 8)
+      
+      ph = ggplot2::ggplot(reshape2::melt(plt[!lsm_idx, ], id.vars = "variable",
+        value.name = "statistic", variable.name = "type"),
+        ggplot2::aes(statistic)) + geom_histogram() +
+        facet_grid(variable ~ type, scales = "free")
+      ggsave(paste0(dir, "/hist.png"), width = 8, height = 12)
 
+      ## insert traceplots here
+    }
 })
