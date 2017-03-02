@@ -172,14 +172,20 @@ test_that("That we get it right", {
       pq = ggplot2::ggplot(plt[lsm_idx, ],
         ggplot2::aes(forward, backward)) + ggplot2::geom_point() +
         ggplot2::facet_wrap(~ variable, scales = "free")
-      ggsave(paste0(dir, "/qqplot.png"), pq, width = 8, height = 8)
+      ggplot2::ggsave(paste0(dir, "/qqplot.png"), pq, width = 8, height = 8)
       
       ph = ggplot2::ggplot(reshape2::melt(plt[!lsm_idx, ], id.vars = "variable",
         value.name = "statistic", variable.name = "type"),
-        ggplot2::aes(statistic)) + geom_histogram() +
-        facet_grid(variable ~ type, scales = "free")
-      ggsave(paste0(dir, "/hist.png"), width = 8, height = 12)
+        ggplot2::aes(statistic)) + ggplot2::geom_histogram() +
+        ggplot2::facet_wrap(variable ~ type, scales = "free")
+      ggplot2::ggsave(paste0(dir, "/hist.png"), ph, width = 8, height = 12)
 
-      ## insert traceplots here
+      plt$idx = as.integer(row.names(plt))
+      plt = reshape2::melt(plt, id.vars = c("idx", "variable"),
+        variable.name = "type")
+      pt = ggplot2::ggplot(plt, aes(idx, value, color = type)) +
+        ggplot2::geom_line() +
+        ggplot2::facet_wrap(~ variable, scales = "free")
+      ggplot2::ggsave(paste0(dir, "/trace.png"), pt, width = 12, height = 12)
     }
 })
