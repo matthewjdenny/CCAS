@@ -139,9 +139,27 @@ test_that("That we get it right", {
         verbose = FALSE)
 
     # now we need to compare the two output streams
+    # subsample points in the middle to make this possible to
+    # plot for a really large number of samples
+    k <- floor(0.0001 * GiR_samples)
+    m <- floor(.001 * GiR_samples)
+    e <- floor(0.01 * GiR_samples)
+
+    quant.subsample = function(y, m = 100, e = 1) {
+      # m: size of a systematic sample
+      # e: number of extreme values at either end to use
+      x <- sort(y)
+      n <- length(x)
+      quants <- (1 + sin(1:m / (m + 1) * pi - pi / 2)) / 2
+      sort(c(x[1:e], quantile(x, probs = quants), x[(n + 1 - e):n]))
+      # Returns m + 2*e sorted values from the EDF of y
+    }
+
     plt = do.call("rbind", lapply(seq_len(ncol(forward_samples)), function(x) {
-      qq = as.data.frame(qqplot(forward_samples[, x], backward_samples[, x],
-        plot.it = FALSE))
+      qq = data.frame("forward" = quant.subsample(forward_samples[, x], m, e),
+        "backward" = quant.subsample(backward_samples[, x], m, e))
+      ## qq = as.data.frame(qqplot(forward_samples[, x], backward_samples[, x],
+      ##   plot.it = FALSE))
       qq$variable = colnames(forward_samples)[x]
       qq
     }))
@@ -149,10 +167,26 @@ test_that("That we get it right", {
     # we do not want the plot to auto-generate under travis and r cmd check
     make_plot <- FALSE
     if (make_plot) {
-        pdf(file = "~/Desktop/QQ_Plots.pdf", height = 16, width = 20)
-        ggplot2::ggplot(plt, ggplot2::aes(x, y)) + ggplot2::geom_point() +
-            ggplot2::facet_wrap(~ variable, scales = "free")
-        dev.off()
+      dir = tempdir()
+      lsm_idx = grepl("LSM", plt$variable)
+      pq = ggplot2::ggplot(plt[lsm_idx, ],
+        ggplot2::aes(forward, backward)) + ggplot2::geom_point() +
+        ggplot2::facet_wrap(~ variable, scales = "free")
+      ggplot2::ggsave(paste0(dir, "/qqplot.png"), pq, width = 8, height = 8)
+
+      ph = ggplot2::ggplot(reshape2::melt(plt[!lsm_idx, ], id.vars = "variable",
+        value.name = "statistic", variable.name = "type"),
+        ggplot2::aes(statistic)) + ggplot2::geom_histogram() +
+        ggplot2::facet_wrap(variable ~ type, scales = "free")
+      ggplot2::ggsave(paste0(dir, "/hist.png"), ph, width = 8, height = 12)
+
+      plt$idx = as.integer(row.names(plt))
+      plt = reshape2::melt(plt, id.vars = c("idx", "variable"),
+        variable.name = "type")
+      pt = ggplot2::ggplot(plt, aes(idx, value, color = type)) +
+        ggplot2::geom_line() +
+        ggplot2::facet_wrap(~ variable, scales = "free")
+      ggplot2::ggsave(paste0(dir, "/trace.png"), pt, width = 12, height = 12)
     }
 
     more_analysis <- FALSE
@@ -170,6 +204,4 @@ test_that("That we get it right", {
         plot(forward_samples$Mean_IP_Value)
 
     }
-
-
 })
