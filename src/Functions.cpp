@@ -1925,6 +1925,109 @@ namespace mjd {
         return to_return;
     }
 
+    // ***********************************************************************//
+    //           Sample From Collapsed (LDA) Generative Process               //
+    // ***********************************************************************//
+
+    Rcpp::List sample_token_topics_collapsed_generative_process(
+            Rcpp::List token_topic_assignments,
+            Rcpp::List token_word_types,
+            arma::vec alpha_m,
+            arma::vec beta_n,
+            int number_of_documents,
+            bool resample_word_types,
+            arma::vec random_numbers,
+            arma::mat document_topic_counts,
+            arma::vec topic_token_counts,
+            arma::mat word_type_topic_counts,
+            bool initialize) {
+
+        // get some global variables
+        int num_topics = alpha_m.n_elem;
+        int num_word_types = beta_n.n_elem;
+        int rand_num_counter = 0;
+		double beta_sum = arma::sum(beta_n);
+		double alpha_sum = arma::sum(alpha_m);
+
+
+        for (int i = 0; i < number_of_documents; ++i) {
+            // Rcpp::Rcout << "Document "<< i << std::endl;
+            // sleep(1);
+            // get the current token topic assignments as a vector
+            arma::vec current_token_topic_assignments = token_topic_assignments[i];
+            // get the current token word types as a vector
+            arma::vec current_token_word_types = token_word_types[i];
+            // get the current number of tokens
+            int tokens_in_document = current_token_topic_assignments.n_elem;
+
+            // loop over tokens
+            for (int j = 0; j < tokens_in_document; ++j) {
+                double rand_num = random_numbers[rand_num_counter];
+                rand_num_counter += 1;
+				// get the current assignments incase we are going to decrement
+                int current_word_type = current_token_word_types[j];
+                int current_token_topic = current_token_topic_assignments[j];
+
+				// if we are not initializing, then decrement
+				if (!initialize) {
+					document_topic_counts(i,current_token_topic) -= 1;
+					topic_token_counts[current_token_topic] -= 1;
+					word_type_topic_counts(current_word_type,current_token_topic) -= 1;
+				}
+
+				//initialize token topic distribtuion
+				arma::vec token_topic_distribution = arma::zeros(num_topics);
+				// loop through each topic
+				for (int t = 0; t < num_topics; ++t) {
+					token_topic_distribution[t] = (double(word_type_topic_counts(current_word_type,t) + beta_n[current_word_type]) / double(topic_token_counts[t] + beta_sum)) * double(document_topic_counts(i,t) + alpha_sum);
+				}
+
+		        // need to take log so we can use our log space multinomial sampler
+		        token_topic_distribution = arma::log(token_topic_distribution);
+                // now get the new assignment
+                int new_topic_assignment = mjd::log_space_multinomial_sampler(
+                    token_topic_distribution,
+                    rand_num);
+
+                if (resample_word_types) {
+                    arma::vec current_topic_word_type_dist = arma::zeros(num_word_types);
+					for (int w = 0; w < num_word_types; ++w) {
+						current_topic_word_type_dist[w] = double(word_type_topic_counts(w,new_topic_assignment) + beta_n[w]);
+					}
+
+                    // need to take log so we can use our log space multinomial sampler
+                    current_topic_word_type_dist = arma::log(current_topic_word_type_dist);
+                    double rand_num2 = random_numbers[rand_num_counter];
+                    rand_num_counter += 1;
+                    current_word_type = mjd::log_space_multinomial_sampler(
+                        current_topic_word_type_dist,
+                        rand_num2);
+                }
+                document_topic_counts(i,new_topic_assignment) += 1;
+                current_token_topic_assignments[j] = new_topic_assignment;
+                topic_token_counts[new_topic_assignment] += 1;
+                word_type_topic_counts(current_word_type,
+                                       new_topic_assignment) += 1;
+                current_token_word_types[j] = current_word_type;
+
+            }
+            // put the vector back in the list
+            token_topic_assignments[i] = current_token_topic_assignments;
+            token_word_types[i] = current_token_word_types;
+        } // end of loop over documents
+
+        //return everything
+        Rcpp::List to_return(7);
+        to_return[0] = token_topic_assignments;
+        to_return[1] = token_word_types;
+        to_return[2] = document_topic_counts;
+        to_return[3] = topic_token_counts;
+        to_return[4] = word_type_topic_counts;
+        to_return[5] = 0;
+        to_return[6] = 0;
+
+        return to_return;
+    }
 
     // ***********************************************************************//
     //                           Run MH to Convergence                        //
@@ -2201,23 +2304,51 @@ namespace mjd {
                                         bool resample_word_types,
                                         arma::vec intercepts,
                                         arma::mat coefficients,
-                                        arma::cube latent_positions) {
+                                        arma::cube latent_positions,
+                                        arma::mat document_topic_counts,
+                                        arma::vec topic_token_counts,
+                                        arma::mat word_type_topic_counts,
+                                        bool use_collapsed_topic_sampling,
+                                        bool initialize) {
 
         // sample token topic assignments and word types from generative process
-        Rcpp::List ret = sample_token_topics_generative_process(token_topic_assignments,
-            token_word_types,
-            alpha_m,
-            beta_n,
-            num_documents,
-            resample_word_types,
-            random_numbers);
+        Rcpp::List ret(7);
+
+        if (use_collapsed_topic_sampling) {
+            // if we want to do collapsed sampling
+            ret = mjd::sample_token_topics_collapsed_generative_process(
+                token_topic_assignments,
+                token_word_types,
+                alpha_m,
+                beta_n,
+                num_documents,
+                resample_word_types,
+                random_numbers,
+                document_topic_counts,
+                topic_token_counts,
+                word_type_topic_counts,
+                initialize);
+        } else {
+            // if we just want to do standard sampling
+            ret = mjd::sample_token_topics_generative_process(
+                token_topic_assignments,
+                token_word_types,
+                alpha_m,
+                beta_n,
+                num_documents,
+                resample_word_types,
+                random_numbers);
+        }
 
         // extract new parameters from the list object
         token_topic_assignments = ret[0];
         token_word_types = ret[1];
-        arma::mat document_topic_counts = ret[2];
-        arma::vec topic_token_counts = ret[3];
-        arma::mat word_type_topic_counts = ret[4];
+        arma::mat temp1a = ret[2];
+        arma::vec temp2a = ret[3];
+        arma::mat temp3a = ret[4];
+        document_topic_counts = temp1a;
+        topic_token_counts = temp2a;
+        word_type_topic_counts = temp3a;
 
         // get the interaction pattern parameters. One level up we use the prior
         // means to initialize intercepts, coefficients, latent_positions, at
@@ -2275,6 +2406,7 @@ namespace mjd {
             interaction_pattern_indices[k] = k;
             interaction_pattern_probs[k] = double(double(1)/double(num_ip));
         }
+        //Rcpp::Rcout << interaction_pattern_indices << interaction_pattern_probs << std::endl;
         //now use RcppArmadillo's implementation of the sample function,
         //with replacement. See:
         //http://gallery.rcpp.org/articles/using-the-Rcpp-based-sample-implementation/
@@ -3000,9 +3132,42 @@ Rcpp::List sttgp(
         arma::vec beta_n,
         int number_of_documents,
         bool resample_word_types,
-        arma::vec random_numbers) {
+        arma::vec random_numbers,
+        bool use_collapsed_topic_sampling) {
 
-    List ret_list = mjd::sample_token_topics_generative_process(
+    int num_word_types = beta_n.n_elem;
+    int num_topics = alpha_m.n_elem;
+
+    // LDA data objects
+    arma::mat document_topic_counts = arma::zeros(number_of_documents,
+                                                  num_topics);
+    arma::vec topic_token_counts = arma::zeros(num_topics);
+    arma::mat word_type_topic_counts = arma::zeros(num_word_types,
+                                                   num_topics);
+
+    Rcpp::List ret_list(7);
+
+    // we set initialize to true becasue we want to draw a fresh sample for
+    // the first time
+    bool initialize = true;
+
+    if (use_collapsed_topic_sampling) {
+        // if we want to do collapsed sampling
+        ret_list = mjd::sample_token_topics_collapsed_generative_process(
+            token_topic_assignments,
+            token_word_types,
+            alpha_m,
+            beta_n,
+            number_of_documents,
+            resample_word_types,
+            random_numbers,
+            document_topic_counts,
+            topic_token_counts,
+            word_type_topic_counts,
+            initialize);
+    } else {
+        // if we just want to do standard sampling
+        ret_list = mjd::sample_token_topics_generative_process(
             token_topic_assignments,
             token_word_types,
             alpha_m,
@@ -3010,6 +3175,7 @@ Rcpp::List sttgp(
             number_of_documents,
             resample_word_types,
             random_numbers);
+    }
 
     return ret_list;
 }
@@ -3124,6 +3290,9 @@ arma::mat gir(arma::vec author_indexes,
     boost::mt19937 generator(seed);
     boost::uniform_01<double> uniform_distribution;
 
+    // we need to be using collapsed sampling or this will not work
+    bool use_collapsed_topic_sampling = true;
+
     // we will calculate all statistics on which we wish to compare the two
     // chains in C++ and will then store them in a matrix.
     // We pre-allocate it now, and then return them in a list object.
@@ -3160,11 +3329,22 @@ arma::mat gir(arma::vec author_indexes,
     coefficients.fill(coefficient_prior_mean);
     latent_positions.fill(latent_position_prior_mean);
 
+    // LDA data objects
+    int num_word_types = beta_n.n_elem;
+    arma::mat document_topic_counts = arma::zeros(num_documents,
+                                                  num_topics);
+    arma::vec topic_token_counts = arma::zeros(num_topics);
+    arma::mat word_type_topic_counts = arma::zeros(num_word_types,
+                                                   num_topics);
+
     // allocate data structures to store
     if (forward_sample) {
         // Forward Samples:
+
+        // we set initialize to true becasue we wnat to draw a new sample each time
+        bool initialize = true;
         for (int i = 0; i < GiR_samples; ++i) {
-            if (i % 1000000 == 0) {
+            if (i % 10000 == 0) {
                 Rcpp::Rcout << "Forward Sample Iteration: " << i << std::endl;
             }
             // Take a draw from the generative process
@@ -3197,16 +3377,21 @@ arma::mat gir(arma::vec author_indexes,
                                                                  resample_word_types,
                                                                  intercepts,
                                                                  coefficients,
-                                                                 latent_positions);
+                                                                 latent_positions,
+                                                                 document_topic_counts,
+                                                                 topic_token_counts,
+                                                                 word_type_topic_counts,
+                                                                 use_collapsed_topic_sampling,
+                                                                 initialize);
 
             //now extract everything from the list.
             Rcpp::List templ1 = ret[0];
             token_topic_assignments = templ1;
             Rcpp::List templ2 = ret[1];
             token_word_types = templ2;
-            arma::mat document_topic_counts = ret[2];
-            arma::vec topic_token_counts = ret[3];
-            arma::mat word_type_topic_counts = ret[4];
+            arma::mat document_topic_counts2 = ret[2];
+            arma::vec topic_token_counts2 = ret[3];
+            arma::mat word_type_topic_counts2 = ret[4];
 	        arma::vec intercepts2 = ret[5];
 	        arma::mat coefficients2 = ret[6];
 	        arma::cube latent_positions2 = ret[7];
@@ -3216,9 +3401,9 @@ arma::mat gir(arma::vec author_indexes,
 	    // Rcpp::Rcout << "" << intercepts << std::endl;
 
             // Calculate statistics
-            arma::vec stats =  mjd::calculate_statistics_for_getting_it_right(document_topic_counts,
-                                                                              topic_token_counts,
-                                                                              word_type_topic_counts,
+            arma::vec stats =  mjd::calculate_statistics_for_getting_it_right(document_topic_counts2,
+                                                                              topic_token_counts2,
+                                                                              word_type_topic_counts2,
                                                                               intercepts2,
                                                                               coefficients2,
                                                                               latent_positions2,
@@ -3233,6 +3418,7 @@ arma::mat gir(arma::vec author_indexes,
 
         }
     } else {
+        Rcpp::Rcout << "Note that the seed will be incremented by 100 at every iteration of backwards sampling. Select and appropriately small seed..." << std::endl;
         // Backward Samples:
         // Run the generative process for the first time and extract relevant
         // datastructures
@@ -3243,6 +3429,10 @@ arma::mat gir(arma::vec author_indexes,
         for (int k = 0; k < total_number_of_tokens; ++k) {
             random_numbers[k] = uniform_distribution(generator);
         }
+
+        // we set initialize to true becasue we want to draw a fresh sample for
+        // the first time
+        bool initialize = true;
 
         Rcpp::List ret = mjd::sample_from_generative_process(author_indexes,
                                                              covariates,
@@ -3266,16 +3456,24 @@ arma::mat gir(arma::vec author_indexes,
                                                              resample_word_types,
                                                              intercepts,
                                                              coefficients,
-                                                             latent_positions);
+                                                             latent_positions,
+                                                             document_topic_counts,
+                                                             topic_token_counts,
+                                                             word_type_topic_counts,
+                                                             use_collapsed_topic_sampling,
+                                                             initialize);
 
         //now extract everything from the list.
         Rcpp::List templ1 = ret[0];
         token_topic_assignments = templ1;
         Rcpp::List templ2 = ret[1];
         token_word_types = templ2;
-        arma::mat document_topic_counts = ret[2];
-        arma::vec topic_token_counts = ret[3];
-        arma::mat word_type_topic_counts = ret[4];
+        arma::mat temp1c = ret[2];
+        arma::vec temp2c = ret[3];
+        arma::mat temp3c = ret[4];
+        document_topic_counts = temp1c;
+        topic_token_counts = temp2c;
+        word_type_topic_counts = temp3c;
         arma::vec temp1 = ret[5];
         intercepts = temp1;
         arma::mat temp2 = ret[6];
@@ -3285,9 +3483,15 @@ arma::mat gir(arma::vec author_indexes,
         arma::vec topic_interaction_patterns = ret[8];
         arma::mat document_edge_matrix = ret[9];
 
+        // now we set initialize to false becasue we want to work from the exiting
+        // counts
+        initialize = false;
+
         for (int i = 0; i < GiR_samples; ++i) {
+            //increment seed so we do not pass in the exact same one every time.
+            seed += 100;
             // more fequent updates since it is slower
-            if (i % 100000 == 0) {
+            if (i % 10000 == 0) {
                 Rcpp::Rcout << "Backward Sample Iteration: " << i << std::endl;
             }
             // Run inference for 5 Gibbs (50 MH per Gibbs) iterations.
@@ -3339,8 +3543,8 @@ arma::mat gir(arma::vec author_indexes,
             word_type_topic_counts = inf2;
             arma::mat inf3 = ret_list[6];
             topic_token_counts = inf3;
-            // Rcpp::List inf4 = ret_list[7];
-            // token_topic_assignments = inf4;
+            Rcpp::List inf4 = ret_list[7];
+            token_topic_assignments = inf4;
             arma::vec inf5 = ret_list[11];
             intercepts = inf5;
             arma::mat inf6 = ret_list[12];
@@ -3398,7 +3602,12 @@ arma::mat gir(arma::vec author_indexes,
                                                                  resample_word_types,
                                                                  intercepts,
                                                                  coefficients,
-                                                                 latent_positions);
+                                                                 latent_positions,
+                                                                 document_topic_counts,
+                                                                 topic_token_counts,
+                                                                 word_type_topic_counts,
+                                                                 use_collapsed_topic_sampling,
+                                                                 initialize);
 
             //now extract everything from the list.
             Rcpp::List temp4 = ret[0];

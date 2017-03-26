@@ -57,8 +57,8 @@ mjd_rdirichlet <- function(alpha_m) {
     .Call('CCAS_mjd_rdirichlet', PACKAGE = 'CCAS', alpha_m)
 }
 
-sttgp <- function(token_topic_assignments, token_word_types, alpha_m, beta_n, number_of_documents, resample_word_types, random_numbers) {
-    .Call('CCAS_sttgp', PACKAGE = 'CCAS', token_topic_assignments, token_word_types, alpha_m, beta_n, number_of_documents, resample_word_types, random_numbers)
+sttgp <- function(token_topic_assignments, token_word_types, alpha_m, beta_n, number_of_documents, resample_word_types, random_numbers, use_collapsed_topic_sampling) {
+    .Call('CCAS_sttgp', PACKAGE = 'CCAS', token_topic_assignments, token_word_types, alpha_m, beta_n, number_of_documents, resample_word_types, random_numbers, use_collapsed_topic_sampling)
 }
 
 mh_to_convergence <- function(author_indexes, document_edge_matrix, document_topic_counts, topic_interaction_patterns, intercepts, coefficients, latent_positions, covariates, using_coefficients, intercept_prior_mean, intercept_prior_standard_deviation, intercept_proposal_standard_deviations, coefficient_prior_mean, coefficient_prior_standard_deviation, coefficient_proposal_standard_deviations, latent_position_prior_mean, latent_position_prior_standard_deviation, latent_position_proposal_standard_deviations, target_accept_rate, tollerance, update_size, seed, metropolis_iterations, adaptive_metropolis_every_x_iterations, stop_adaptive_metropolis_after_x_updates, samples_to_store, sample_every, burnin) {
