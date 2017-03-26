@@ -84,7 +84,8 @@
 #' @param Test_RDirichlet If TRUE, then alpha_m must be provided.
 #' @param Test_Sample_Token_Topics_From_Generative_Process If TRUE, then optional
 #' arguments author_indexes, token_topic_assignments, token_word_types, alpha_m,
-#' beta_n, random_numbers, and resample_word_types must be provided.
+#' beta_n, random_numbers, resample_word_types and use_collapsed_topic_sampling
+#' must be provided.
 #' @param Getting_It_Right If TRUE, then Geweke's getting it right test is
 #' performed
 #' @param seed An integerg.
@@ -158,6 +159,9 @@
 #' @param GiR_samples An integer.
 #' @param forward_sample A logical. If TRUE, the forward GiR samples are
 #' generated. If FALSE, then backwards GiR samples are generated.
+#' @param use_collapsed_topic_sampling Defaults to FALSE. IF TRUE, then collapsed
+#' topic sampling is done. This only matters if you are using the 
+#' Test_Sample_Token_Topics_From_Generative_Process option.
 #' @param verbose Defaults to TRUE, if FALSE, then no output is printed to the
 #' screen by the inference code.
 #' @return Whatever is returned by the internal function being tested
@@ -247,6 +251,7 @@ test_internal_functions <- function(
     num_ld = NULL,
     GiR_samples = NULL,
     forward_sample = TRUE,
+	use_collapsed_topic_sampling = FALSE,
     verbose = TRUE) {
 
     return_object <- NULL
@@ -471,7 +476,8 @@ test_internal_functions <- function(
             beta_n,
             length(token_topic_assignments),
             resample_word_types,
-            random_numbers)
+            random_numbers,
+			use_collapsed_topic_sampling)
     }
 
     if (Getting_It_Right) {
