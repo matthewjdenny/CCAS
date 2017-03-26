@@ -23,4 +23,3 @@ interaction pattern top words in the 'at' model_output$top_words field.
 Generates data.frames containing the top words associated with
 each topic and with each interaction pattern
 }
-

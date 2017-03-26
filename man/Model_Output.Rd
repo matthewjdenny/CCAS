@@ -12,4 +12,3 @@ Model_Output
 Output from the example model run on county manager data..
 }
 \keyword{datasets}
-

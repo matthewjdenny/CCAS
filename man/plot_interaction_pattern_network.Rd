@@ -40,4 +40,3 @@ mean_positions <- plot_interaction_pattern_network(Model_Output,
                                  plot_color_category = "Gender")
 }
 }
-

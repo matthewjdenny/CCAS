@@ -42,4 +42,3 @@ A plot.
 Plots parameter estimates and intercept term associated with a
 particular interaction pattern.
 }
-

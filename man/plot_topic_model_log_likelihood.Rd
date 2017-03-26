@@ -26,4 +26,3 @@ data(Model_Output)
 plot_topic_model_log_likelihood(Model_Output)
 }
 }
-

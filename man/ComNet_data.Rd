@@ -13,4 +13,3 @@ An example dataset comprising 121 emails sent among 20 county government
 department managers.
 }
 \keyword{datasets}
-

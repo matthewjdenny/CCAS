@@ -53,4 +53,3 @@ covariate_data = author_attributes,
 vocabulary = vocabulary)
 }
 }
-

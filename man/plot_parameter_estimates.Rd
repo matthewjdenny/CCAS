@@ -32,4 +32,3 @@ data(Model_Output)
 summary_data <- plot_parameter_estimates(Model_Output, plots_per_row = 4)
 }
 }
-

@@ -23,4 +23,3 @@ data(Model_Output)
 plot_interaction_pattern_log_likelihood(Model_Output)
 }
 }
-

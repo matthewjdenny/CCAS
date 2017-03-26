@@ -48,7 +48,8 @@ test_internal_functions(Test_Log_Space_Multinomial_Sampler = FALSE,
   cached_token_topic_distribution = NULL, u = NULL, num_documents = NULL,
   words_per_doc = NULL, num_topics = NULL, num_terms = NULL,
   num_actors = NULL, num_ip = NULL, num_ld = NULL, GiR_samples = NULL,
-  forward_sample = TRUE, verbose = TRUE)
+  forward_sample = TRUE, use_collapsed_topic_sampling = FALSE,
+  verbose = TRUE)
 }
 \arguments{
 \item{Test_Log_Space_Multinomial_Sampler}{Defualts to FALSE. If TRUE, then
@@ -148,7 +149,8 @@ perform_adaptive_metropolis must be provided.}
 
 \item{Test_Sample_Token_Topics_From_Generative_Process}{If TRUE, then optional
 arguments author_indexes, token_topic_assignments, token_word_types, alpha_m,
-beta_n, random_numbers, and resample_word_types must be provided.}
+beta_n, random_numbers, resample_word_types and use_collapsed_topic_sampling
+must be provided.}
 
 \item{Getting_It_Right}{If TRUE, then Geweke's getting it right test is
 performed}
@@ -292,6 +294,10 @@ of topics.}
 \item{forward_sample}{A logical. If TRUE, the forward GiR samples are
 generated. If FALSE, then backwards GiR samples are generated.}
 
+\item{use_collapsed_topic_sampling}{Defaults to FALSE. IF TRUE, then collapsed
+topic sampling is done. This only matters if you are using the 
+Test_Sample_Token_Topics_From_Generative_Process option.}
+
 \item{verbose}{Defaults to TRUE, if FALSE, then no output is printed to the
 screen by the inference code.}
 }
@@ -301,4 +307,3 @@ Whatever is returned by the internal function being tested
 \description{
 Allows the user to interface with the individual C++ functions.
 }
-
