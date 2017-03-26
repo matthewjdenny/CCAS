@@ -3,13 +3,14 @@ test_that("That we get it right", {
 
     # we need a very simple model with a small number of actors, topics, odcuments etc.
     # create an example distribution
-    set.seed(12345)
+    seed <- 12345
+    set.seed(seed)
 
-    resample_token_word_types = FALSE
+    resample_token_word_types = TRUE
     GiR_samples = 1000
     num_documents = 5
     words_per_doc = 4
-    num_topics = 3
+    num_topics = 4
     num_terms = 5
     num_actors = 4
     num_ip = 2
@@ -40,14 +41,13 @@ test_that("That we get it right", {
         # initialize to -1 to make sure we throw an error if the C++ generative
         # process does not take care of it.
         token_topic_assignments[[i]] <- rep(-1, words_per_doc)
-        if (resample_token_word_types) {
-            token_word_types[[i]] <- rep(-1, words_per_doc)
-        } else {
-            # if we are not resampling then they need to be fixed from the start.
-            token_word_types[[i]] <- floor(runif(n = words_per_doc,
-                                                 min = 0,
-                                                 max = num_terms - .000001))
-        }
+
+        # if we are not resampling then they need to be fixed from the start. We
+        # need to have them fixed either way for collapsed sampling
+        token_word_types[[i]] <- floor(runif(n = words_per_doc,
+                                             min = 0,
+                                             max = num_terms - .000001))
+
     }
 
 
@@ -66,12 +66,12 @@ test_that("That we get it right", {
         coefficient_prior_standard_deviation = 1,
         coefficient_proposal_standard_deviations = c(0.25,0.25),
         latent_position_prior_mean = 0,
-        latent_position_prior_standard_deviation =1,
+        latent_position_prior_standard_deviation = 1,
         latent_position_proposal_standard_deviations = c(0.25,0.25),
         target_accept_rate = 0.25,
         tollerance = 0.05,
         update_size = 0.05,
-        seed = 12345,
+        seed = seed,
         iterations = 5,
         metropolis_iterations = 50,
         iterations_before_t_i_p_updates = 2,
@@ -109,12 +109,12 @@ test_that("That we get it right", {
         coefficient_prior_standard_deviation = 1,
         coefficient_proposal_standard_deviations = c(0.25,0.25),
         latent_position_prior_mean = 0,
-        latent_position_prior_standard_deviation =1,
+        latent_position_prior_standard_deviation = 1,
         latent_position_proposal_standard_deviations = c(0.25,0.25),
         target_accept_rate = 0.25,
         tollerance = 0.05,
         update_size = 0.05,
-        seed = 12345,
+        seed = seed,
         iterations = 5,
         metropolis_iterations = 50,
         iterations_before_t_i_p_updates = 2,
@@ -140,7 +140,7 @@ test_that("That we get it right", {
 
     # now we need to compare the two output streams
     plt = do.call("rbind", lapply(seq_len(ncol(forward_samples)), function(x) {
-      qq = as.data.frame(ggplot2::qqplot(forward_samples[, x], backward_samples[, x],
+      qq = as.data.frame(qqplot(forward_samples[, x], backward_samples[, x],
         plot.it = FALSE))
       qq$variable = colnames(forward_samples)[x]
       qq
@@ -154,5 +154,22 @@ test_that("That we get it right", {
             ggplot2::facet_wrap(~ variable, scales = "free")
         dev.off()
     }
+
+    more_analysis <- FALSE
+    if (more_analysis) {
+        options(scipen = 999)
+        backward_samples <- as.data.frame(backward_samples)
+        forward_samples <- as.data.frame(forward_samples)
+        colMeans(backward_samples)
+        colMeans(forward_samples)
+
+        plot(backward_samples$Mean_Edge_Value)
+        plot(forward_samples$Mean_Edge_Value)
+
+        plot(backward_samples$Mean_IP_Value)
+        plot(forward_samples$Mean_IP_Value)
+
+    }
+
 
 })
