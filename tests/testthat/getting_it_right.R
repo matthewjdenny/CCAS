@@ -167,7 +167,8 @@ test_that("That we get it right", {
     # we do not want the plot to auto-generate under travis and r cmd check
     make_plot <- FALSE
     if (make_plot) {
-      dir = tempdir()
+      #dir = tempdir()
+      dir = "~/Desktop"
       lsm_idx = grepl("LSM", plt$variable)
       pq = ggplot2::ggplot(plt[lsm_idx, ],
         ggplot2::aes(forward, backward)) + ggplot2::geom_point() +
@@ -196,6 +197,12 @@ test_that("That we get it right", {
         forward_samples <- as.data.frame(forward_samples)
         colMeans(backward_samples)
         colMeans(forward_samples)
+
+
+        pdf(file = "~/Desktop/PP_Plots.pdf", height = 25,width = 25)
+        par(mfrow = c(5,5), oma=c(3,3,3,3), mar = c(5,5,4,1))
+        GiR_PP_Plots(forward_samples, backward_samples)
+        dev.off()
 
         plot(backward_samples$Mean_Edge_Value)
         plot(forward_samples$Mean_Edge_Value)
