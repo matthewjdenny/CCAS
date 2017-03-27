@@ -61,13 +61,13 @@ test_that("That we get it right", {
         using_coefficients = TRUE,
         intercept_prior_mean = 0,
         intercept_prior_standard_deviation = 1,
-        intercept_proposal_standard_deviations = c(0.25,0.25),
+        intercept_proposal_standard_deviations = c(0.5,0.5),
         coefficient_prior_mean = 0,
         coefficient_prior_standard_deviation = 1,
-        coefficient_proposal_standard_deviations = c(0.25,0.25),
+        coefficient_proposal_standard_deviations = c(0.5,0.5),
         latent_position_prior_mean = 0,
         latent_position_prior_standard_deviation = 1,
-        latent_position_proposal_standard_deviations = c(0.25,0.25),
+        latent_position_proposal_standard_deviations = c(0.5,0.5),
         target_accept_rate = 0.25,
         tollerance = 0.05,
         update_size = 0.05,
@@ -104,13 +104,13 @@ test_that("That we get it right", {
         using_coefficients = TRUE,
         intercept_prior_mean = 0,
         intercept_prior_standard_deviation = 1,
-        intercept_proposal_standard_deviations = c(0.25,0.25),
+        intercept_proposal_standard_deviations = c(0.5,0.5),
         coefficient_prior_mean = 0,
         coefficient_prior_standard_deviation = 1,
-        coefficient_proposal_standard_deviations = c(0.25,0.25),
+        coefficient_proposal_standard_deviations = c(0.5,0.5),
         latent_position_prior_mean = 0,
         latent_position_prior_standard_deviation = 1,
-        latent_position_proposal_standard_deviations = c(0.25,0.25),
+        latent_position_proposal_standard_deviations = c(.5,.5),
         target_accept_rate = 0.25,
         tollerance = 0.05,
         update_size = 0.05,
@@ -184,7 +184,7 @@ test_that("That we get it right", {
       plt$idx = as.integer(row.names(plt))
       plt = reshape2::melt(plt, id.vars = c("idx", "variable"),
         variable.name = "type")
-      pt = ggplot2::ggplot(plt, aes(idx, value, color = type)) +
+      pt = ggplot2::ggplot(plt, ggplot2::aes(idx, value, color = type)) +
         ggplot2::geom_line() +
         ggplot2::facet_wrap(~ variable, scales = "free")
       ggplot2::ggsave(paste0(dir, "/trace.png"), pt, width = 12, height = 12)
@@ -199,7 +199,7 @@ test_that("That we get it right", {
         colMeans(forward_samples)
 
 
-        pdf(file = "~/Desktop/PP_Plots.pdf", height = 25,width = 25)
+        pdf(file = "~/Desktop/PP_Plots_Fixed_LSM_Priors_2.pdf", height = 25,width = 25)
         par(mfrow = c(5,5), oma=c(3,3,3,3), mar = c(5,5,4,1))
         GiR_PP_Plots(forward_samples, backward_samples)
         dev.off()
