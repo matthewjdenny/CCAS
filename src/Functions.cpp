@@ -2445,7 +2445,7 @@ namespace mjd {
                     // now take a random uniform draw and if it is smaller than
                     // the edge prob then we set the edge to 1.
                     double rand_unif_draw = R::runif(0,1);
-                    if (edge_prob < rand_unif_draw) {
+                    if (edge_prob > rand_unif_draw) {
                         document_edge_matrix(d,r) = 1;
                     }
                 }
@@ -2549,7 +2549,8 @@ namespace mjd {
         arma::cube latent_positions,
         arma::vec topic_interaction_patterns,
         arma::mat document_edge_matrix,
-        int num_statistics) {
+        int num_statistics,
+        double mean_accept_rate) {
 
         // For reference
         //get the number of actors
@@ -2650,6 +2651,10 @@ namespace mjd {
 
         // now get the mean of cluster assignments
         statistics[stat_counter] = vector_mean(topic_interaction_patterns);
+        stat_counter += 1;
+
+        // store the mean acceptance rate
+        statistics[stat_counter] = mean_accept_rate;
         stat_counter += 1;
 
         return statistics;
@@ -3305,6 +3310,7 @@ arma::mat gir(arma::vec author_indexes,
     number_of_statistics += 5*num_ip;
     number_of_statistics += num_terms + num_topics;
     number_of_statistics += 2; //average cluster assignment and mean network density.
+    number_of_statistics += 1; //MH acceptance rate
 
     arma::mat sample_statistics = arma::zeros(GiR_samples,number_of_statistics);
 
@@ -3409,7 +3415,8 @@ arma::mat gir(arma::vec author_indexes,
                                                                               latent_positions2,
                                                                               topic_interaction_patterns,
                                                                               document_edge_matrix,
-                                                                              number_of_statistics);
+                                                                              number_of_statistics,
+                                                                              0.5);
 
             // Store statistics
             for (int k = 0; k < number_of_statistics; ++k) {
@@ -3474,12 +3481,16 @@ arma::mat gir(arma::vec author_indexes,
         document_topic_counts = temp1c;
         topic_token_counts = temp2c;
         word_type_topic_counts = temp3c;
-        arma::vec temp1 = ret[5];
-        intercepts = temp1;
-        arma::mat temp2 = ret[6];
-        coefficients = temp2;
-        arma::cube temp3 = ret[7];
-        latent_positions= temp3;
+        // lets preserve our priors by switching to the xxx2 terminology
+        // arma::vec temp1 = ret[5];
+        // intercepts = temp1;
+        // arma::mat temp2 = ret[6];
+        // coefficients = temp2;
+        // arma::cube temp3 = ret[7];
+        // latent_positions= temp3;
+        arma::vec intercepts2 = ret[5];
+        arma::mat coefficients2 = ret[6];
+        arma::cube latent_positions2 = ret[7];
         arma::vec topic_interaction_patterns = ret[8];
         arma::mat document_edge_matrix = ret[9];
 
@@ -3505,9 +3516,9 @@ arma::mat gir(arma::vec author_indexes,
                 topic_token_counts,
                 token_topic_assignments,
                 token_word_types,
-                intercepts,
-                coefficients,
-                latent_positions,
+                intercepts2,
+                coefficients2,
+                latent_positions2,
                 covariates,
                 alpha_m,
                 beta_n,
@@ -3546,26 +3557,30 @@ arma::mat gir(arma::vec author_indexes,
             Rcpp::List inf4 = ret_list[7];
             token_topic_assignments = inf4;
             arma::vec inf5 = ret_list[11];
-            intercepts = inf5;
+            intercepts2 = inf5;
             arma::mat inf6 = ret_list[12];
-            coefficients = inf6;
+            coefficients2 = inf6;
             arma::cube inf7 = ret_list[13];
-            latent_positions= inf7;
+            latent_positions2 = inf7;
             arma::vec inf8 = ret_list[14];
             topic_interaction_patterns = inf8;
             arma::mat inf9 = ret_list[15];
             word_type_topic_counts = inf9;
+            arma::mat inf10 = ret_list[8];
+            arma::mat mean_mat = arma::mean(inf10);
+            double mean_accept_rate = mean_mat(0,0);
 
             // Calculate statistics
             arma::vec stats =  mjd::calculate_statistics_for_getting_it_right(document_topic_counts,
                                                                               topic_token_counts,
                                                                               word_type_topic_counts,
-                                                                              intercepts,
-                                                                              coefficients,
-                                                                              latent_positions,
+                                                                              intercepts2,
+                                                                              coefficients2,
+                                                                              latent_positions2,
                                                                               topic_interaction_patterns,
                                                                               document_edge_matrix,
-                                                                              number_of_statistics);
+                                                                              number_of_statistics,
+                                                                              mean_accept_rate);
 
             // Store statistics
             for (int k = 0; k < number_of_statistics; ++k) {
@@ -3621,11 +3636,11 @@ arma::mat gir(arma::vec author_indexes,
             arma::mat temp8 = ret[4];
             word_type_topic_counts = temp8;
             arma::vec temp11 = ret[5];
-            intercepts = temp11;
+            intercepts2 = temp11;
             arma::mat temp12 = ret[6];
-            coefficients = temp12;
+            coefficients2 = temp12;
             arma::cube temp13 = ret[7];
-            latent_positions= temp13;
+            latent_positions2 = temp13;
             arma::vec temp14 = ret[8];
             topic_interaction_patterns = temp14;
             arma::mat temp15 = ret[9];
