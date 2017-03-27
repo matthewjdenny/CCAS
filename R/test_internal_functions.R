@@ -160,7 +160,7 @@
 #' @param forward_sample A logical. If TRUE, the forward GiR samples are
 #' generated. If FALSE, then backwards GiR samples are generated.
 #' @param use_collapsed_topic_sampling Defaults to FALSE. IF TRUE, then collapsed
-#' topic sampling is done. This only matters if you are using the 
+#' topic sampling is done. This only matters if you are using the
 #' Test_Sample_Token_Topics_From_Generative_Process option.
 #' @param verbose Defaults to TRUE, if FALSE, then no output is printed to the
 #' screen by the inference code.
@@ -530,7 +530,7 @@ test_internal_functions <- function(
                     paste("Tokens_Assigned_To_IP_",1:num_ip,sep = ""),
                     paste("Token_Count_Topic_",1:num_topics,sep = ""),
                     paste("Tokens_Count_Word_Type_",1:num_terms,sep = ""),
-                    "Mean_Edge_Value","Mean_IP_Value")
+                    "Mean_Edge_Value","Mean_IP_Value", "Mean_MH_Accept_Rate")
 
         colnames(return_object) <- colnms
     }
