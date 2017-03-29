@@ -3482,15 +3482,15 @@ arma::mat gir(arma::vec author_indexes,
         topic_token_counts = temp2c;
         word_type_topic_counts = temp3c;
         // lets preserve our priors by switching to the xxx2 terminology
-        // arma::vec temp1 = ret[5];
-        // intercepts = temp1;
-        // arma::mat temp2 = ret[6];
-        // coefficients = temp2;
-        // arma::cube temp3 = ret[7];
-        // latent_positions= temp3;
-        arma::vec intercepts2 = ret[5];
-        arma::mat coefficients2 = ret[6];
-        arma::cube latent_positions2 = ret[7];
+        arma::vec temp1 = ret[5];
+        intercepts = temp1;
+        arma::mat temp2 = ret[6];
+        coefficients = temp2;
+        arma::cube temp3 = ret[7];
+        latent_positions= temp3;
+        // arma::vec intercepts2 = ret[5];
+        // arma::mat coefficients2 = ret[6];
+        // arma::cube latent_positions2 = ret[7];
         arma::vec topic_interaction_patterns = ret[8];
         arma::mat document_edge_matrix = ret[9];
 
@@ -3516,9 +3516,9 @@ arma::mat gir(arma::vec author_indexes,
                 topic_token_counts,
                 token_topic_assignments,
                 token_word_types,
-                intercepts2,
-                coefficients2,
-                latent_positions2,
+                intercepts,
+                coefficients,
+                latent_positions,
                 covariates,
                 alpha_m,
                 beta_n,
@@ -3557,11 +3557,11 @@ arma::mat gir(arma::vec author_indexes,
             Rcpp::List inf4 = ret_list[7];
             token_topic_assignments = inf4;
             arma::vec inf5 = ret_list[11];
-            intercepts2 = inf5;
+            intercepts = inf5;
             arma::mat inf6 = ret_list[12];
-            coefficients2 = inf6;
+            coefficients = inf6;
             arma::cube inf7 = ret_list[13];
-            latent_positions2 = inf7;
+            latent_positions = inf7;
             arma::vec inf8 = ret_list[14];
             topic_interaction_patterns = inf8;
             arma::mat inf9 = ret_list[15];
@@ -3574,9 +3574,9 @@ arma::mat gir(arma::vec author_indexes,
             arma::vec stats =  mjd::calculate_statistics_for_getting_it_right(document_topic_counts,
                                                                               topic_token_counts,
                                                                               word_type_topic_counts,
-                                                                              intercepts2,
-                                                                              coefficients2,
-                                                                              latent_positions2,
+                                                                              intercepts,
+                                                                              coefficients,
+                                                                              latent_positions,
                                                                               topic_interaction_patterns,
                                                                               document_edge_matrix,
                                                                               number_of_statistics,
@@ -3636,11 +3636,11 @@ arma::mat gir(arma::vec author_indexes,
             arma::mat temp8 = ret[4];
             word_type_topic_counts = temp8;
             arma::vec temp11 = ret[5];
-            intercepts2 = temp11;
+            intercepts = temp11;
             arma::mat temp12 = ret[6];
-            coefficients2 = temp12;
+            coefficients = temp12;
             arma::cube temp13 = ret[7];
-            latent_positions2 = temp13;
+            latent_positions = temp13;
             arma::vec temp14 = ret[8];
             topic_interaction_patterns = temp14;
             arma::mat temp15 = ret[9];
