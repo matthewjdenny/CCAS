@@ -7,7 +7,7 @@ test_that("That we get it right", {
     set.seed(seed)
 
     resample_token_word_types = TRUE
-    GiR_samples = 1000
+    GiR_samples = 10000
     num_documents = 5
     words_per_doc = 4
     num_topics = 4
@@ -18,13 +18,13 @@ test_that("That we get it right", {
     num_covar = 1
     total_word_count = num_documents * words_per_doc
     # five topics
-    alpha = 1
-    temp <- runif(num_topics)
+    alpha = 2
+    temp <- rep(1/num_topics,num_topics)
     alpha_m = alpha * temp/sum(temp)
 
     # ten unique words
     beta = 2
-    temp2 <- runif(num_terms)
+    temp2 <- rep(1/num_terms,num_terms)
     beta_n = beta * temp2/sum(temp2)
 
     author_indexes <- floor(runif(n = num_documents, min = 0, max = num_actors - 0.00001))
@@ -72,7 +72,7 @@ test_that("That we get it right", {
         tollerance = 0.05,
         update_size = 0.05,
         seed = seed,
-        iterations = 5,
+        iterations = 1,
         metropolis_iterations = 50,
         iterations_before_t_i_p_updates = 2,
         update_t_i_p_every_x_iterations = 2,
@@ -115,7 +115,7 @@ test_that("That we get it right", {
         tollerance = 0.05,
         update_size = 0.05,
         seed = seed,
-        iterations = 5,
+        iterations = 1,
         metropolis_iterations = 50,
         iterations_before_t_i_p_updates = 2,
         update_t_i_p_every_x_iterations = 2,
@@ -199,9 +199,18 @@ test_that("That we get it right", {
         colMeans(forward_samples)
 
 
-        pdf(file = "~/Desktop/PP_Plots_Fixed_LSM_Priors_2.pdf", height = 25,width = 25)
+        pdf(file = "~/Desktop/PP_Plot.pdf", height = 25,width = 25)
         par(mfrow = c(5,5), oma=c(3,3,3,3), mar = c(5,5,4,1))
         GiR_PP_Plots(forward_samples, backward_samples)
+        dev.off()
+
+        thin <- seq(from = 1, to = nrow(forward_samples),length.out = 10000)
+        forward_samples2 <- forward_samples[thin,]
+        backward_samples2 <- backward_samples[thin,]
+
+        pdf(file = "~/Desktop/PP_Plot_Thinned.pdf", height = 25,width = 25)
+        par(mfrow = c(5,5), oma=c(3,3,3,3), mar = c(5,5,4,1))
+        GiR_PP_Plots(forward_samples2, backward_samples2)
         dev.off()
 
         plot(backward_samples$Mean_Edge_Value)
