@@ -7,7 +7,7 @@
 ccas(formula, interaction_patterns = 4, topics = 40, alpha = 1,
   beta = 0.01, iterations = 1000, metropolis_hastings_iterations = 500,
   final_metropolis_hastings_burnin = 50000,
-  final_metropolis_hastings_iterations = 100000, thin = 1/100,
+  final_metropolis_hastings_iterations = 1e+05, thin = 1/100,
   target_accept_rate = 0.25, tolerance = 0.05,
   LSM_proposal_variance = 0.5, LSM_prior_variance = 1, LSM_prior_mean = 0,
   iterations_before_t_i_p_updates = 5, update_t_i_p_every_x_iterations = 5,

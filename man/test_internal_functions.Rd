@@ -295,7 +295,7 @@ of topics.}
 generated. If FALSE, then backwards GiR samples are generated.}
 
 \item{use_collapsed_topic_sampling}{Defaults to FALSE. IF TRUE, then collapsed
-topic sampling is done. This only matters if you are using the 
+topic sampling is done. This only matters if you are using the
 Test_Sample_Token_Topics_From_Generative_Process option.}
 
 \item{verbose}{Defaults to TRUE, if FALSE, then no output is printed to the
