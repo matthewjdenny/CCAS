@@ -2324,10 +2324,13 @@ namespace mjd {
                                         arma::mat word_type_topic_counts,
                                         bool use_collapsed_topic_sampling,
                                         bool initialize,
-                                        bool only_update_word_types) {
+                                        bool only_update_word_types,
+                                        arma::vec topic_interaction_patterns) {
 
         // sample token topic assignments and word types from generative process
         Rcpp::List ret(7);
+
+        arma::vec topic_interaction_patterns2 = topic_interaction_patterns;
 
         if (use_collapsed_topic_sampling) {
             // if we want to do collapsed sampling
@@ -2416,23 +2419,26 @@ namespace mjd {
             }
         }
 
-        // draw interaction patterns from a discrete uniform distribution
-        arma::vec interaction_pattern_indices = arma::zeros(num_ip);
-        arma::vec interaction_pattern_probs = arma::zeros(num_ip);
-        // fill these in with unifrom probabilities
-        for (int k = 0; k < num_ip; ++k) {
-            interaction_pattern_indices[k] = k;
-            interaction_pattern_probs[k] = double(double(1)/double(num_ip));
+        if (initialize) {
+            // draw interaction patterns from a discrete uniform distribution
+            arma::vec interaction_pattern_indices = arma::zeros(num_ip);
+            arma::vec interaction_pattern_probs = arma::zeros(num_ip);
+            // fill these in with unifrom probabilities
+            for (int k = 0; k < num_ip; ++k) {
+                interaction_pattern_indices[k] = k;
+                interaction_pattern_probs[k] = double(double(1)/double(num_ip));
+            }
+            //Rcpp::Rcout << interaction_pattern_indices << interaction_pattern_probs << std::endl;
+            //now use RcppArmadillo's implementation of the sample function,
+            //with replacement. See:
+            //http://gallery.rcpp.org/articles/using-the-Rcpp-based-sample-implementation/
+            //for an example and explanation
+            topic_interaction_patterns2 = RcppArmadillo::sample(interaction_pattern_indices,
+                                                               num_topics,
+                                                               true,
+                                                               interaction_pattern_probs) ;
         }
-        //Rcpp::Rcout << interaction_pattern_indices << interaction_pattern_probs << std::endl;
-        //now use RcppArmadillo's implementation of the sample function,
-        //with replacement. See:
-        //http://gallery.rcpp.org/articles/using-the-Rcpp-based-sample-implementation/
-        //for an example and explanation
-        arma::vec topic_interaction_patterns = RcppArmadillo::sample(interaction_pattern_indices,
-                                                                     num_topics,
-                                                                     true,
-                                                                     interaction_pattern_probs) ;
+
 
         //our last task is to resample edge values
         arma::mat document_edge_matrix = arma::zeros(num_documents,num_actors);
@@ -2457,7 +2463,7 @@ namespace mjd {
                                 edge_probabilities(
                                     document_sender,
                                     r,
-                                    topic_interaction_patterns[t]);
+                                    topic_interaction_patterns2[t]);
                     }
 
                     // now take a random uniform draw and if it is smaller than
@@ -2481,7 +2487,7 @@ namespace mjd {
         ret_list[5] = intercepts;
         ret_list[6] = coefficients;
         ret_list[7] = latent_positions;
-        ret_list[8] = topic_interaction_patterns;
+        ret_list[8] = topic_interaction_patterns2;
         ret_list[9] = document_edge_matrix;
 
 
@@ -3362,6 +3368,8 @@ arma::mat gir(arma::vec author_indexes,
     arma::mat word_type_topic_counts = arma::zeros(num_word_types,
                                                    num_topics);
 
+    arma::vec topic_interaction_patterns = arma::zeros(num_topics);
+
     // allocate data structures to store
     if (forward_sample) {
         // Forward Samples:
@@ -3409,7 +3417,8 @@ arma::mat gir(arma::vec author_indexes,
                                                                  word_type_topic_counts,
                                                                  use_collapsed_topic_sampling,
                                                                  initialize,
-                                                                 only_update_word_types);
+                                                                 only_update_word_types,
+                                                                 topic_interaction_patterns);
 
             //now extract everything from the list.
             Rcpp::List templ1 = ret[0];
@@ -3422,7 +3431,7 @@ arma::mat gir(arma::vec author_indexes,
 	        arma::vec intercepts2 = ret[5];
 	        arma::mat coefficients2 = ret[6];
 	        arma::cube latent_positions2 = ret[7];
-            arma::vec topic_interaction_patterns = ret[8];
+            arma::vec topic_interaction_patterns2 = ret[8];
             arma::mat document_edge_matrix = ret[9];
 
 	    // Rcpp::Rcout << "" << intercepts << std::endl;
@@ -3434,7 +3443,7 @@ arma::mat gir(arma::vec author_indexes,
                                                                               intercepts2,
                                                                               coefficients2,
                                                                               latent_positions2,
-                                                                              topic_interaction_patterns,
+                                                                              topic_interaction_patterns2,
                                                                               document_edge_matrix,
                                                                               number_of_statistics,
                                                                               0.5);
@@ -3490,7 +3499,8 @@ arma::mat gir(arma::vec author_indexes,
                                                              word_type_topic_counts,
                                                              use_collapsed_topic_sampling,
                                                              initialize,
-                                                             only_update_word_types);
+                                                             only_update_word_types,
+                                                             topic_interaction_patterns);
 
         //now extract everything from the list.
         Rcpp::List templ1 = ret[0];
@@ -3513,7 +3523,8 @@ arma::mat gir(arma::vec author_indexes,
         // arma::vec intercepts2 = ret[5];
         // arma::mat coefficients2 = ret[6];
         // arma::cube latent_positions2 = ret[7];
-        arma::vec topic_interaction_patterns = ret[8];
+        arma::vec tip = ret[8];
+        topic_interaction_patterns = tip;
         arma::mat document_edge_matrix = ret[9];
 
         // now we set initialize to false becasue we want to work from the exiting
@@ -3591,7 +3602,6 @@ arma::mat gir(arma::vec author_indexes,
             arma::mat inf10 = ret_list[8];
             arma::mat mean_mat = arma::mean(inf10);
             double mean_accept_rate = mean_mat(0,0);
-
             // Calculate statistics
             arma::vec stats =  mjd::calculate_statistics_for_getting_it_right(document_topic_counts,
                                                                               topic_token_counts,
@@ -3645,7 +3655,8 @@ arma::mat gir(arma::vec author_indexes,
                                                                  word_type_topic_counts,
                                                                  use_collapsed_topic_sampling,
                                                                  initialize,
-                                                                 only_update_word_types);
+                                                                 only_update_word_types,
+                                                                 topic_interaction_patterns);
 
             //now extract everything from the list.
             Rcpp::List temp4 = ret[0];
