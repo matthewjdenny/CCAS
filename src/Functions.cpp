@@ -3321,7 +3321,7 @@ arma::mat gir(arma::vec author_indexes,
     boost::uniform_01<double> uniform_distribution;
 
     // we need to be using collapsed sampling or this will not work
-    bool use_collapsed_topic_sampling = true;
+    bool use_collapsed_topic_sampling = false;
 
     // we will calculate all statistics on which we wish to compare the two
     // chains in C++ and will then store them in a matrix.
@@ -3531,6 +3531,7 @@ arma::mat gir(arma::vec author_indexes,
         // counts
         initialize = false;
         only_update_word_types = true;
+        use_collapsed_topic_sampling = true;
         for (int i = 0; i < GiR_samples; ++i) {
             //increment seed so we do not pass in the exact same one every time.
             seed += 100;
