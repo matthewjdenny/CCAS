@@ -18,36 +18,54 @@ GiR_PP_Plots <- function(forward_samples,
     nms <- colnames(forward_samples)
 
     for (i in 1:ncol(forward_samples)) {
-        cat("Generating Plot",i,"of",ncol(forward_samples),"\n")
-        all <- c(backward_samples[,i],forward_samples[,i])
-        ylims <- c(min(all)-0.1*(max(abs(all))),
-                   max(all)+0.1*(max(abs(all))))
-        xlims <- ylims
-        qqplot(x = quantile(forward_samples[,i],seq(0,1,length=1000)),
-               y = quantile(backward_samples[,i],seq(0,1,length=1000)),
-               ylim = ylims,
-               xlim = xlims,
-               ylab = "Backward",
-               xlab = "Forward",
-               col = UMASS_BLUE,
-               pch = 19,
-               main = nms[i],
-               cex.lab=2,
-               cex.axis=1.4,
-               cex.main=2)
-        lines(x = xlims, y= ylims,
-              col = UMASS_RED,lwd = 3)
-        text(paste( "Backward Mean:", round(mean(backward_samples[,i]),4),
-                    "\nForward Mean:", round(mean(forward_samples[,i]),4),
-                    "\nt-test p-value:",
-                    round(t.test(backward_samples[,i],
-                                 forward_samples[,i])$p.value,4),
-                    "\nMann-Whitney p-value:",
-                    round(wilcox.test(backward_samples[,i],
-                                      forward_samples[,i])$p.value,4)),
-             x = xlims[2] - 0.3*abs(xlims[2] - xlims[1]),
-             y = ylims[1] + 0.2*abs(ylims[2] - ylims[1]),
-             cex = 1.5)
+        # don't plot MH accept rates
+        if (colnames(forward_samples)[i] != "Mean_MH_Accept_Rate") {
+
+            # start by generating reduced samples for t-tests
+            if (nrow(forward_samples) > 20000) {
+                thin <- seq(from = floor(nrow(forward_samples)/10), to = nrow(forward_samples),length.out = 10000)
+                forward_test <- forward_samples[thin,i]
+                backward_test <- backward_samples[thin,i]
+            }
+
+
+            cat("Generating Plot",i,"of",ncol(forward_samples),"\n")
+            all <- c(backward_samples[,i],forward_samples[,i])
+            ylims <- c(min(all)-0.1*(max(abs(all))),
+                       max(all)+0.1*(max(abs(all))))
+            xlims <- ylims
+
+            # set a higher number of quantiles for LSM parameters
+            quantiles <- 50
+            if (grepl("LSM",colnames(forward_samples)[i])) {
+                quantiles <- 1000
+            }
+            qqplot(x = quantile(forward_samples[,i],seq(0,1,length=quantiles)),
+                   y = quantile(backward_samples[,i],seq(0,1,length=quantiles)),
+                   ylim = ylims,
+                   xlim = xlims,
+                   ylab = "Backward",
+                   xlab = "Forward",
+                   col = UMASS_BLUE,
+                   pch = 19,
+                   main = nms[i],
+                   cex.lab=2,
+                   cex.axis=1.4,
+                   cex.main=2)
+            lines(x = xlims, y= ylims,
+                  col = UMASS_RED,lwd = 3)
+            text(paste( "Backward Mean:", round(mean(backward_samples[,i]),4),
+                        "\nForward Mean:", round(mean(forward_samples[,i]),4),
+                        "\nt-test p-value:",
+                        round(t.test(backward_test,
+                                     forward_test)$p.value,4),
+                        "\nMann-Whitney p-value:",
+                        round(wilcox.test(backward_test,
+                                          forward_test)$p.value,4)),
+                 x = xlims[2] - 0.3*abs(xlims[2] - xlims[1]),
+                 y = ylims[1] + 0.2*abs(ylims[2] - ylims[1]),
+                 cex = 1.5)
+        }
     }
 }
 
