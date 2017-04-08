@@ -16,7 +16,7 @@ NULL
 #' @importFrom Rcpp sourceCpp
 #' @importFrom RcppParallel RcppParallelLibs
 #' @importFrom grDevices colorRampPalette dev.off gray pdf rgb
-#' @importFrom graphics box legend lines par plot points
-#' @importFrom stats as.formula qnorm runif sd
+#' @importFrom graphics box legend lines par plot points text
+#' @importFrom stats as.formula qnorm runif sd qqplot quantile t.test wilcox.test
 NULL
 #> NULL
