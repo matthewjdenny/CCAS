@@ -88,6 +88,8 @@
 #' must be provided.
 #' @param Getting_It_Right If TRUE, then Geweke's getting it right test is
 #' performed
+#' @param Schien_Testing If TRUE, the Schien testing is performed. Defaults to
+#' FALSE.
 #' @param seed An integerg.
 #' @param distribution A log-space vector
 #' @param intercepts A vector.
@@ -183,6 +185,7 @@ test_internal_functions <- function(
     Test_RDirichlet = FALSE,
     Test_Sample_Token_Topics_From_Generative_Process = FALSE,
     Getting_It_Right = FALSE,
+    Schien_Testing = FALSE,
     seed = NULL,
     distribution = NULL,
     intercepts = NULL,
@@ -530,7 +533,11 @@ test_internal_functions <- function(
                     paste("Tokens_Assigned_To_IP_",1:num_ip,sep = ""),
                     paste("Token_Count_Topic_",1:num_topics,sep = ""),
                     paste("Tokens_Count_Word_Type_",1:num_terms,sep = ""),
-                    "Mean_Edge_Value","Mean_IP_Value", "Mean_MH_Accept_Rate")
+                    "Mean_Edge_Value","Mean_IP_Value", "Mean_Token_Topic",
+                    "Var_Token_Topic","Max_Topic_Token_Count","Min_Topic_Token_Count",
+                    "Mean_Token_Word_Type","Var_Token_Word_Type",
+                    "Max_Word_Type_Token_Count","Min_Word_Type_Token_Count",
+                    "Mean_MH_Accept_Rate")
 
         colnames(return_object) <- colnms
     }
