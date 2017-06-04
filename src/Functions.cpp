@@ -758,7 +758,7 @@ namespace mjd {
         int number_of_documents = document_edge_matrix.n_rows;
         int number_of_actors = document_edge_matrix.n_cols;
         int number_of_interaction_patterns = intercepts.n_elem;
-        int rand_num_counter = 0;
+        // int rand_num_counter = 0;
         int number_of_topics = alpha_m.n_elem;
 
         arma::cube edge_probabilities = arma::zeros(number_of_actors,
@@ -819,8 +819,8 @@ namespace mjd {
                 // allocate all of our token specific variables
                 int current_token_topic_assignment = current_token_topic_assignments[j];
                 int current_word_type = current_token_word_types[j];
-                double rand_num = random_numbers[rand_num_counter];
-                rand_num_counter += 1;
+                double rand_num = R::runif(0,1);
+                // rand_num_counter += 1;
 
                 if (previous_topic_assign == current_token_topic_assignment) {
                     previous_topic_assign_same_as_current = true;
@@ -1111,7 +1111,7 @@ namespace mjd {
         int number_of_actors = document_edge_matrix.n_cols;
         int number_of_interaction_patterns = intercepts.n_elem;
         int number_of_topics = topic_interaction_patterns.n_elem;
-        int number_counter = 0;
+        // int number_counter = 0;
 
         // outer loop over topics
         for (int t = 0; t < number_of_topics; ++t) {
@@ -1201,8 +1201,9 @@ namespace mjd {
                 }// end of loop over documents
                 interaction_pattern_assignment_log_probs[c] = log_prob;
             }//end of loop over clusters
-            double random_number = random_numbers[number_counter];
-            number_counter += 1;
+            double random_number = R::runif(0,1);
+            // number_counter += 1;
+            // Rcpp::Rcout << interaction_pattern_assignment_log_probs <<std::endl;
             int new_assignment = log_space_multinomial_sampler(
                 interaction_pattern_assignment_log_probs,
                 random_number);
@@ -1456,8 +1457,8 @@ namespace mjd {
             bool verbose) {
 
         // Set RNG and define uniform distribution
-        boost::mt19937 generator(seed);
-        boost::uniform_01<double> uniform_distribution;
+        // boost::mt19937 generator(seed);
+        // boost::uniform_01<double> uniform_distribution;
 
         // example get the random uniform draw
         // double rand_num = uniform_distribution(generator);
@@ -1508,9 +1509,9 @@ namespace mjd {
             // generate a vector of random numbers to pass in to the topic-token
             // update function.
             arma::vec random_numbers = arma::zeros(total_number_of_tokens);
-            for (int k = 0; k < total_number_of_tokens; ++k) {
-                random_numbers[k] = uniform_distribution(generator);
-            }
+            // for (int k = 0; k < total_number_of_tokens; ++k) {
+            //     random_numbers[k] = uniform_distribution(generator);
+            // }
 
             // update all token topic assignments
             Rcpp::List Topic_Updates = update_token_topic_assignments(
@@ -1557,9 +1558,9 @@ namespace mjd {
                     // generate a vector of random numbers to pass in to the topic-token
                     // update function.
                     arma::vec random_numbers = arma::zeros(num_topics);
-                    for (int k = 0; k < num_topics; ++k) {
-                        random_numbers[k] = uniform_distribution(generator);
-                    }
+                    // for (int k = 0; k < num_topics; ++k) {
+                    //     random_numbers[k] = uniform_distribution(generator);
+                    // }
                     //update topic interaction patterns
                     topic_interaction_patterns = update_topic_interaction_pattern_assignments(
                         author_indexes,
@@ -1660,7 +1661,7 @@ namespace mjd {
             arma::vec accept_or_reject = arma::zeros(metropolis_iterations);
             // loop over metropolis hastings iterations
             for (int j = 0; j < metropolis_iterations; ++j) {
-                double random_number =  uniform_distribution(generator);
+                double random_number =  R::runif(0,1);
                 Rcpp::List MH_List =  update_interaction_pattern_parameters(
                         author_indexes,
                         document_edge_matrix,
@@ -1839,7 +1840,7 @@ namespace mjd {
         // get some global variables
         int num_topics = alpha_m.n_elem;
         int num_word_types = beta_n.n_elem;
-        int rand_num_counter = 0;
+        // int rand_num_counter = 0;
 
         arma::mat document_topic_counts = arma::zeros(number_of_documents,
                                                       num_topics);
@@ -1860,6 +1861,19 @@ namespace mjd {
             number_of_documents,
             alpha_m);
 
+        // to use sample function
+        // arma::vec topic_inds = arma::zeros(num_topics);
+        // // fill these in with unifrom probabilities
+        // for (int k = 0; k < num_topics; ++k) {
+        //     topic_inds[k] = k;
+        // }
+        //
+        // arma::vec word_type_inds = arma::zeros(num_word_types);
+        // // fill these in with unifrom probabilities
+        // for (int k = 0; k < num_word_types; ++k) {
+        //     word_type_inds[k] = k;
+        // }
+
         for (int i = 0; i < number_of_documents; ++i) {
             // get the current token topic assignments as a vector
             arma::vec current_token_topic_assignments = token_topic_assignments[i];
@@ -1878,10 +1892,13 @@ namespace mjd {
 
             // loop over tokens
             for (int j = 0; j < tokens_in_document; ++j) {
-                double rand_num = random_numbers[rand_num_counter];
-                rand_num_counter += 1;
+                double rand_num = R::runif(0,1);
+                // rand_num_counter += 1;
                 int current_word_type = current_token_word_types[j];
 
+                // arma::vec temp3 = RcppArmadillo::sample(topic_inds,1,true,current_doc_topic_dist) ;
+                // int new_topic_assignment = temp3[0];
+                //Rcpp::Rcout << temp3 << new_topic_assignment << std::endl;
                 // now get the new assignment
                 int new_topic_assignment = mjd::log_space_multinomial_sampler(
                     current_doc_topic_dist,
@@ -1893,11 +1910,14 @@ namespace mjd {
                     arma::vec current_topic_word_type_dist = arma::conv_to<arma::vec>::from(temp2);
                     // need to take log so we can use our log space multinomial sampler
                     current_topic_word_type_dist = arma::log(current_topic_word_type_dist);
-                    double rand_num2 = random_numbers[rand_num_counter];
-                    rand_num_counter += 1;
+                    double rand_num2 = R::runif(0,1);
+                    // rand_num_counter += 1;
                     current_word_type = mjd::log_space_multinomial_sampler(
                         current_topic_word_type_dist,
                         rand_num2);
+
+                    // arma::vec temp4 = RcppArmadillo::sample(word_type_inds,1,true,current_topic_word_type_dist) ;
+                    // current_word_type = temp2[0];
                 }
                 document_topic_counts(i,new_topic_assignment) += 1;
                 current_token_topic_assignments[j] = new_topic_assignment;
@@ -1946,9 +1966,12 @@ namespace mjd {
         // get some global variables
         int num_topics = alpha_m.n_elem;
         int num_word_types = beta_n.n_elem;
-        int rand_num_counter = 0;
+        // int rand_num_counter = 0;
 		double beta_sum = arma::sum(beta_n);
-		double alpha_sum = arma::sum(alpha_m);
+		// double alpha_sum = arma::sum(alpha_m);
+
+		word_type_topic_counts = arma::zeros(num_word_types,
+                                                 num_topics);
 
 
         for (int i = 0; i < number_of_documents; ++i) {
@@ -1963,8 +1986,8 @@ namespace mjd {
 
             // loop over tokens
             for (int j = 0; j < tokens_in_document; ++j) {
-                double rand_num = random_numbers[rand_num_counter];
-                rand_num_counter += 1;
+                double rand_num = R::runif(0,1);
+                // rand_num_counter += 1;
 				// get the current assignments incase we are going to decrement
                 int current_word_type = current_token_word_types[j];
                 int current_token_topic = current_token_topic_assignments[j];
@@ -1975,18 +1998,26 @@ namespace mjd {
 				        document_topic_counts(i,current_token_topic) -= 1;
 				        topic_token_counts[current_token_topic] -= 1;
 				    }
-					word_type_topic_counts(current_word_type,current_token_topic) -= 1;
+					//word_type_topic_counts(current_word_type,current_token_topic) -= 1;
 				}
 
 				int new_topic_assignment = -1;
 				if (only_update_word_types) {
 				    new_topic_assignment = current_token_topic;
 				} else {
+				    // we need to randomly smaple the word types every time
+				    double wt = R::runif(0,num_topics);
+				    current_word_type = -1;
+				    for (int t = 0; t < num_topics; ++t) {
+				        if (t < wt) {
+				            current_word_type += 1;
+				        }
+				    }
 				    //initialize token topic distribtuion
 				    arma::vec token_topic_distribution = arma::zeros(num_topics);
 				    // loop through each topic
 				    for (int t = 0; t < num_topics; ++t) {
-				        token_topic_distribution[t] = (double(word_type_topic_counts(current_word_type,t) + beta_n[current_word_type]) / double(topic_token_counts[t] + beta_sum)) * double(document_topic_counts(i,t) + alpha_sum);
+				        token_topic_distribution[t] = (double(word_type_topic_counts(current_word_type,t) + beta_n[current_word_type]) / double(topic_token_counts[t] + beta_sum)) * double(document_topic_counts(i,t) + alpha_m[t]); ///double(tokens_in_document + alpha_sum))
 				    }
 
 				    // need to take log so we can use our log space multinomial sampler
@@ -2007,8 +2038,8 @@ namespace mjd {
 
                     // need to take log so we can use our log space multinomial sampler
                     current_topic_word_type_dist = arma::log(current_topic_word_type_dist);
-                    double rand_num2 = random_numbers[rand_num_counter];
-                    rand_num_counter += 1;
+                    double rand_num2 = R::runif(0,1);
+                    // rand_num_counter += 1;
                     current_word_type = mjd::log_space_multinomial_sampler(
                         current_topic_word_type_dist,
                         rand_num2);
@@ -2078,8 +2109,8 @@ namespace mjd {
             int burnin) {
 
         // Set RNG and define uniform distribution
-        boost::mt19937 generator(seed);
-        boost::uniform_01<double> uniform_distribution;
+        // boost::mt19937 generator(seed);
+        // boost::uniform_01<double> uniform_distribution;
 
         // example get the random uniform draw
         // double rand_num = uniform_distribution(generator);
@@ -2147,7 +2178,7 @@ namespace mjd {
         // loop over metropolis hastings iterations
         for (int j = 0; j < metropolis_iterations; ++j) {
 
-            double random_number =  uniform_distribution(generator);
+            double random_number =  R::runif(0,1);
             Rcpp::List MH_List =  update_interaction_pattern_parameters(
                 author_indexes,
                 document_edge_matrix,
@@ -2433,10 +2464,19 @@ namespace mjd {
             //with replacement. See:
             //http://gallery.rcpp.org/articles/using-the-Rcpp-based-sample-implementation/
             //for an example and explanation
-            topic_interaction_patterns2 = RcppArmadillo::sample(interaction_pattern_indices,
-                                                               num_topics,
-                                                               true,
-                                                               interaction_pattern_probs) ;
+            // topic_interaction_patterns2 = RcppArmadillo::sample(interaction_pattern_indices,
+            //                                                    num_topics,
+            //                                                    true,
+            //                                                    interaction_pattern_probs) ;
+            interaction_pattern_probs = arma::log(interaction_pattern_probs);
+            double rand_num2 = 0;
+            for (int k = 0; k < num_topics; ++k) {
+                rand_num2 = R::runif(0,1);
+                topic_interaction_patterns2[k] = mjd::log_space_multinomial_sampler(
+                    interaction_pattern_probs,
+                    rand_num2);
+            }
+            //Rcpp::Rcout << topic_interaction_patterns2 << interaction_pattern_probs << std::endl;
         }
 
 
@@ -2596,6 +2636,7 @@ namespace mjd {
         int number_of_word_types = word_type_topic_counts.n_rows;
         int num_docs = document_topic_counts.n_rows;
         int num_actors = latent_positions.n_cols;
+        int num_tokens = arma::sum(topic_token_counts);
 
         // allocate a vector in which to store statistics we calculate on our
         // data and latent variables
@@ -2659,11 +2700,13 @@ namespace mjd {
 
         // all word-type specific stats
         // number of tokens assigned to each word type
+        arma::vec word_type_counts = arma::zeros(number_of_word_types);
         for (int i = 0; i < number_of_word_types; ++i) {
             arma::rowvec temp = word_type_topic_counts.row(i);
             // now we convert to an arma::vec (ugly but it works)
             arma::vec temp2 = arma::conv_to<arma::vec>::from(temp);
             statistics[stat_counter] = arma::sum(temp2);
+            word_type_counts[i] = arma::sum(temp2);
             stat_counter += 1;
         }
 
@@ -2675,6 +2718,52 @@ namespace mjd {
 
         // now get the mean of cluster assignments
         statistics[stat_counter] = vector_mean(topic_interaction_patterns);
+        stat_counter += 1;
+
+        arma::vec token_topics = arma::zeros(num_tokens);
+        int count = 0;
+        for (int i = 0; i < number_of_topics; ++i) {
+            int cur = int(topic_token_counts[i]);
+            for (int j = 0; j < cur; ++j) {
+                token_topics[count] = i;
+                count += 1;
+            }
+        }
+        arma::vec word_types = arma::zeros(num_tokens);
+        count = 0;
+        for (int i = 0; i < number_of_word_types; ++i) {
+            int cur = int(word_type_counts[i]);
+            for (int j = 0; j < cur; ++j) {
+                word_types[count] = i;
+                count += 1;
+            }
+        }
+
+
+        // aggregate stats on topic token counts
+        statistics[stat_counter] = vector_mean(token_topics);
+        stat_counter += 1;
+
+        statistics[stat_counter] = arma::var(token_topics);
+        stat_counter += 1;
+
+        statistics[stat_counter] = arma::max(topic_token_counts);
+        stat_counter += 1;
+
+        statistics[stat_counter] = arma::min(topic_token_counts);
+        stat_counter += 1;
+
+        //aggregate stats on word types
+        statistics[stat_counter] = vector_mean(word_types);
+        stat_counter += 1;
+
+        statistics[stat_counter] = arma::var(word_types);
+        stat_counter += 1;
+
+        statistics[stat_counter] = arma::max(word_type_counts);
+        stat_counter += 1;
+
+        statistics[stat_counter] = arma::min(word_type_counts);
         stat_counter += 1;
 
         // store the mean acceptance rate
@@ -2731,11 +2820,11 @@ double ep(arma::vec intercepts,
 int lsms(arma::vec unnormalized_discrete_distribution, int seed, double u=NA_REAL){
 
     // Set RNG and define uniform distribution
-    boost::mt19937 generator(seed);
-    boost::uniform_01<double> uniform_distribution;
+    // boost::mt19937 generator(seed);
+    // boost::uniform_01<double> uniform_distribution;
 
     // get the random uniform draw
-    double rand_num = uniform_distribution(generator);
+    double rand_num = R::runif(0,1);
 
     if (arma::is_finite(u)) {
       rand_num = u;
@@ -3317,11 +3406,11 @@ arma::mat gir(arma::vec author_indexes,
          bool resample_word_types){
 
     // Set RNG and define uniform distribution
-    boost::mt19937 generator(seed);
-    boost::uniform_01<double> uniform_distribution;
+    // boost::mt19937 generator(seed);
+    // boost::uniform_01<double> uniform_distribution;
 
     // we need to be using collapsed sampling or this will not work
-    bool use_collapsed_topic_sampling = false;
+    bool use_collapsed_topic_sampling = true;
 
     // we will calculate all statistics on which we wish to compare the two
     // chains in C++ and will then store them in a matrix.
@@ -3335,6 +3424,7 @@ arma::mat gir(arma::vec author_indexes,
     number_of_statistics += 5*num_ip;
     number_of_statistics += num_terms + num_topics;
     number_of_statistics += 2; //average cluster assignment and mean network density.
+    number_of_statistics += 8; //mean, var, max, min for topic, word type counts.
     number_of_statistics += 1; //MH acceptance rate
 
     arma::mat sample_statistics = arma::zeros(GiR_samples,number_of_statistics);
@@ -3385,9 +3475,9 @@ arma::mat gir(arma::vec author_indexes,
             // generate a vector of random numbers to pass in to the topic-token
             // update function.
             arma::vec random_numbers = arma::zeros(total_number_of_tokens);
-            for (int k = 0; k < total_number_of_tokens; ++k) {
-                random_numbers[k] = uniform_distribution(generator);
-            }
+            // for (int k = 0; k < total_number_of_tokens; ++k) {
+            //     random_numbers[k] = uniform_distribution(generator);
+            // }
 
             Rcpp::List ret = mjd::sample_from_generative_process(author_indexes,
                                                                  covariates,
@@ -3463,9 +3553,9 @@ arma::mat gir(arma::vec author_indexes,
         // generate a vector of random numbers to pass in to the topic-token
         // update function.
         arma::vec random_numbers = arma::zeros(total_number_of_tokens);
-        for (int k = 0; k < total_number_of_tokens; ++k) {
-            random_numbers[k] = uniform_distribution(generator);
-        }
+        // for (int k = 0; k < total_number_of_tokens; ++k) {
+        //     random_numbers[k] = uniform_distribution(generator);
+        // }
 
         // we set initialize to true becasue we want to draw a fresh sample for
         // the first time
@@ -3534,7 +3624,7 @@ arma::mat gir(arma::vec author_indexes,
         use_collapsed_topic_sampling = true;
         for (int i = 0; i < GiR_samples; ++i) {
             //increment seed so we do not pass in the exact same one every time.
-            seed += 100;
+            seed += 1000;
             // more fequent updates since it is slower
             if (i % 10000 == 0) {
                 Rcpp::Rcout << "Backward Sample Iteration: " << i << std::endl;
@@ -3624,9 +3714,9 @@ arma::mat gir(arma::vec author_indexes,
             // generate a vector of random numbers to pass in to the topic-token
             // update function.
             arma::vec random_numbers = arma::zeros(total_number_of_tokens);
-            for (int k = 0; k < total_number_of_tokens; ++k) {
-                random_numbers[k] = uniform_distribution(generator);
-            }
+            // for (int k = 0; k < total_number_of_tokens; ++k) {
+            //     random_numbers[k] = uniform_distribution(generator);
+            // }
 
             Rcpp::List ret = mjd::sample_from_generative_process(author_indexes,
                                                                  covariates,
