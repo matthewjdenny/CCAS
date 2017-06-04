@@ -1,14 +1,15 @@
 test_that("That we get it right", {
     skip_on_cran()
+    skip()
 
     # we need a very simple model with a small number of actors, topics, odcuments etc.
     # create an example distribution
-    seed <- 12345
+    seed <- 3578
     set.seed(seed)
 
     resample_token_word_types = TRUE
-    GiR_samples = 100000
-    num_documents = 5
+    GiR_samples = 1000
+    num_documents = 10
     words_per_doc = 4
     num_topics = 4
     num_terms = 5
@@ -18,12 +19,12 @@ test_that("That we get it right", {
     num_covar = 1
     total_word_count = num_documents * words_per_doc
     # five topics
-    alpha = 2
+    alpha = 1000
     temp <- rep(1/num_topics,num_topics)
     alpha_m = alpha * temp/sum(temp)
 
     # ten unique words
-    beta = 2
+    beta = 1000
     temp2 <- rep(1/num_terms,num_terms)
     beta_n = beta * temp2/sum(temp2)
 
@@ -104,10 +105,10 @@ test_that("That we get it right", {
         using_coefficients = TRUE,
         intercept_prior_mean = 0,
         intercept_prior_standard_deviation = 1,
-        intercept_proposal_standard_deviations = c(0.5,0.5),
+        intercept_proposal_standard_deviations = c(.5,.5),
         coefficient_prior_mean = 0,
         coefficient_prior_standard_deviation = 1,
-        coefficient_proposal_standard_deviations = c(0.5,0.5),
+        coefficient_proposal_standard_deviations = c(.5,.5),
         latent_position_prior_mean = 0,
         latent_position_prior_standard_deviation = 1,
         latent_position_proposal_standard_deviations = c(.5,.5),
@@ -116,7 +117,7 @@ test_that("That we get it right", {
         update_size = 0.05,
         seed = seed,
         iterations = 1,
-        metropolis_iterations = 50,
+        metropolis_iterations = 100,
         iterations_before_t_i_p_updates = 0,
         update_t_i_p_every_x_iterations = 0,
         perform_adaptive_metropolis = TRUE,
@@ -138,7 +139,6 @@ test_that("That we get it right", {
         resample_word_types = resample_token_word_types,
         verbose = FALSE)
 
-
     # check average t-test stat and wilcox test stat.
     tstats <- rep(0,(ncol(forward_samples)-1))
     wstats <- rep(0,(ncol(forward_samples)-1))
@@ -158,8 +158,8 @@ test_that("That we get it right", {
 
     generate_PP_plots <- FALSE
     if (generate_PP_plots) {
-        pdf(file = "~/Desktop/PP_Plot.pdf", height = 25,width = 25)
-        par(mfrow = c(5,5), oma=c(3,3,3,3), mar = c(5,5,4,1))
+        pdf(file = "~/Desktop/PP_Plots2.pdf", height = 30,width = 25)
+        par(mfrow = c(6,5), oma=c(3,3,3,3), mar = c(5,5,4,1))
         GiR_PP_Plots(forward_samples, backward_samples)
         dev.off()
     }

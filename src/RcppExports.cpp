@@ -416,3 +416,29 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+
+static const R_CallMethodDef CallEntries[] = {
+    {"CCAS_ep", (DL_FUNC) &CCAS_ep, 8},
+    {"CCAS_lsms", (DL_FUNC) &CCAS_lsms, 3},
+    {"CCAS_sotep", (DL_FUNC) &CCAS_sotep, 9},
+    {"CCAS_ppipp", (DL_FUNC) &CCAS_ppipp, 10},
+    {"CCAS_snipp", (DL_FUNC) &CCAS_snipp, 7},
+    {"CCAS_lsmc", (DL_FUNC) &CCAS_lsmc, 8},
+    {"CCAS_ldac", (DL_FUNC) &CCAS_ldac, 10},
+    {"CCAS_ustta", (DL_FUNC) &CCAS_ustta, 16},
+    {"CCAS_utta", (DL_FUNC) &CCAS_utta, 17},
+    {"CCAS_uipp", (DL_FUNC) &CCAS_uipp, 20},
+    {"CCAS_utipa", (DL_FUNC) &CCAS_utipa, 11},
+    {"CCAS_am", (DL_FUNC) &CCAS_am, 7},
+    {"CCAS_model_inference", (DL_FUNC) &CCAS_model_inference, 38},
+    {"CCAS_mjd_rdirichlet", (DL_FUNC) &CCAS_mjd_rdirichlet, 1},
+    {"CCAS_sttgp", (DL_FUNC) &CCAS_sttgp, 8},
+    {"CCAS_mh_to_convergence", (DL_FUNC) &CCAS_mh_to_convergence, 28},
+    {"CCAS_gir", (DL_FUNC) &CCAS_gir, 39},
+    {NULL, NULL, 0}
+};
+
+RcppExport void R_init_CCAS(DllInfo *dll) {
+    R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
+    R_useDynamicSymbols(dll, FALSE);
+}
