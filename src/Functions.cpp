@@ -1203,7 +1203,6 @@ namespace mjd {
             }//end of loop over clusters
             double random_number = R::runif(0,1);
             // number_counter += 1;
-            // Rcpp::Rcout << interaction_pattern_assignment_log_probs <<std::endl;
             int new_assignment = log_space_multinomial_sampler(
                 interaction_pattern_assignment_log_probs,
                 random_number);
@@ -2479,7 +2478,6 @@ namespace mjd {
             //Rcpp::Rcout << topic_interaction_patterns2 << interaction_pattern_probs << std::endl;
         }
 
-
         //our last task is to resample edge values
         arma::mat document_edge_matrix = arma::zeros(num_documents,num_actors);
         // loop over documents
@@ -3622,11 +3620,13 @@ arma::mat gir(arma::vec author_indexes,
         initialize = false;
         only_update_word_types = true;
         use_collapsed_topic_sampling = true;
+        // make printing more expressive for short runs
+        int backward_print = GiR_samples/100;
         for (int i = 0; i < GiR_samples; ++i) {
             //increment seed so we do not pass in the exact same one every time.
             seed += 1000;
             // more fequent updates since it is slower
-            if (i % 10000 == 0) {
+            if (i %  backward_print == 0) {
                 Rcpp::Rcout << "Backward Sample Iteration: " << i << std::endl;
             }
             // Run inference for 5 Gibbs (50 MH per Gibbs) iterations.
