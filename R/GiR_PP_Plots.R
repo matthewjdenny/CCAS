@@ -28,9 +28,15 @@ GiR_PP_Plots <- function(forward_samples,
             if (nrow(forward_samples) > 20000) {
                 thin <- seq(from = floor(nrow(forward_samples)/10), to = nrow(forward_samples),length.out = 10000)
                 forward_test <- forward_samples[thin,i]
-                backward_test <- backward_samples[thin,i]
             } else {
                 forward_test <- forward_samples[,i]
+            }
+
+            # start by generating reduced samples for t-tests
+            if (nrow(backward_samples) > 20000) {
+                thin <- seq(from = floor(nrow(backward_samples)/10), to = nrow(backward_samples),length.out = 10000)
+                backward_test <- backward_samples[thin,i]
+            } else {
                 backward_test <- backward_samples[,i]
             }
 
