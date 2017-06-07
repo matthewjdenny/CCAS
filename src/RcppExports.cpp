@@ -158,8 +158,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // utta
-List utta(arma::vec author_indexes, arma::mat document_edge_matrix, arma::vec topic_interaction_patterns, arma::mat document_topic_counts, arma::mat word_type_topic_counts, arma::vec topic_token_counts, Rcpp::List token_topic_assignments, Rcpp::List token_word_types, arma::vec intercepts, arma::mat coefficients, arma::cube latent_positions, arma::cube covariates, arma::vec alpha_m, arma::vec beta_n, arma::vec random_numbers, bool using_coefficients, bool parallel);
-RcppExport SEXP CCAS_utta(SEXP author_indexesSEXP, SEXP document_edge_matrixSEXP, SEXP topic_interaction_patternsSEXP, SEXP document_topic_countsSEXP, SEXP word_type_topic_countsSEXP, SEXP topic_token_countsSEXP, SEXP token_topic_assignmentsSEXP, SEXP token_word_typesSEXP, SEXP interceptsSEXP, SEXP coefficientsSEXP, SEXP latent_positionsSEXP, SEXP covariatesSEXP, SEXP alpha_mSEXP, SEXP beta_nSEXP, SEXP random_numbersSEXP, SEXP using_coefficientsSEXP, SEXP parallelSEXP) {
+List utta(arma::vec author_indexes, arma::mat document_edge_matrix, arma::vec topic_interaction_patterns, arma::mat document_topic_counts, arma::mat word_type_topic_counts, arma::vec topic_token_counts, Rcpp::List token_topic_assignments, Rcpp::List token_word_types, arma::vec intercepts, arma::mat coefficients, arma::cube latent_positions, arma::cube covariates, arma::vec alpha_m, arma::vec beta_n, bool using_coefficients, bool parallel);
+RcppExport SEXP CCAS_utta(SEXP author_indexesSEXP, SEXP document_edge_matrixSEXP, SEXP topic_interaction_patternsSEXP, SEXP document_topic_countsSEXP, SEXP word_type_topic_countsSEXP, SEXP topic_token_countsSEXP, SEXP token_topic_assignmentsSEXP, SEXP token_word_typesSEXP, SEXP interceptsSEXP, SEXP coefficientsSEXP, SEXP latent_positionsSEXP, SEXP covariatesSEXP, SEXP alpha_mSEXP, SEXP beta_nSEXP, SEXP using_coefficientsSEXP, SEXP parallelSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -177,10 +177,9 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::cube >::type covariates(covariatesSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type alpha_m(alpha_mSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type beta_n(beta_nSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type random_numbers(random_numbersSEXP);
     Rcpp::traits::input_parameter< bool >::type using_coefficients(using_coefficientsSEXP);
     Rcpp::traits::input_parameter< bool >::type parallel(parallelSEXP);
-    rcpp_result_gen = Rcpp::wrap(utta(author_indexes, document_edge_matrix, topic_interaction_patterns, document_topic_counts, word_type_topic_counts, topic_token_counts, token_topic_assignments, token_word_types, intercepts, coefficients, latent_positions, covariates, alpha_m, beta_n, random_numbers, using_coefficients, parallel));
+    rcpp_result_gen = Rcpp::wrap(utta(author_indexes, document_edge_matrix, topic_interaction_patterns, document_topic_counts, word_type_topic_counts, topic_token_counts, token_topic_assignments, token_word_types, intercepts, coefficients, latent_positions, covariates, alpha_m, beta_n, using_coefficients, parallel));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -215,8 +214,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // utipa
-arma::vec utipa(arma::vec author_indexes, arma::mat document_edge_matrix, arma::mat document_topic_counts, arma::vec topic_interaction_patterns, arma::vec intercepts, arma::mat coefficients, arma::cube latent_positions, arma::cube covariates, bool using_coefficients, arma::vec random_numbers, arma::cube edge_probabilities);
-RcppExport SEXP CCAS_utipa(SEXP author_indexesSEXP, SEXP document_edge_matrixSEXP, SEXP document_topic_countsSEXP, SEXP topic_interaction_patternsSEXP, SEXP interceptsSEXP, SEXP coefficientsSEXP, SEXP latent_positionsSEXP, SEXP covariatesSEXP, SEXP using_coefficientsSEXP, SEXP random_numbersSEXP, SEXP edge_probabilitiesSEXP) {
+arma::vec utipa(arma::vec author_indexes, arma::mat document_edge_matrix, arma::mat document_topic_counts, arma::vec topic_interaction_patterns, arma::vec intercepts, arma::mat coefficients, arma::cube latent_positions, arma::cube covariates, bool using_coefficients, arma::cube edge_probabilities);
+RcppExport SEXP CCAS_utipa(SEXP author_indexesSEXP, SEXP document_edge_matrixSEXP, SEXP document_topic_countsSEXP, SEXP topic_interaction_patternsSEXP, SEXP interceptsSEXP, SEXP coefficientsSEXP, SEXP latent_positionsSEXP, SEXP covariatesSEXP, SEXP using_coefficientsSEXP, SEXP edge_probabilitiesSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -229,9 +228,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::cube >::type latent_positions(latent_positionsSEXP);
     Rcpp::traits::input_parameter< arma::cube >::type covariates(covariatesSEXP);
     Rcpp::traits::input_parameter< bool >::type using_coefficients(using_coefficientsSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type random_numbers(random_numbersSEXP);
     Rcpp::traits::input_parameter< arma::cube >::type edge_probabilities(edge_probabilitiesSEXP);
-    rcpp_result_gen = Rcpp::wrap(utipa(author_indexes, document_edge_matrix, document_topic_counts, topic_interaction_patterns, intercepts, coefficients, latent_positions, covariates, using_coefficients, random_numbers, edge_probabilities));
+    rcpp_result_gen = Rcpp::wrap(utipa(author_indexes, document_edge_matrix, document_topic_counts, topic_interaction_patterns, intercepts, coefficients, latent_positions, covariates, using_coefficients, edge_probabilities));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -312,8 +310,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // sttgp
-Rcpp::List sttgp(Rcpp::List token_topic_assignments, Rcpp::List token_word_types, arma::vec alpha_m, arma::vec beta_n, int number_of_documents, bool resample_word_types, arma::vec random_numbers, bool use_collapsed_topic_sampling);
-RcppExport SEXP CCAS_sttgp(SEXP token_topic_assignmentsSEXP, SEXP token_word_typesSEXP, SEXP alpha_mSEXP, SEXP beta_nSEXP, SEXP number_of_documentsSEXP, SEXP resample_word_typesSEXP, SEXP random_numbersSEXP, SEXP use_collapsed_topic_samplingSEXP) {
+Rcpp::List sttgp(Rcpp::List token_topic_assignments, Rcpp::List token_word_types, arma::vec alpha_m, arma::vec beta_n, int number_of_documents, bool resample_word_types, bool use_collapsed_topic_sampling);
+RcppExport SEXP CCAS_sttgp(SEXP token_topic_assignmentsSEXP, SEXP token_word_typesSEXP, SEXP alpha_mSEXP, SEXP beta_nSEXP, SEXP number_of_documentsSEXP, SEXP resample_word_typesSEXP, SEXP use_collapsed_topic_samplingSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -323,9 +321,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::vec >::type beta_n(beta_nSEXP);
     Rcpp::traits::input_parameter< int >::type number_of_documents(number_of_documentsSEXP);
     Rcpp::traits::input_parameter< bool >::type resample_word_types(resample_word_typesSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type random_numbers(random_numbersSEXP);
     Rcpp::traits::input_parameter< bool >::type use_collapsed_topic_sampling(use_collapsed_topic_samplingSEXP);
-    rcpp_result_gen = Rcpp::wrap(sttgp(token_topic_assignments, token_word_types, alpha_m, beta_n, number_of_documents, resample_word_types, random_numbers, use_collapsed_topic_sampling));
+    rcpp_result_gen = Rcpp::wrap(sttgp(token_topic_assignments, token_word_types, alpha_m, beta_n, number_of_documents, resample_word_types, use_collapsed_topic_sampling));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -426,13 +423,13 @@ static const R_CallMethodDef CallEntries[] = {
     {"CCAS_lsmc", (DL_FUNC) &CCAS_lsmc, 8},
     {"CCAS_ldac", (DL_FUNC) &CCAS_ldac, 10},
     {"CCAS_ustta", (DL_FUNC) &CCAS_ustta, 16},
-    {"CCAS_utta", (DL_FUNC) &CCAS_utta, 17},
+    {"CCAS_utta", (DL_FUNC) &CCAS_utta, 16},
     {"CCAS_uipp", (DL_FUNC) &CCAS_uipp, 20},
-    {"CCAS_utipa", (DL_FUNC) &CCAS_utipa, 11},
+    {"CCAS_utipa", (DL_FUNC) &CCAS_utipa, 10},
     {"CCAS_am", (DL_FUNC) &CCAS_am, 7},
     {"CCAS_model_inference", (DL_FUNC) &CCAS_model_inference, 38},
     {"CCAS_mjd_rdirichlet", (DL_FUNC) &CCAS_mjd_rdirichlet, 1},
-    {"CCAS_sttgp", (DL_FUNC) &CCAS_sttgp, 8},
+    {"CCAS_sttgp", (DL_FUNC) &CCAS_sttgp, 7},
     {"CCAS_mh_to_convergence", (DL_FUNC) &CCAS_mh_to_convergence, 28},
     {"CCAS_gir", (DL_FUNC) &CCAS_gir, 39},
     {NULL, NULL, 0}

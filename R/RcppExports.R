@@ -33,16 +33,16 @@ ustta <- function(edge_probabilities, tokens_in_document, current_token_topic_as
     .Call('CCAS_ustta', PACKAGE = 'CCAS', edge_probabilities, tokens_in_document, current_token_topic_assignment, current_document_topic_counts, word_type_topic_counts, topic_token_counts, current_word_type, alpha_m, beta_n, document_edge_values, topic_interaction_patterns, document_sender, rand_num, parallel, use_cached_token_topic_distribution, cached_token_topic_distribution)
 }
 
-utta <- function(author_indexes, document_edge_matrix, topic_interaction_patterns, document_topic_counts, word_type_topic_counts, topic_token_counts, token_topic_assignments, token_word_types, intercepts, coefficients, latent_positions, covariates, alpha_m, beta_n, random_numbers, using_coefficients, parallel) {
-    .Call('CCAS_utta', PACKAGE = 'CCAS', author_indexes, document_edge_matrix, topic_interaction_patterns, document_topic_counts, word_type_topic_counts, topic_token_counts, token_topic_assignments, token_word_types, intercepts, coefficients, latent_positions, covariates, alpha_m, beta_n, random_numbers, using_coefficients, parallel)
+utta <- function(author_indexes, document_edge_matrix, topic_interaction_patterns, document_topic_counts, word_type_topic_counts, topic_token_counts, token_topic_assignments, token_word_types, intercepts, coefficients, latent_positions, covariates, alpha_m, beta_n, using_coefficients, parallel) {
+    .Call('CCAS_utta', PACKAGE = 'CCAS', author_indexes, document_edge_matrix, topic_interaction_patterns, document_topic_counts, word_type_topic_counts, topic_token_counts, token_topic_assignments, token_word_types, intercepts, coefficients, latent_positions, covariates, alpha_m, beta_n, using_coefficients, parallel)
 }
 
 uipp <- function(author_indexes, document_edge_matrix, document_topic_counts, topic_interaction_patterns, intercepts, coefficients, latent_positions, covariates, using_coefficients, intercept_prior_mean, intercept_prior_standard_deviation, intercept_proposal_standard_deviations, coefficient_prior_mean, coefficient_prior_standard_deviation, coefficient_proposal_standard_deviations, latent_position_prior_mean, latent_position_prior_standard_deviation, latent_position_proposal_standard_deviations, random_number, edge_probabilities) {
     .Call('CCAS_uipp', PACKAGE = 'CCAS', author_indexes, document_edge_matrix, document_topic_counts, topic_interaction_patterns, intercepts, coefficients, latent_positions, covariates, using_coefficients, intercept_prior_mean, intercept_prior_standard_deviation, intercept_proposal_standard_deviations, coefficient_prior_mean, coefficient_prior_standard_deviation, coefficient_proposal_standard_deviations, latent_position_prior_mean, latent_position_prior_standard_deviation, latent_position_proposal_standard_deviations, random_number, edge_probabilities)
 }
 
-utipa <- function(author_indexes, document_edge_matrix, document_topic_counts, topic_interaction_patterns, intercepts, coefficients, latent_positions, covariates, using_coefficients, random_numbers, edge_probabilities) {
-    .Call('CCAS_utipa', PACKAGE = 'CCAS', author_indexes, document_edge_matrix, document_topic_counts, topic_interaction_patterns, intercepts, coefficients, latent_positions, covariates, using_coefficients, random_numbers, edge_probabilities)
+utipa <- function(author_indexes, document_edge_matrix, document_topic_counts, topic_interaction_patterns, intercepts, coefficients, latent_positions, covariates, using_coefficients, edge_probabilities) {
+    .Call('CCAS_utipa', PACKAGE = 'CCAS', author_indexes, document_edge_matrix, document_topic_counts, topic_interaction_patterns, intercepts, coefficients, latent_positions, covariates, using_coefficients, edge_probabilities)
 }
 
 am <- function(intercept_proposal_standard_deviations, coefficient_proposal_standard_deviations, latent_position_proposal_standard_deviations, accept_rates, target_accept_rate, tollerance, update_size) {
@@ -57,8 +57,8 @@ mjd_rdirichlet <- function(alpha_m) {
     .Call('CCAS_mjd_rdirichlet', PACKAGE = 'CCAS', alpha_m)
 }
 
-sttgp <- function(token_topic_assignments, token_word_types, alpha_m, beta_n, number_of_documents, resample_word_types, random_numbers, use_collapsed_topic_sampling) {
-    .Call('CCAS_sttgp', PACKAGE = 'CCAS', token_topic_assignments, token_word_types, alpha_m, beta_n, number_of_documents, resample_word_types, random_numbers, use_collapsed_topic_sampling)
+sttgp <- function(token_topic_assignments, token_word_types, alpha_m, beta_n, number_of_documents, resample_word_types, use_collapsed_topic_sampling) {
+    .Call('CCAS_sttgp', PACKAGE = 'CCAS', token_topic_assignments, token_word_types, alpha_m, beta_n, number_of_documents, resample_word_types, use_collapsed_topic_sampling)
 }
 
 mh_to_convergence <- function(author_indexes, document_edge_matrix, document_topic_counts, topic_interaction_patterns, intercepts, coefficients, latent_positions, covariates, using_coefficients, intercept_prior_mean, intercept_prior_standard_deviation, intercept_proposal_standard_deviations, coefficient_prior_mean, coefficient_prior_standard_deviation, coefficient_proposal_standard_deviations, latent_position_prior_mean, latent_position_prior_standard_deviation, latent_position_proposal_standard_deviations, target_accept_rate, tollerance, update_size, seed, metropolis_iterations, adaptive_metropolis_every_x_iterations, stop_adaptive_metropolis_after_x_updates, samples_to_store, sample_every, burnin) {
