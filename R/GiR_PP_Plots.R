@@ -48,66 +48,69 @@ GiR_PP_Plots <- function(forward_samples,
                 backward <- backward_samples[,i]
                 # find all unique values across the two vectors
                 uniqueValues <- sort(unique(c(forward,backward)))
-                # thinning
-                thin = 500
-                if (length(uniqueValues) > thin) {
-                    uniqueValues <- uniqueValues[round(seq(1,length(uniqueValues),length.out = thin))]
+
+                if (length(uniqueValues) > 1) {
+                    # thinning
+                    thin = 500
+                    if (length(uniqueValues) > thin) {
+                        uniqueValues <- uniqueValues[round(seq(1,length(uniqueValues),length.out = thin))]
+                    }
+
+
+                    # create vectors in which to store empirical quantiles
+                    qx1 <- numeric(length(uniqueValues))
+                    qx2 <- numeric(length(uniqueValues))
+
+                    # loop (could be paralellized) to calculate empirical quantile position
+                    # of each unique value in each vector
+                    for(k in 1:length(uniqueValues)){
+                        qx1[k] <- mean(forward <= uniqueValues[k])
+                        qx2[k] <- mean(backward <= uniqueValues[k])
+                    }
+
+                    # calcualte autocorrelation in forward and backward chains
+                    if (length(unique(forward)) > 1) {
+                        ar1 <- stats::cor(forward[2:length(forward)],forward[1:(length(forward)-1)])
+                    } else {
+                        ar1 <- 1
+                    }
+
+                    if (length(unique(backward)) > 1) {
+                        ar2 <- stats::cor(backward[2:length(backward)],backward[1:(length(backward)-1)])
+                    } else {
+                        ar2 <- 1
+                    }
+
+                    plot(x = qx1, y = qx2,
+                         ylim = c(0,1),
+                         xlim = c(0,1),
+                         ylab = "Backward",
+                         xlab = "Forward",
+                         col = UMASS_BLUE,
+                         pch = 4,
+                         main = nms[i],
+                         cex.lab=2,
+                         cex.axis=1.4,
+                         cex.main=2,cex = .5)
+                    lines(x = c(0,1), y= c(0,1),
+                          col = UMASS_RED,lwd = 3)
+                    text(paste( "Backward Mean:", round(mean(backward_samples[,i]),4),
+                                "\nForward Mean:", round(mean(forward_samples[,i]),4),
+                                "\nt-test p-value:",
+                                round(t.test(backward_test,
+                                             forward_test)$p.value,4),
+                                "\nMann-Whitney p-value:",
+                                round(wilcox.test(backward_test,
+                                                  forward_test)$p.value,4)),
+                         x = 0.7,
+                         y = 0.2,
+                         cex = 1.5)
+                    text(paste( "Backward Autocorr:", round(ar2,4),
+                                "\nForward Autocorr:", round(ar1,4)),
+                         x = 0.3,
+                         y = 0.9,
+                         cex = 1.5)
                 }
-
-
-                # create vectors in which to store empirical quantiles
-                qx1 <- numeric(length(uniqueValues))
-                qx2 <- numeric(length(uniqueValues))
-
-                # loop (could be paralellized) to calculate empirical quantile position
-                # of each unique value in each vector
-                for(k in 1:length(uniqueValues)){
-                    qx1[k] <- mean(forward <= uniqueValues[k])
-                    qx2[k] <- mean(backward <= uniqueValues[k])
-                }
-
-                # calcualte autocorrelation in forward and backward chains
-                if (length(unique(forward)) > 1) {
-                    ar1 <- stats::cor(forward[2:length(forward)],forward[1:(length(forward)-1)])
-                } else {
-                    ar1 <- 1
-                }
-
-                if (length(unique(backward)) > 1) {
-                    ar2 <- stats::cor(backward[2:length(backward)],backward[1:(length(backward)-1)])
-                } else {
-                    ar2 <- 1
-                }
-
-                plot(x = qx1, y = qx2,
-                       ylim = c(0,1),
-                       xlim = c(0,1),
-                       ylab = "Backward",
-                       xlab = "Forward",
-                       col = UMASS_BLUE,
-                       pch = 4,
-                       main = nms[i],
-                       cex.lab=2,
-                       cex.axis=1.4,
-                       cex.main=2,cex = .5)
-                lines(x = c(0,1), y= c(0,1),
-                      col = UMASS_RED,lwd = 3)
-                text(paste( "Backward Mean:", round(mean(backward_samples[,i]),4),
-                            "\nForward Mean:", round(mean(forward_samples[,i]),4),
-                            "\nt-test p-value:",
-                            round(t.test(backward_test,
-                                         forward_test)$p.value,4),
-                            "\nMann-Whitney p-value:",
-                            round(wilcox.test(backward_test,
-                                              forward_test)$p.value,4)),
-                     x = 0.7,
-                     y = 0.2,
-                     cex = 1.5)
-                text(paste( "Backward Autocorr:", round(ar2,4),
-                            "\nForward Autocorr:", round(ar1,4)),
-                     x = 0.3,
-                     y = 0.9,
-                     cex = 1.5)
             } else {
                 all <- c(backward_samples[,i],forward_samples[,i])
                 ylims <- c(min(all)-0.1*(max(abs(all))),
