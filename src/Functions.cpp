@@ -857,7 +857,7 @@ namespace mjd {
                 int new_topic_assignment = new_topic_assignment_vec[0];
                 for (int i = 0; i < number_of_topics; ++i) {
                     cached_token_topic_distribution[i] =
-                        new_topic_assignment_vec[i+1];;
+                        new_topic_assignment_vec[i+1];
                 }
 
                 // set cacheing values
@@ -3354,7 +3354,7 @@ arma::mat gir(arma::vec author_indexes,
     // boost::uniform_01<double> uniform_distribution;
 
     // we need to be using collapsed sampling or this will not work
-    bool use_collapsed_topic_sampling = true;
+    bool use_collapsed_topic_sampling = false;
 
     // we will calculate all statistics on which we wish to compare the two
     // chains in C++ and will then store them in a matrix.
