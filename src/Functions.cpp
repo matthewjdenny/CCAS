@@ -1986,7 +1986,7 @@ namespace mjd {
 
                 if (resample_word_types) {
                     arma::vec current_topic_word_type_dist = arma::zeros(num_word_types);
-                    double col_sum = arma::sum(word_type_topic_counts.row(new_topic_assignment));
+                    double col_sum = arma::sum(word_type_topic_counts.col(new_topic_assignment));
 					for (int w = 0; w < num_word_types; ++w) {
 						current_topic_word_type_dist[w] = double(word_type_topic_counts(w,new_topic_assignment) + beta_n[w]) / double(col_sum + beta_sum);
 					}
