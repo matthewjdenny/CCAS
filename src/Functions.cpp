@@ -1708,7 +1708,6 @@ namespace mjd {
                    }// loop over latent dimensions has to be last as they are
                    // stacked in the returned array
                 }//end of storage conditional
-
             }// end of metropolis hastings loop
 
             // store topic interaction pattern assignments
@@ -1962,10 +1961,10 @@ namespace mjd {
 				    new_topic_assignment = current_token_topic;
 				} else {
 				    // we need to randomly sample the word types every time
-				    double wt = R::runif(0,num_topics);
+				    double wt = R::runif(0,num_word_types);
 				    current_word_type = -1;
-				    for (int t = 0; t < num_topics; ++t) {
-				        if (t < wt) {
+				    for (int w = 0; w < num_word_types; ++w) {
+				        if (w < wt) {
 				            current_word_type += 1;
 				        }
 				    }
@@ -3412,7 +3411,10 @@ arma::mat gir(arma::vec author_indexes,
         // we set initialize to true becasue we wnat to draw a new sample each time
         bool initialize = true;
         bool only_update_word_types = false;
-        int forward_print = GiR_samples/100;
+        int forward_print = 1;
+        if (GiR_samples > 100) {
+            forward_print = GiR_samples/100;
+        }
         for (int i = 0; i < GiR_samples; ++i) {
             // more fequent updates since it is slower
             if (i %  forward_print == 0) {
@@ -3554,7 +3556,11 @@ arma::mat gir(arma::vec author_indexes,
         only_update_word_types = true;
         use_collapsed_topic_sampling = true;
         // make printing more expressive for short runs
-        int backward_print = GiR_samples/100;
+        int backward_print = 1;
+        if (GiR_samples > 100) {
+            backward_print = GiR_samples/100;
+        }
+
         for (int i = 0; i < GiR_samples; ++i) {
             // more fequent updates since it is slower
             if (i %  backward_print == 0) {
