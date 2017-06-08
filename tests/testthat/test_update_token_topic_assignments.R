@@ -74,7 +74,7 @@ test_that("That Update_Token_Topic_Assignments works", {
     topic_interaction_patterns <- c(0, 1, 1, 2, 3)
 
     # do.call(cbind, token_topic_assignments)
-
+    set.seed(seed)
     # first lets try without covariates
     result <- test_internal_functions(
         Test_Update_All_Token_Topic_Assignments = TRUE,

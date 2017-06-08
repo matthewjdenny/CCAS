@@ -13,6 +13,7 @@ test_that("That Update_Topic_Interaction_Pattern_Assignments works", {
     num_ip = 4
     numld = 2
     num_covar = 4
+    random_numbers <- runif(num_topics)
 
     intercepts <- rnorm(num_ip,mean = 0, sd = 2)
     latent_pos <- array(data = rnorm(n = num_ip*num_actors*numld, mean = 0, sd = 2),
@@ -65,7 +66,8 @@ test_that("That Update_Topic_Interaction_Pattern_Assignments works", {
     edge_probs <- array(data = runif(n = 64), dim = c(4,4,4))
 
     topic_interaction_patterns = c(0,1,1,2,3)
-    random_numbers <- runif(num_topics)
+
+    set.seed(seed)
 
     # first lets try without covariates
     result <- test_internal_functions(
@@ -79,7 +81,6 @@ test_that("That Update_Topic_Interaction_Pattern_Assignments works", {
         latent_positions = latent_pos,
         covariates = covars,
         using_coefficients = TRUE,
-        random_numbers = random_numbers,
         edge_probabilities = edge_probs)
 
     number_of_documents <- nrow(document_edge_matrix)
