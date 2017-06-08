@@ -37,15 +37,12 @@ test_that("That both LDA generative processes work", {
 
     }
 
-    random_numbers <- runif(10000)
-
     traditional <- test_internal_functions(
         Test_Sample_Token_Topics_From_Generative_Process = TRUE,
         alpha_m = alpha_m,
         beta_n = beta_n,
         num_documents = num_documents,
         words_per_doc = words_per_doc,
-        random_numbers = random_numbers,
         token_topic_assignments = token_topic_assignments,
         token_word_types = token_word_types,
         resample_word_types = resample_token_word_types,
@@ -57,7 +54,6 @@ test_that("That both LDA generative processes work", {
         beta_n = beta_n,
         num_documents = num_documents,
         words_per_doc = words_per_doc,
-        random_numbers = random_numbers,
         token_topic_assignments = token_topic_assignments,
         token_word_types = token_word_types,
         resample_word_types = resample_token_word_types,
@@ -69,7 +65,6 @@ test_that("That both LDA generative processes work", {
         beta_n = beta_n,
         num_documents = num_documents,
         words_per_doc = words_per_doc,
-        random_numbers = random_numbers,
         token_topic_assignments = token_topic_assignments,
         token_word_types = token_word_types,
         resample_word_types = TRUE,
@@ -81,7 +76,6 @@ test_that("That both LDA generative processes work", {
         beta_n = beta_n,
         num_documents = num_documents,
         words_per_doc = words_per_doc,
-        random_numbers = random_numbers,
         token_topic_assignments = token_topic_assignments,
         token_word_types = token_word_types,
         resample_word_types = TRUE,

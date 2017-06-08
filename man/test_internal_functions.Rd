@@ -16,12 +16,13 @@ test_internal_functions(Test_Log_Space_Multinomial_Sampler = FALSE,
   Test_Adaptive_Metropolis = FALSE, Test_Inference = FALSE,
   Test_RDirichlet = FALSE,
   Test_Sample_Token_Topics_From_Generative_Process = FALSE,
-  Getting_It_Right = FALSE, seed = NULL, distribution = NULL,
-  intercepts = NULL, coefficients = NULL, latent_positions = NULL,
-  document_sender = NULL, document_recipient = NULL,
-  current_covariates = NULL, interaction_pattern = NULL,
-  using_coefficients = NULL, edge_probabilities = NULL,
-  tokens_in_document = NULL, current_token_topic_assignment = NULL,
+  Getting_It_Right = FALSE, Schien_Testing = FALSE, seed = NULL,
+  distribution = NULL, intercepts = NULL, coefficients = NULL,
+  latent_positions = NULL, document_sender = NULL,
+  document_recipient = NULL, current_covariates = NULL,
+  interaction_pattern = NULL, using_coefficients = NULL,
+  edge_probabilities = NULL, tokens_in_document = NULL,
+  current_token_topic_assignment = NULL,
   current_document_topic_counts = NULL, leave_out_current_token = NULL,
   topic_interaction_patterns = NULL, leave_out_topic = NULL,
   intercept_prior_mean = NULL, intercept_prior_standard_deviation = NULL,
@@ -154,6 +155,9 @@ must be provided.}
 
 \item{Getting_It_Right}{If TRUE, then Geweke's getting it right test is
 performed}
+
+\item{Schien_Testing}{If TRUE, the Schien testing is performed. Defaults to
+FALSE.}
 
 \item{seed}{An integerg.}
 

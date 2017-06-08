@@ -372,7 +372,6 @@ test_internal_functions <- function(
             covariates,
             alpha_m,
             beta_n,
-            random_numbers,
             using_coefficients,
             parallel)
     }
@@ -411,7 +410,6 @@ test_internal_functions <- function(
                                latent_positions,
                                covariates,
                                using_coefficients,
-                               random_numbers,
                                edge_probabilities)
     }
 
@@ -479,7 +477,6 @@ test_internal_functions <- function(
             beta_n,
             length(token_topic_assignments),
             resample_word_types,
-            random_numbers,
 			use_collapsed_topic_sampling)
     }
 
