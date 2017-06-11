@@ -385,7 +385,7 @@ namespace mjd {
         //first get all of the intercept prior probabilities
         for (int i = 0; i < num_actors; ++i) {
             if (i != document_sender) {
-                double sum_term = sum_over_t_edge_probability (
+                double term_1 = sum_over_t_edge_probability (
                     edge_probabilities,
                     tokens_in_document,
                     current_token_topic_assignment,
@@ -396,7 +396,7 @@ namespace mjd {
                     i,
                     -1);
                 //make sure we do not do integer division so we cast as a double
-                sum_term += 1/(double(tokens_in_document)) *
+                double term_2 = 1.0/(double(tokens_in_document)) *
                     edge_probabilities(document_sender,
                                        i,
                                        topic_interaction_patterns[topic]);
@@ -405,11 +405,11 @@ namespace mjd {
                 //on whether the edge value is equal to 1 (present), or 0
                 //(absent).
                 if (document_edge_values[i] == 1) {
-                    contribution += log(sum_term);
+                    contribution += log(term_1 + term_2);
                 } else {
                     // we can use this equality to simplify things:
                     // (1-a)+(1-b) = 2-a-b = 2-(a+b)
-                    contribution += log(2 - sum_term);
+                    contribution += log(1 - term_1 - term_2);
                 }
             }
         }
@@ -2565,7 +2565,8 @@ namespace mjd {
         arma::vec topic_interaction_patterns,
         arma::mat document_edge_matrix,
         int num_statistics,
-        double mean_accept_rate) {
+        double mean_accept_rate,
+        Rcpp::List token_topic_assignments) {
 
         // For reference
         //get the number of actors
@@ -2720,6 +2721,18 @@ namespace mjd {
         // store the mean acceptance rate
         statistics[stat_counter] = mean_accept_rate;
         stat_counter += 1;
+
+        for (int i = 0; i < num_docs; ++i) {
+            // get the current token topic assignments as a vector
+            arma::vec current_token_topic_assignments = token_topic_assignments[i];
+            // get the current number of tokens
+            int tokens_in_document = current_token_topic_assignments.n_elem;
+            for (int j = 0; j < tokens_in_document; ++j) {
+                statistics[stat_counter] = current_token_topic_assignments[j];
+                stat_counter += 1;
+            }
+
+        }
 
         return statistics;
     }
@@ -3370,6 +3383,7 @@ arma::mat gir(arma::vec author_indexes,
     number_of_statistics += 2; //average cluster assignment and mean network density.
     number_of_statistics += 8; //mean, var, max, min for topic, word type counts.
     number_of_statistics += 1; //MH acceptance rate
+    number_of_statistics += num_documents * words_per_doc; //token topic assignments
 
     arma::mat sample_statistics = arma::zeros(GiR_samples,number_of_statistics);
 
@@ -3477,7 +3491,8 @@ arma::mat gir(arma::vec author_indexes,
                                                                               topic_interaction_patterns2,
                                                                               document_edge_matrix,
                                                                               number_of_statistics,
-                                                                              0.5);
+                                                                              0.5,
+                                                                              token_topic_assignments);
 
             // Store statistics
             for (int k = 0; k < number_of_statistics; ++k) {
@@ -3640,7 +3655,8 @@ arma::mat gir(arma::vec author_indexes,
                                                                               topic_interaction_patterns,
                                                                               document_edge_matrix,
                                                                               number_of_statistics,
-                                                                              mean_accept_rate);
+                                                                              mean_accept_rate,
+                                                                              token_topic_assignments);
 
             // Store statistics
             for (int k = 0; k < number_of_statistics; ++k) {
