@@ -522,6 +522,8 @@ test_internal_functions <- function(
             token_word_types,
             resample_word_types)
 
+        total_tokens <- num_documents * words_per_doc
+
         # generate lables for the output
         colnms <- c(paste("LSM_Intercept_",1:num_ip,sep = ""),
                     paste("LSM_Mean_Coefficients_",1:num_ip,sep = ""),
@@ -534,7 +536,8 @@ test_internal_functions <- function(
                     "Var_Token_Topic","Max_Topic_Token_Count","Min_Topic_Token_Count",
                     "Mean_Token_Word_Type","Var_Token_Word_Type",
                     "Max_Word_Type_Token_Count","Min_Word_Type_Token_Count",
-                    "Mean_MH_Accept_Rate")
+                    "Mean_MH_Accept_Rate",
+                    paste("Token_",1:total_tokens,"_Topic",sep = ""))
 
         colnames(return_object) <- colnms
     }
